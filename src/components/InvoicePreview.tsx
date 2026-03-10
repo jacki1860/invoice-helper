@@ -1,19 +1,17 @@
-import {formatTaiwanDate, getInvoicePeriod} from '../utils/dateUtils';
-import {formatChineseAmount} from '../utils/numberUtils';
-import {InvoiceData, InvoiceCalculation} from '../types/invoice';
+import { formatTaiwanDate, getInvoicePeriod } from '../utils/dateUtils';
+import { formatChineseAmount } from '../utils/numberUtils';
+import { InvoiceData, InvoiceCalculation } from '../types/invoice';
 import {
   CalculationSummary,
   InvoiceHeader,
   InvoiceTable,
 } from './invoice-preview';
-import {InvoiceTips} from './invoice-preview/InvoiceTips';
-import {Download} from 'lucide-react';
-import {useCallback, useRef} from 'react';
+import { InvoiceTips } from './invoice-preview/InvoiceTips';
+import { Download } from 'lucide-react';
+import { useCallback, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
-interface InvoicePreviewProps extends InvoiceData, InvoiceCalculation {
-  itemName?: string;
-}
+interface InvoicePreviewProps extends InvoiceData, InvoiceCalculation { }
 
 export function InvoicePreview({
   buyer,
@@ -24,6 +22,7 @@ export function InvoicePreview({
   tax,
   amount,
   itemName,
+  items,
 }: InvoicePreviewProps) {
   const chineseAmount = formatChineseAmount(amount);
   const formattedDate = formatTaiwanDate(date);
@@ -86,6 +85,7 @@ export function InvoicePreview({
           taxType={taxType}
           chineseAmount={chineseAmount}
           itemName={itemName}
+          items={items}
         />
       </div>
 

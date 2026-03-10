@@ -9,6 +9,8 @@ export function InvoiceForm({
   setBuyer,
   uniformNumber,
   setUniformNumber,
+  date,
+  setDate,
   totalAmount,
   setTotalAmount,
   subtotalAmount,
@@ -17,6 +19,10 @@ export function InvoiceForm({
   setAmountType,
   taxType,
   setTaxType,
+  itemName,
+  setItemName,
+  items,
+  setItems,
   calculation
 }: InvoiceFormProps) {
   // 從 URL 參數中檢查是否有預填資料
@@ -53,6 +59,12 @@ export function InvoiceForm({
   return (
     <div className="space-y-5">
       <InvoiceInfoStep
+        date={date}
+        setDate={setDate}
+        itemName={itemName}
+        setItemName={setItemName}
+        items={items}
+        setItems={setItems}
         totalAmount={totalAmount}
         setTotalAmount={setTotalAmount}
         subtotalAmount={subtotalAmount}

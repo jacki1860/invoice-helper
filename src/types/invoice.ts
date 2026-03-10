@@ -1,3 +1,11 @@
+export interface InvoiceItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+}
+
 export interface InvoiceData {
   buyer: string;
   uniformNumber: string;
@@ -6,6 +14,8 @@ export interface InvoiceData {
   subtotalAmount: string;
   amountType: 'total' | 'subtotal';
   taxType: 'regular' | 'zero-rate' | 'exempt';
+  itemName: string;
+  items: InvoiceItem[];
 }
 
 export interface InvoiceCalculation {
@@ -21,5 +31,8 @@ export interface InvoiceFormProps extends Omit<InvoiceData, 'date'> {
   setSubtotalAmount: (value: string) => void;
   setAmountType: (value: 'total' | 'subtotal') => void;
   setTaxType: (value: 'regular' | 'zero-rate' | 'exempt') => void;
+  setItemName: (value: string) => void;
+  setDate: (value: string) => void;
+  setItems: (value: InvoiceItem[]) => void;
   calculation: InvoiceCalculation;
 }

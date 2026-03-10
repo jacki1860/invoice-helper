@@ -8,6 +8,8 @@ import { TotalRow } from './table/TotalRow';
 import { ChineseAmountRow } from './table/ChineseAmountRow';
 import { TableLayout } from './table/TableLayout';
 
+import { InvoiceItem } from '../../types/invoice';
+
 interface InvoiceTableProps {
   subtotal: number;
   tax: number;
@@ -19,6 +21,7 @@ interface InvoiceTableProps {
     show: boolean;
   }>;
   itemName?: string;
+  items?: InvoiceItem[];
 }
 
 export function InvoiceTable({
@@ -27,14 +30,15 @@ export function InvoiceTable({
   amount,
   taxType,
   chineseAmount,
-  itemName
+  itemName,
+  items
 }: InvoiceTableProps) {
   return (
     <div className="p-4">
       <TableLayout>
         <TableHeader />
         <tbody>
-          <ItemRows subtotal={subtotal} itemName={itemName} />
+          <ItemRows subtotal={subtotal} itemName={itemName} items={items} />
           <SealRow />
           <SubtotalRow subtotal={subtotal} />
           <TaxRows tax={tax} taxType={taxType} />

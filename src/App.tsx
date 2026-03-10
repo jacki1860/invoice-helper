@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {InvoiceForm} from './components/InvoiceForm';
-import {InvoicePreview} from './components/InvoicePreview';
-import {calculateInvoiceAmounts} from './utils/invoiceUtils';
-import {FormCard} from './components/layout/FormCard';
-import {PreviewCard} from './components/layout/PreviewCard';
-import {AdCard} from './components/layout/AdCard';
-import {MobileCalculationSummary} from './components/mobile/MobileCalculationSummary';
-import {getTaiwanDate} from './utils/dateUtils';
+import React, { useState, useEffect } from 'react';
+import { InvoiceForm } from './components/InvoiceForm';
+import { InvoicePreview } from './components/InvoicePreview';
+import { calculateInvoiceAmounts } from './utils/invoiceUtils';
+import { FormCard } from './components/layout/FormCard';
+import { PreviewCard } from './components/layout/PreviewCard';
+import { AdCard } from './components/layout/AdCard';
+import { MobileCalculationSummary } from './components/mobile/MobileCalculationSummary';
+import { getTaiwanDate } from './utils/dateUtils';
 
 export default function App() {
   const [buyer, setBuyer] = useState('');
@@ -19,11 +19,16 @@ export default function App() {
   );
   const [itemName, setItemName] = useState('');
 
+  // 取得台灣時間的今天日期
+  const [date, setDate] = useState(getTaiwanDate());
+  const [items, setItems] = useState<any[]>([]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const prefilledUniformNumber = params.get('uniformNumber');
     const prefilledAmount = params.get('amount');
     const prefilledItemName = params.get('itemName');
+    const prefilledDate = params.get('date');
 
     if (prefilledUniformNumber) {
       setUniformNumber(prefilledUniformNumber);
@@ -37,17 +42,19 @@ export default function App() {
     if (prefilledItemName) {
       setItemName(prefilledItemName);
     }
+
+    if (prefilledDate) {
+      setDate(prefilledDate);
+    }
   }, []);
 
   const calculation = calculateInvoiceAmounts(
     totalAmount,
     subtotalAmount,
     amountType,
-    taxType
+    taxType,
+    items
   );
-
-  // 取得台灣時間的今天日期
-  const today = getTaiwanDate();
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50'>
@@ -61,6 +68,8 @@ export default function App() {
                 setBuyer={setBuyer}
                 uniformNumber={uniformNumber}
                 setUniformNumber={setUniformNumber}
+                date={date}
+                setDate={setDate}
                 totalAmount={totalAmount}
                 setTotalAmount={setTotalAmount}
                 subtotalAmount={subtotalAmount}
@@ -69,6 +78,10 @@ export default function App() {
                 setAmountType={setAmountType}
                 taxType={taxType}
                 setTaxType={setTaxType}
+                itemName={itemName}
+                setItemName={setItemName}
+                items={items}
+                setItems={setItems}
                 calculation={calculation}
               />
             </FormCard>
@@ -83,12 +96,13 @@ export default function App() {
               <InvoicePreview
                 buyer={buyer}
                 uniformNumber={uniformNumber}
-                date={today}
+                date={date}
                 totalAmount={totalAmount}
                 subtotalAmount={subtotalAmount}
                 amountType={amountType}
                 taxType={taxType}
                 itemName={itemName}
+                items={items}
                 {...calculation}
               />
             </PreviewCard>
