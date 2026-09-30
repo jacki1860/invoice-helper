@@ -2,7 +2,7 @@
 
 公開免登入的發票與公司行政工具，服務自由工作者與小公司。以暖白紙張、墨黑文字與橘色操作組成工作桌，打開即可填寫、試算或查詢。
 
-「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。本機新版已實作並完成本輪程式與瀏覽器驗證；尚未推送或部署，證據與限制見[驗證紀錄](docs/VERIFICATION.md)。
+「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。新版已完成本輪程式與瀏覽器驗證，證據與限制見[驗證紀錄](docs/VERIFICATION.md)；公司站點的發布流程與結果見[部署紀錄](docs/DEPLOYMENT.md)。
 
 ## 三個工具
 
@@ -53,7 +53,7 @@ npm run build
 | `npm run format:check` | 檢查格式，不修改檔案。              |
 | `npm run preview`      | 重新建置並啟動本機預覽。            |
 
-倉庫保留 Cloudflare 部署設定，但目前尚未部署。實際發布前須確認自己的目標環境與設定，不能將原作者的範例網址當成自己的正式站點。
+公司站點使用 `npm run build:company`，資源路徑為 `/invoice/`，只發布 `dist/client/` 的內容。`npm run deploy` 仍是原有 Cloudflare 部署指令，不用於公司 SSH 主機。
 
 ## 設計與開發紀錄
 
