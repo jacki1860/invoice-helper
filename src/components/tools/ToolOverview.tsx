@@ -66,10 +66,6 @@ export function ToolOverview({ category }: { category?: Category }) {
           沒有找到符合的工具，試試其他關鍵字。
         </p>
       )}
-      <footer className="overview-footer">
-        <span>免登入，開了就用。</span>
-        <p>文件內容留在本次頁面；公開資料附上來源與核對日期。</p>
-      </footer>
     </div>
   );
 }

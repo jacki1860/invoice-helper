@@ -11,6 +11,7 @@ import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import InsuranceLookup from './components/tools/InsuranceLookup';
 import { LawLookup } from './components/tools/LawLookup';
 import { CalendarTool } from './components/tools/CalendarTool';
+import { SiteFooter } from './components/tools/SiteFooter';
 import {
   categories,
   tools,
@@ -144,6 +145,7 @@ export default function App() {
           <CalendarTool />
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }

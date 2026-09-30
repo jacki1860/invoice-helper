@@ -155,18 +155,57 @@
 .directory-tool:hover > svg {
   transform: translate(2px, -2px);
 }
-.overview-footer {
+.site-footer {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 46px 32px;
+}
+.site-footer-contact {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding-top: 36px;
-  margin-top: 36px;
+  gap: 24px;
   border-top: 1px solid var(--rule);
+  padding-top: 30px;
+}
+.site-footer-contact h2 {
+  font-family: var(--serif);
+  font-size: 23px;
+  margin-bottom: 8px;
+}
+.site-footer-contact p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.site-footer-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.site-footer-actions a {
+  text-decoration: none;
+}
+.site-footer-email {
+  margin-top: 18px;
   font-size: 12px;
   color: var(--muted);
   line-height: 1.9;
 }
-.overview-footer > span {
+.site-footer-email span {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.site-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 24px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.site-footer-meta > span {
   font-family: var(--serif);
   font-size: 15px;
   color: var(--ink);
@@ -648,7 +687,8 @@
     gap: 14px;
   }
   .tools-overview,
-  .public-tool-page {
+  .public-tool-page,
+  .site-footer {
     padding-left: 30px;
     padding-right: 30px;
   }
@@ -664,6 +704,11 @@
   }
 }
 @media (max-width: 900px) {
+  .site-footer-contact {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
   .site-header {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -758,6 +803,18 @@
   .public-tool-page {
     padding: 28px 20px 32px;
   }
+  .site-footer {
+    padding: 0 20px 24px;
+  }
+  .site-footer-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .site-footer-actions a {
+    flex: 1 1 130px;
+    padding: 11px 10px;
+    white-space: nowrap;
+  }
   .overview-intro {
     padding-bottom: 28px;
     gap: 22px;
@@ -784,10 +841,9 @@
   .directory-tool h3 {
     font-size: 16px;
   }
-  .overview-footer {
+  .site-footer-meta {
     flex-direction: column;
     gap: 8px;
-    margin-top: 24px;
     padding-top: 24px;
   }
   .public-tool-heading {
@@ -874,6 +930,7 @@
     background: white;
   }
   .site-header,
+  .site-footer,
   .skip-link,
   .tool-breadcrumb,
   .link-notice,
