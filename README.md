@@ -2,7 +2,7 @@
 
 公開免登入的發票與公司行政工具，服務自由工作者與小公司。以暖白紙張、墨黑文字與橘色操作組成工作桌，打開即可填寫、試算或查詢。
 
-「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。新版已完成本輪程式與瀏覽器驗證，證據與限制見[驗證紀錄](docs/VERIFICATION.md)；公司站點的發布流程與結果見[部署紀錄](docs/DEPLOYMENT.md)。
+「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。新版已部署至[公司網站](https://www.ctrls.com.tw/invoice/)，完成本輪程式、本機及正式站瀏覽器驗證。證據與限制見[驗證紀錄](docs/VERIFICATION.md)，發布與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)。
 
 ## 三個工具
 
