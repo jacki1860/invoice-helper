@@ -1,0 +1,308 @@
+.law-search-section,
+.law-news-section {
+  margin-top: 2.5rem;
+}
+.law-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.law-section-heading h2 {
+  margin: 0.45rem 0 0;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.law-eyebrow {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.law-count,
+.law-scope,
+.law-result-count {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.law-count {
+  flex-shrink: 0;
+}
+.law-scope {
+  margin: 1rem 0 1.4rem;
+  line-height: 1.8;
+}
+.law-search-form {
+  display: flex;
+  gap: 0.65rem;
+}
+.law-search-input {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: #fffdf9;
+  color: var(--muted);
+}
+.law-search-input:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.law-search-input input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.88rem;
+}
+.law-official-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--canvas);
+  font: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+.law-official-button:hover {
+  background: #49453e;
+}
+.law-categories {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.1rem;
+}
+.law-categories button {
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.law-categories button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--canvas);
+}
+.law-categories button:focus-visible,
+.law-official-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.law-result-count {
+  margin: 1.25rem 0 0.5rem;
+}
+.law-list {
+  border-top: 1px solid var(--ink);
+}
+.law-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.law-row-text {
+  min-width: 0;
+}
+.law-category-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.law-row h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.law-row a,
+.law-news-row a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.law-row a:hover,
+.law-news-row a:hover {
+  color: var(--accent);
+}
+.law-row a svg,
+.law-news-row a svg {
+  display: inline-block;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+.law-row-meta {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.law-row-meta time {
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+.law-effective-notice {
+  margin: 0.65rem 0 0;
+  color: #93522c;
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+.law-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+.law-empty h3 {
+  font-size: 1rem;
+}
+.law-empty p {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+.law-empty a {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  color: var(--accent);
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+.law-news-section {
+  margin-top: 4rem;
+}
+.law-news-list {
+  border-top: 1px solid var(--ink);
+}
+.law-news-row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1.3rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.law-news-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+.law-news-date span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.law-news-labels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.law-kind {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.1rem 0.35rem;
+}
+.law-kind-draft {
+  border-color: #bc956c;
+  color: #855321;
+}
+.law-news-row h3 {
+  margin: 0.5rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.8;
+  font-weight: 400;
+}
+.law-official-sources {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.law-official-sources a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--ink);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+.law-official-sources a span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.law-official-sources small {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.law-official-sources a:hover {
+  color: var(--accent);
+}
+.law-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 600px) {
+  .law-section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .law-search-form {
+    flex-direction: column;
+  }
+  .law-official-button {
+    align-self: end;
+  }
+  .law-row {
+    gap: 0.8rem;
+  }
+  .law-row h3 {
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+  .law-row-meta {
+    font-size: 0.62rem;
+    max-width: 6rem;
+  }
+  .law-news-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .law-news-date {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .law-official-sources {
+    grid-template-columns: 1fr;
+  }
+}

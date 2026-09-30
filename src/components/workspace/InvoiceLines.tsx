@@ -3,6 +3,7 @@ import type { InvoiceCalculation, InvoiceLineInput, PriceMode } from '../../doma
 import { formatMoney } from './Totals';
 
 interface Props {
+  caption?: string;
   lines: InvoiceLineInput[];
   calculation: InvoiceCalculation;
   priceMode: PriceMode;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function InvoiceLines({
+  caption = '發票品項，可以直接編輯每個欄位',
   lines,
   calculation,
   priceMode,
@@ -27,7 +29,7 @@ export function InvoiceLines({
     <>
       <div className="line-table-wrap">
         <table className="line-table">
-          <caption className="sr-only">發票品項，可以直接編輯每個欄位</caption>
+          <caption className="sr-only">{caption}</caption>
           <colgroup>
             <col className="col-name" />
             <col className="col-quantity" />
