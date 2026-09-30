@@ -28,6 +28,7 @@ export async function downloadInvoice(element: HTMLElement, filename: string): P
   document.body.append(snapshot);
   try {
     await document.fonts.ready;
+    await Promise.all(Array.from(snapshot.querySelectorAll('img'), (image) => image.decode()));
     const { default: html2canvas } = await import('html2canvas');
     const canvas = await html2canvas(snapshot, {
       scale: 2,

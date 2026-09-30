@@ -5,9 +5,11 @@ import {
   type TaxType,
 } from '../../domain/invoice.ts';
 import { isValidInvoiceDate } from '../../utils/dateUtils.ts';
+import type { DocumentLogo } from './documentLogo.ts';
 
 export interface BusinessDocumentDraft {
   kind: 'quote' | 'payment';
+  logo: DocumentLogo | null;
   issuer: string;
   issuerNumber: string;
   issuerPhone: string;
@@ -30,6 +32,7 @@ export function hasBusinessDocumentContent(
   initialDate: string,
 ): boolean {
   return (
+    draft.logo !== null ||
     [
       draft.issuer,
       draft.issuerNumber,

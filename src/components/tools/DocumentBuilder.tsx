@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Download, Plus, Printer, RotateCcw, Trash2 } from 'lucide-react';
+import { Download, ImagePlus, Plus, Printer, RotateCcw, Trash2 } from 'lucide-react';
 import {
   type BusinessDocumentDraft,
   documentResult,
@@ -7,6 +7,7 @@ import {
   businessDocumentContactFields,
   hasBusinessDocumentContent,
 } from '../../features/tools/documents';
+import { loadDocumentLogo, LOGO_FILE_TYPES } from '../../features/tools/documentLogo';
 import { emptyLine } from '../../features/invoice/draft';
 import { getTaiwanDate } from '../../utils/dateUtils';
 import { formatChineseAmountText } from '../../utils/numberUtils';
@@ -20,6 +21,7 @@ import { CopyAction } from './CopyAction';
 function emptyDocument(): BusinessDocumentDraft {
   return {
     kind: 'quote',
+    logo: null,
     issuer: '',
     issuerNumber: '',
     issuerPhone: '',
@@ -45,6 +47,11 @@ export function DocumentBuilder() {
   const [attempted, setAttempted] = useState(false);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+  const [logoLoading, setLogoLoading] = useState(false);
+  const [logoError, setLogoError] = useState('');
+  const [readyLogo, setReadyLogo] = useState<string | null>(null);
+  const logoRequest = useRef(0);
+  const logoInput = useRef<HTMLInputElement>(null);
   const [deleted, setDeleted] = useState<{
     line: BusinessDocumentDraft['lines'][number];
     index: number;
@@ -52,16 +59,44 @@ export function DocumentBuilder() {
   const paper = useRef<HTMLDivElement>(null);
   const { calculation, errors, valid } = documentResult(draft);
   const title = draft.kind === 'quote' ? '報價單' : '請款單';
+  const logoPending = logoLoading || (draft.logo !== null && readyLogo !== draft.logo.dataUrl);
   const patch = (update: Partial<BusinessDocumentDraft>) => {
     setDraft((current) => ({ ...current, ...update }));
     setStatus('');
   };
+  const chooseLogo = async (file: File) => {
+    const request = ++logoRequest.current;
+    setLogoLoading(true);
+    setLogoError('');
+    setStatus('');
+    try {
+      const logo = await loadDocumentLogo(file);
+      if (request !== logoRequest.current) return;
+      patch({ logo });
+    } catch (error) {
+      if (request !== logoRequest.current) return;
+      setLogoError(error instanceof Error ? error.message : '圖片處理失敗，請重新選擇。');
+    } finally {
+      if (request === logoRequest.current) setLogoLoading(false);
+    }
+  };
+  const clearLogo = () => {
+    logoRequest.current += 1;
+    setLogoLoading(false);
+    setLogoError('');
+    setReadyLogo(null);
+    patch({ logo: null });
+  };
   const sample = () => {
     if (
-      hasBusinessDocumentContent(draft, initialDate) &&
+      (logoLoading || hasBusinessDocumentContent(draft, initialDate)) &&
       !window.confirm('載入範例會取代目前文件內容。確定取代？')
     )
       return;
+    logoRequest.current += 1;
+    setLogoLoading(false);
+    setLogoError('');
+    setReadyLogo(null);
     setDraft({
       ...emptyDocument(),
       kind: draft.kind,
@@ -81,7 +116,7 @@ export function DocumentBuilder() {
   };
   const exportPng = async () => {
     setAttempted(true);
-    if (!valid || !paper.current || busy) return;
+    if (!valid || !paper.current || busy || logoPending) return;
     setBusy(true);
     setStatus('正在製作圖片…');
     try {
@@ -120,6 +155,50 @@ export function DocumentBuilder() {
           <h2 className="numbered-title">
             <span>01</span>雙方資料
           </h2>
+          <section className="document-logo-control" aria-label="文件 Logo">
+            <p className="document-logo-label">Logo（選填）</p>
+            <input
+              ref={logoInput}
+              type="file"
+              accept={LOGO_FILE_TYPES.join(',')}
+              aria-label="選擇 Logo 圖片"
+              hidden
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = '';
+                if (file) void chooseLogo(file);
+              }}
+            />
+            <div className="document-logo-actions">
+              <button
+                className="button button-secondary"
+                onClick={() => logoInput.current?.click()}
+              >
+                <ImagePlus size={17} />
+                {draft.logo ? '更換 Logo' : '上傳 Logo'}
+              </button>
+              {(draft.logo || logoLoading) && (
+                <button className="text-button" onClick={clearLogo}>
+                  <Trash2 size={16} />
+                  移除 Logo
+                </button>
+              )}
+            </div>
+            {draft.logo && <p className="document-logo-filename">{draft.logo.name}</p>}
+            <p className="document-logo-help">
+              PNG、JPG、WebP，5 MB 以內；建議使用透明背景 PNG。圖片只在本機處理。
+            </p>
+            {logoLoading && (
+              <p className="document-logo-help" role="status">
+                正在處理圖片…
+              </p>
+            )}
+            {logoError && (
+              <p className="field-error" role="alert">
+                {logoError}
+              </p>
+            )}
+          </section>
           <div className="tool-form-grid">
             <label className="tool-field">
               <span>開立方 *</span>
@@ -350,13 +429,17 @@ export function DocumentBuilder() {
             </ul>
           )}
           <div className="document-actions">
-            <button className="button button-primary" disabled={!valid || busy} onClick={exportPng}>
+            <button
+              className="button button-primary"
+              disabled={!valid || busy || logoPending}
+              onClick={exportPng}
+            >
               <Download size={18} />
               {busy ? '製作圖片中' : '下載文件 PNG'}
             </button>
             <button
               className="button button-secondary"
-              disabled={!valid || busy}
+              disabled={!valid || busy || logoPending}
               onClick={() => window.print()}
             >
               <Printer size={18} />
@@ -365,9 +448,11 @@ export function DocumentBuilder() {
           </div>
           <p className="action-status" role="status">
             {status ||
-              (!valid
-                ? '填妥開立方、客戶、有效日期與品項後，即可匯出。'
-                : '列印視窗可選擇另存為 PDF；此文件非統一發票。')}
+              (logoPending
+                ? 'Logo 準備完成後即可匯出；若圖片無法載入，請重新選擇或移除。'
+                : !valid
+                  ? '填妥開立方、客戶、有效日期與品項後，即可匯出。'
+                  : '列印視窗可選擇另存為 PDF；此文件非統一發票。')}
           </p>
           <CopyAction text={businessDocumentText(draft)} label="複製文件文字" />
           <SessionNote />
@@ -376,8 +461,23 @@ export function DocumentBuilder() {
           <p className="document-preview-label">文件預覽</p>
           <div ref={paper} className="business-paper document-print-target">
             <header>
-              <p className="business-issuer">{draft.issuer || '開立方名稱'}</p>
-              <h2>{title}</h2>
+              <div className="business-heading">
+                <div>
+                  <p className="business-issuer">{draft.issuer || '開立方名稱'}</p>
+                  <h2>{title}</h2>
+                </div>
+                {draft.logo && (
+                  <img
+                    className="business-logo"
+                    src={draft.logo.dataUrl}
+                    alt="開立方 Logo"
+                    width={draft.logo.width}
+                    height={draft.logo.height}
+                    onLoad={() => setReadyLogo(draft.logo?.dataUrl ?? null)}
+                    onError={() => setLogoError('Logo 預覽無法載入，請重新選擇或移除圖片。')}
+                  />
+                )}
+              </div>
               {businessDocumentContactFields(draft).map((field) => (
                 <p className="business-contact" key={field.id}>
                   {field.label}：{field.value}

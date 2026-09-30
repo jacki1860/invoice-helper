@@ -10,6 +10,7 @@ import {
 
 const draft: BusinessDocumentDraft = {
   kind: 'quote',
+  logo: null,
   issuer: '工作室',
   issuerNumber: '',
   issuerPhone: '',
@@ -51,6 +52,7 @@ test('business documents share gross-preserving calculation and safe output gati
 test('loading a sample protects every field that can hold user work', () => {
   const blank: BusinessDocumentDraft = {
     kind: 'quote',
+    logo: null,
     issuer: '',
     issuerNumber: '',
     issuerPhone: '',
@@ -89,6 +91,7 @@ test('loading a sample protects every field that can hold user work', () => {
     );
   }
   for (const patch of [
+    { logo: { dataUrl: 'data:image/png;base64,test', name: 'logo.png', width: 100, height: 50 } },
     { customFields: [{ id: 'custom', label: '地址', value: '' }] },
     { customFields: [{ id: 'custom', label: '', value: '示範地址' }] },
     { priceMode: 'total' as const },
@@ -152,4 +155,17 @@ test('blank optional fields are omitted but incomplete custom fields block outpu
     assert.ok(documentResult(incomplete).errors.some((error) => error.includes('自訂欄位 1')));
     assert.equal(businessDocumentText(incomplete), '');
   }
+});
+
+test('logo does not leak image data or filenames into copied document text', () => {
+  const withLogo = {
+    ...draft,
+    logo: {
+      dataUrl: 'data:image/png;base64,test',
+      name: 'private-file.png',
+      width: 100,
+      height: 50,
+    },
+  };
+  assert.equal(businessDocumentText(withLogo), businessDocumentText(draft));
 });

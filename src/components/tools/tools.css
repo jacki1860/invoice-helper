@@ -465,6 +465,60 @@
 .document-editor {
   min-width: 0;
 }
+.document-logo-control {
+  margin-bottom: 24px;
+}
+.document-logo-label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.document-logo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.document-logo-actions .button {
+  padding: 10px 14px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.document-logo-actions .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.document-logo-filename,
+.document-logo-help {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.document-logo-help {
+  color: var(--muted);
+}
+.business-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.business-heading > div {
+  min-width: 0;
+}
+.business-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 32%;
+  max-height: 80px;
+  object-fit: contain;
+  object-position: right top;
+}
 .document-custom-fields {
   margin: 0 0 24px;
 }
