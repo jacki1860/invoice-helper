@@ -41,6 +41,7 @@ export function SiteFooter() {
       <div className="site-footer-meta">
         <span>免登入，開了就用。</span>
         <p>文件內容留在本次頁面；公開資料附上來源與核對日期。</p>
+        <a href={`${import.meta.env.BASE_URL}sitemap.xml`}>網站地圖</a>
       </div>
     </footer>
   );

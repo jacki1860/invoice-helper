@@ -178,14 +178,42 @@ export const tools: {
   },
 ];
 
+export function isPageId(value: string): value is PageId {
+  return (
+    value === 'tools' ||
+    tools.some((tool) => tool.id === value) ||
+    categories.some((category) => `category-${category.id}` === value)
+  );
+}
+
+export function pagePath(page: PageId, base: string): string {
+  const root = `${base.replace(/\/$/, '')}/`;
+  if (page === 'tools') return root;
+  return page.startsWith('category-') ? `${root}category/${page.slice(9)}/` : `${root}${page}/`;
+}
+
+export function pageFromPath(pathname: string, base: string): PageId | undefined {
+  const root = `${base.replace(/\/$/, '')}/`;
+  if (!pathname.startsWith(root)) return undefined;
+  const relative = pathname.slice(root.length).replace(/(?:\/index\.html|\/|^index\.html)$/, '');
+  if (!relative) return 'tools';
+  const page = relative.startsWith('category/') ? `category-${relative.slice(9)}` : relative;
+  return isPageId(page) && page !== 'tools' ? page : undefined;
+}
+
+export function resolveLocation(
+  location: { pathname: string; hash: string; search: string },
+  base: string,
+): PageId {
+  const legacy = location.hash.slice(1);
+  if (isPageId(legacy)) return legacy;
+  const page = pageFromPath(location.pathname, base);
+  return page && page !== 'tools' ? page : resolvePage('', location.search);
+}
+
 export function resolvePage(hash: string, search = ''): PageId {
   const page = hash.replace(/^#/, '');
-  if (
-    page === 'tools' ||
-    tools.some((tool) => tool.id === page) ||
-    categories.some((category) => `category-${category.id}` === page)
-  )
-    return page as PageId;
+  if (isPageId(page)) return page;
   if (
     ['uniformNumber', 'amount', 'itemName', 'date'].some((key) =>
       new URLSearchParams(search).has(key),

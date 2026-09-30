@@ -28,5 +28,8 @@ dist-ssr
 .wrangler
 .dev.vars
 
+# Local browser verification
+.playwright-cli
+
 # Claude
 .claude/*.local.json

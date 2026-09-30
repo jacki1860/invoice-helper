@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowUpRight, Search } from 'lucide-react';
-import { categories, tools, type Category } from '../../features/tools/catalog';
+import { categories, tools, pagePath, type Category } from '../../features/tools/catalog';
 
 export function ToolOverview({ category }: { category?: Category }) {
   const [query, setQuery] = useState('');
@@ -48,7 +48,11 @@ export function ToolOverview({ category }: { category?: Category }) {
                 </header>
                 <div>
                   {entries.map((tool) => (
-                    <a key={tool.id} href={`#${tool.id}`} className="directory-tool">
+                    <a
+                      key={tool.id}
+                      href={pagePath(tool.id, import.meta.env.BASE_URL)}
+                      className="directory-tool"
+                    >
                       <div>
                         <h3>{tool.label}</h3>
                         <p>{tool.description}</p>

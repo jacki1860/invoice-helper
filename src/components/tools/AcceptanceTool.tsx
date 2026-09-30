@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { ArrowUpRight, Plus, Trash2 } from 'lucide-react';
 import type { ToolHandoff } from '../../features/tools/handoff';
+import { pagePath } from '../../features/tools/catalog';
 import type { AcceptanceSeed, QuoteSeed } from '../../features/tools/workflowHandoff';
 import {
   acceptanceFromSeed,
@@ -289,7 +290,7 @@ export function AcceptanceTool({
               </button>
             )}
             {!result.pricingMatches && (
-              <a href="#quote" className="text-button">
+              <a href={pagePath('quote', import.meta.env.BASE_URL)} className="text-button">
                 前往報價／請款單手動整理 <ArrowUpRight size={15} />
               </a>
             )}

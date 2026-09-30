@@ -12,7 +12,13 @@
 6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
 7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
-路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
+目前已發布版本採 hash；本機 SEO 待發布版會產生 25 個實際 HTML 頁面，站內使用 History API 並相容舊 hash，兩者都不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
+
+## 待發布：SEO／AEO
+
+本機產物新增工具／分類子目錄、`sitemap.xml` 與 favicon。發布封存必須遞迴包含全部 `dist/client/` 公開頁面及資源，不能沿用歷史版本的固定五檔清單。先執行 `npm run build:company`、`npm run test:seo-build -- /invoice/`；上線後逐頁檢查 200、深層網址重整、未知路徑 404、canonical 及 sitemap。
+
+本節尚無正式站發布紀錄，詳細內容及搜尋引擎端後續工作見 [SEO 說明](SEO.md)。
 
 ## 2026-09-30 二十工具版
 

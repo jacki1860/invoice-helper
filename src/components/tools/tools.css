@@ -1,3 +1,54 @@
+.page-guide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 46px 48px;
+  border-top: 1px solid var(--rule);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.page-guide h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.page-guide h3 {
+  font-size: 17px;
+  margin: 24px 0 10px;
+}
+.page-guide ol,
+.page-guide ul {
+  padding-left: 24px;
+}
+.page-guide ol {
+  list-style: decimal;
+}
+.page-guide ul {
+  list-style: disc;
+}
+.page-guide dt {
+  font-weight: 600;
+}
+.page-guide dd {
+  margin: 4px 0 18px;
+  color: var(--muted);
+}
+.page-guide a {
+  text-underline-offset: 4px;
+}
+.page-guide a:hover {
+  color: var(--accent);
+}
+@media (max-width: 600px) {
+  .page-guide {
+    padding: 28px 20px;
+  }
+}
+@media print {
+  .page-guide {
+    display: none !important;
+  }
+}
+
 .site-header {
   gap: 36px;
 }

@@ -9,6 +9,7 @@
     "build:company": "npm run build -- --base=/invoice/",
     "lint": "oxlint --deny-warnings",
     "test": "node --test tests/*.test.ts",
+    "test:seo-build": "node scripts/check-seo-build.mjs",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "preview": "npm run build && vite preview",

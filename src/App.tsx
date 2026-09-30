@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type MouseEvent } from 'react';
 import { InvoiceWorkspace } from './components/workspace/InvoiceWorkspace';
 import { TaxCalculator } from './components/workspace/TaxCalculator';
 import { CompanyLookup } from './components/workspace/CompanyLookup';
@@ -34,15 +34,21 @@ import { SiteFooter } from './components/tools/SiteFooter';
 import {
   categories,
   tools,
-  resolvePage,
+  resolveLocation,
+  pagePath,
+  pageFromPath,
+  isPageId,
   categoryForPage,
   type PageId,
 } from './features/tools/catalog';
 import { createInitialDraft, type InvoiceDraft } from './features/invoice/draft';
 import type { CompanyRecord } from './utils/companyUtils';
+import { renderPageGuide } from './features/seo/pages';
+import { updatePageMetadata } from './features/seo/browser';
 import './components/tools/tools.css';
 
-const currentTool = (): PageId => resolvePage(window.location.hash, window.location.search);
+const base = import.meta.env.BASE_URL;
+const currentTool = (): PageId => resolveLocation(window.location, base);
 
 export default function App() {
   const [tool, setTool] = useState<PageId>(currentTool);
@@ -59,10 +65,58 @@ export default function App() {
   const activeTool = tools.find((entry) => entry.id === tool);
 
   useEffect(() => {
-    const onHashChange = () => setTool(currentTool());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const onLocationChange = () => {
+      const page = currentTool();
+      // Upgrade existing bookmarks without a reload or losing URL prefill data.
+      // An explicit #tools overrides legacy invoice prefill on the home URL.
+      if (
+        isPageId(window.location.hash.slice(1)) &&
+        !(page === 'tools' && window.location.search)
+      ) {
+        window.history.replaceState(null, '', pagePath(page, base) + window.location.search);
+      }
+      setTool(page);
+    };
+    onLocationChange();
+    window.addEventListener('hashchange', onLocationChange);
+    window.addEventListener('popstate', onLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', onLocationChange);
+      window.removeEventListener('popstate', onLocationChange);
+    };
   }, []);
+
+  useEffect(() => updatePageMetadata(tool), [tool]);
+
+  const navigate = (page: PageId) => {
+    const path = pagePath(page, base);
+    if (window.location.pathname + window.location.search + window.location.hash !== path) {
+      window.history.pushState(null, '', path);
+    }
+    setTool(page);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const followInternalLink = (event: MouseEvent<HTMLDivElement>) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    const anchor = (event.target as Element).closest<HTMLAnchorElement>('a[href]');
+    if (!anchor || anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self'))
+      return;
+    const url = new URL(anchor.href);
+    if (url.origin !== window.location.origin || url.search || url.hash) return;
+    const page = pageFromPath(url.pathname, base);
+    if (!page) return;
+    event.preventDefault();
+    navigate(page);
+  };
 
   const patchDraft = useCallback((patch: Partial<InvoiceDraft>) => {
     setDraft((previous) => ({ ...previous, ...patch }));
@@ -70,45 +124,38 @@ export default function App() {
 
   const useCompany = (company: CompanyRecord) => {
     patchDraft({ uniformNumber: company.uniformNumber, buyer: company.name });
-    window.location.hash = 'invoice';
-    setTool('invoice');
+    navigate('invoice');
     setLinkNotice(`已帶入 ${company.name}，原有品項保留。`);
   };
 
   const createReceipt = (data: ReceiptSeed) => {
     setReceiptHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'receipt';
-    setTool('receipt');
+    navigate('receipt');
   };
   const createReceivable = (data: ReceivableSeed) => {
     setReceivableHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'receivables';
-    setTool('receivables');
+    navigate('receivables');
   };
 
   const createAcceptance = (data: AcceptanceSeed) => {
     setAcceptanceHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'acceptance';
-    setTool('acceptance');
+    navigate('acceptance');
   };
   const createQuote = (data: QuoteSeed) => {
     setQuoteHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'quote';
-    setTool('quote');
+    navigate('quote');
   };
   const createPurchase = (data: PurchaseSeed) => {
     setPurchaseHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'purchase';
-    setTool('purchase');
+    navigate('purchase');
   };
   const createCosts = (data: CostSeed) => {
     setCostHandoff({ id: crypto.randomUUID(), data });
-    window.location.hash = 'profit';
-    setTool('profit');
+    navigate('profit');
   };
 
   return (
-    <>
+    <div onClick={followInternalLink}>
       <a
         className="skip-link"
         href="#main-content"
@@ -120,7 +167,7 @@ export default function App() {
         跳至主要內容
       </a>
       <header className="site-header">
-        <a className="brand" href="#tools" aria-label="小事務，工具總覽">
+        <a className="brand" href={pagePath('tools', base)} aria-label="小事務，工具總覽">
           <span className="brand-name">小事務</span>
           <span className="brand-caption">everyday admin</span>
         </a>
@@ -128,7 +175,7 @@ export default function App() {
           {categories.map(({ id, label }) => (
             <a
               key={id}
-              href={`#category-${id}`}
+              href={pagePath(`category-${id}`, base)}
               aria-current={category === id ? 'page' : undefined}
             >
               {label}
@@ -149,13 +196,13 @@ export default function App() {
       <main id="main-content" tabIndex={-1}>
         {activeTool && (
           <div className="tool-breadcrumb">
-            <a href={`#category-${activeTool.category}`}>
+            <a href={pagePath(`category-${activeTool.category}`, base)}>
               <ArrowLeft size={16} aria-hidden="true" />
               {categories.find((entry) => entry.id === activeTool.category)?.label}
             </a>
             <span>/</span>
             <span>{activeTool.label}</span>
-            <a className="all-tools-link" href="#tools">
+            <a className="all-tools-link" href={pagePath('tools', base)}>
               全部工具
             </a>
           </div>
@@ -236,8 +283,9 @@ export default function App() {
         <section hidden={tool !== 'calendar'} aria-label="假日行事曆">
           <CalendarTool />
         </section>
+        <div dangerouslySetInnerHTML={{ __html: renderPageGuide(tool, base) }} />
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
