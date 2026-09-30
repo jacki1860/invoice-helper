@@ -1,6 +1,6 @@
 # 工具探索與常用收藏
 
-日期：2026-09-30（Asia/Taipei）。本輪為本機實作，尚未 commit、push 或部署；正式站版本仍以 [DEPLOYMENT.md](DEPLOYMENT.md) 為準。
+本機實作：2026-09-30；正式發布：2026-10-01 00:05:31（Asia/Taipei），來源 `09a3150235e8d8514b39d50d3b2cfae677cef1ca`。已提交、推送及部署；主機位置及回復資訊見 [DEPLOYMENT.md](DEPLOYMENT.md)。
 
 ## 驗收條件
 
@@ -38,7 +38,7 @@ Storage key 為 `invoice-helper:tool-favorites:v1`，內容僅 `{"version":1,"fa
 
 其他分頁的 storage event 會更新名單。每次使用者點擊前重讀最新名單，只套入明確選擇；尚未寫入的本頁變更亦會保留。localStorage 沒有跨分頁原子交易，完全同時的寫入仍可能由最後寫入者覆蓋；不宣稱解決所有併發情境。
 
-## 驗證紀錄
+## 本機驗證紀錄
 
 本機驗證使用 Node 24.21.0、Chrome 154.0.8037.92，以及以公司 base 建置的純靜態 HTTP server。發布狀態與本機驗證分開記錄。
 
@@ -53,4 +53,21 @@ Storage key 為 `invoice-helper:tool-favorites:v1`，內容僅 `{"version":1,"fa
 
 實測後 Jev 第二意見：導覽、收藏、回歸三項為 supported，信心 0.62／0.86／0.25。導覽與回歸低於其未校準提醒門檻，沒有提供具體反例；主流程重新對照測試、31 頁檢查、草稿／舊連結／輸出實測及獨立審查結果，完成宣告限於上述本機驗收，不把 Jev 判斷當成另一輪實測。
 
-證據：[桌面首頁](design/discovery-home-desktop.png)、[手機首頁](design/discovery-home-mobile.png)。原始操作腳本、截圖與範例輸出保留於本機 `.wrangler/discovery-qa/`。瀏覽器模擬不代表實體手機、其他瀏覽器引擎或實體印表機驗證；本輪未部署，未驗證正式站或搜尋引擎收錄。
+證據：[桌面首頁](design/discovery-home-desktop.png)、[手機首頁](design/discovery-home-mobile.png)。原始操作腳本、截圖與範例輸出保留於本機 `.wrangler/discovery-qa/`。瀏覽器模擬不代表實體手機、其他瀏覽器引擎或實體印表機驗證；搜尋引擎收錄尚未驗證。正式站結果另列於下。
+
+## 正式站發布與驗證
+
+2026-10-01 00:05:31（Asia/Taipei）由 `09a3150` 發布，與前述本機版本的 37 個公開產物逐檔一致。從提交來源隔離重建的 173 項測試、lint、格式、TypeScript、公司建置及帶 `/invoice/` 參數的 SEO 檢查通過；分支遠端 SHA 回讀一致，沒有觸發遠端 CI。正式 HTTPS／SSH 的獨立核對時間、一次 TLS 逾時的定點重試與保留前版詳見[部署紀錄](DEPLOYMENT.md)。
+
+Chrome **154.0.8037.92** 以正式 HTTPS 實測：
+
+- 31 頁啟用 JavaScript 均 200，320px 無水平溢出，各有一個可見主標題，title／Open Graph／canonical 正確且 JSON-LD 可解析；沒有 JavaScript runtime error 或應用程式資源 HTTP 錯誤。31 頁停用 JavaScript 亦全部 200，可展開說明與問答，首頁→任務→報價的連結有效；未知路徑為 404。
+- 初訪及逐頁瀏覽不寫入收藏。首頁只有五個任務入口，空收藏不展開二十工具；完整目錄有二十工具。搜尋「催款」跨分類、「統一編號」跨收藏篩選、「報帳 ＰＤＦ」多詞正規化，以及無結果清除均通過。
+- 真實點擊加入八個收藏，首頁先列六個、展開八個，重新整理後保留。兩分頁取消／加入收藏相互同步。讀回的 JSON 只有 version 與工具 ID，沒有測試工作室或文件內容。
+- 報價範例修改開立方後，任務入口、目錄、分類、上一頁／下一頁與跨分頁收藏更新均保留草稿。PNG 真實下載並目視完整，金額 11,000＋550＝11,550。正式站 Chrome 輸出一頁 A4 PDF，文字讀回開立方、品項與金額正確，不含導覽、星號與 FAQ。
+- 隔離 context 的儲存拒絕、配額不足及壞 JSON 情境均有明確提示、本頁選擇保留，壞原文沒有被覆寫；Space 可操作星號，提示不混入列印。舊 `#tools` 搭配 query 重整仍在首頁，舊發票 hash 升級路徑後預填品名在重整後保留。
+- 桌面 1440px 與手機 320px 首頁已目視，報價 PNG 已目視。首次逐頁檢查與收藏操作共用 context 造成空收藏斷言不符，改用獨立乾淨 context 完整重跑 31 頁後通過；沒有修改產品程式以通過檢查。
+
+證據：[正式站首頁](design/discovery-production-home.png)。操作腳本、完整結果、其他截圖與輸出保留於本機 `.wrangler/discovery-release/`。這些結果不代表其他瀏覽器引擎、實體裝置／印表機、搜尋引擎收錄、排名或 AI 引用已驗證；Search Console 尚未提交。
+
+正式站實測後 Jev 第二意見：來源、部署、瀏覽器三項皆為 supported，信心為 0.86／0.89／0.92，沒有 attention 項目。此為需求、宣告與實際證據摘要的比對，不代表 Jev 自行操作正式站，也不擴張上述驗證範圍。

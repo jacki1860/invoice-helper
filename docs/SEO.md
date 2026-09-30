@@ -1,10 +1,10 @@
 # SEO 與 AI 搜尋
 
-前一版 SEO 改善已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 部署，公開 HTTPS 31 檔與發布 manifest 全部一致。本輪本機導覽新增完整目錄與五個任務頁，共 31 HTML／37 公開檔案，尚未發布；本輪證據另見[工具探索說明](TOOL_DISCOVERY.md)。尚未提交 Search Console 或驗證搜尋收錄。正式版本以 [DEPLOYMENT.md](DEPLOYMENT.md) 的發布紀錄為準。
+目前正式站為 `09a3150`（2026-10-01 00:05:31 Asia/Taipei），包含完整目錄、五個任務頁及既有工具／分類，共 31 HTML／37 公開檔案。當前功能與驗證見[工具探索說明](TOOL_DISCOVERY.md)，前版 25 頁 SEO 證據保留於下方歷史段落。尚未提交 Search Console 或驗證搜尋收錄。發布紀錄見 [DEPLOYMENT.md](DEPLOYMENT.md)。
 
 ## 網址與內容
 
-- 首頁 `/invoice/`、完整目錄 `/invoice/directory/`、5 個 `/invoice/task/<任務>/`、4 個 `/invoice/category/<分類>/`、20 個 `/invoice/<工具>/`，本機共 31 個實際 HTML 檔。舊工具與分類網址沿用。
+- 首頁 `/invoice/`、完整目錄 `/invoice/directory/`、5 個 `/invoice/task/<任務>/`、4 個 `/invoice/category/<分類>/`、20 個 `/invoice/<工具>/`，共 31 個實際 HTML 檔。舊工具與分類網址沿用。
 - 建置時輸出每頁的用途、操作步驟、常見問題及可跟隨的連結；停用 JavaScript 仍可閱讀。互動計算與文件編輯需要 JavaScript。
 - React 接手後保留同一份說明。總覽頁以原生 details 收合說明與問答，停用 JavaScript 仍可展開；工具頁保持展開。首頁與 ItemList 改列任務入口及完整目錄，各頁清單與結構化資料一致。站內使用 History API 切換，保持已掛載工具的表單與交接資料；直接重整仍依原本的工具保存規則處理。
 - 相容舊 hash 與發票預填 query。合法工具 hash 轉為對應路徑，保留 query；帶 query 的 `#tools` 保留明確的總覽選擇。使用新的站內連結時不攜帶預填 query，避免把交易資料傳到其他工具網址。
@@ -26,7 +26,7 @@ npm run test:seo-build -- /invoice/
 
 `test:seo-build` 直接檢查產出的 HTML，核對 sitemap 全部網址、獨立標題、canonical、可見問答、JSON-LD，以及資源和連結確實存在。CI 在一般 build 後執行此檢查。
 
-發布時仍只使用 `dist/client/` 公開產物，但檔案數已超過舊版的五檔，封存及部署清單必須包含所有工具／分類 HTML、`sitemap.xml`、favicon 與資源。不要沿用舊的固定五檔白名單；也不要上傳 Worker、原始碼或本機瀏覽器測試資料。
+發布時仍只使用 `dist/client/` 公開產物，但檔案數已超過舊版的五檔，封存及部署清單必須包含首頁、完整目錄、所有任務／工具／分類 HTML、`sitemap.xml`、favicon 與資源。不要沿用舊的固定五檔白名單；也不要上傳 Worker、原始碼或本機瀏覽器測試資料。
 
 使用實際目錄的 `index.html`，不需要新 SPA rewrite。發布後須在正式主機驗證各工具直接開啟、重新整理、舊 hash、未知路徑 404、CSS／JS 及 sitemap，再確認目前 live 版本。
 
@@ -59,6 +59,8 @@ npm run test:seo-build -- /invoice/
 已準備 31 個公開檔案的本機發布封存與 SHA-256 manifest（25 HTML、sitemap、favicon、紙紋及 3 個資源），逐檔核對封存內容與 `dist/client/` 一致；此為發布前證據；正式站已使用從提交版本重建且逐檔相同的封存切換。後續來源或建置有變更時必須重新封存與核對。
 
 ## 正式站驗證結果
+
+本節保留 2026-09-30 的前版證據；2026-10-01 新版 31 頁正式站驗證見[工具探索說明](TOOL_DISCOVERY.md#正式站發布與驗證)。
 
 2026-09-30 23:23:04（Asia/Taipei）發布 `27c019b4bacf35b957def577be4919aff8ce79e7`。從 Git archive 的隔離來源執行 Node 24.21.0 `npm ci`、149 項測試、lint、格式、TypeScript、公司建置及 SEO 產物檢查，全部通過；31 個公開檔案與前述本機驗證產物逐位元組相同。
 

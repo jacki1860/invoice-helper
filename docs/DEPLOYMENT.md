@@ -12,13 +12,30 @@
 6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
 7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
-目前版本使用 25 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
+目前版本使用 31 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
 
-## 待發布：任務導覽與收藏
+## 2026-10-01 任務導覽與收藏版
 
-本機新版增加完整目錄與五個任務集合頁，共 31 HTML／37 公開檔案。原先已發布的 31 檔白名單不適用；後續發布須從確定的提交重新建置，重建封存與 manifest，涵蓋新增的 `directory/` 與 `task/` 目錄。核對深層頁面、未知路徑、全站搜尋、收藏及原工具草稿保留，再更新正式站證據。這一版尚未部署，驗證見[工具探索說明](TOOL_DISCOVERY.md)。
+- 發布時間：**00:05:31 Asia/Taipei**（2026-09-30 16:05:31 UTC）。
+- 部署來源：`09a3150235e8d8514b39d50d3b2cfae677cef1ca`，已推送 `codex/admin-tools-foundation` 並回讀遠端 SHA 一致；main 未更動。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/09a3150235e8d8514b39d50d3b2cfae677cef1ca`。
+- 前版保留：`/var/www/invoice-helper/releases/27c019b4bacf35b957def577be4919aff8ce79e7`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T160531Z-09a3150235e8-732324`。
+- Manifest：`/var/www/invoice-helper/manifests/09a3150235e8d8514b39d50d3b2cfae677cef1ca.sha256`。
 
-## 2026-09-30 SEO／AEO 版
+首頁改為五個任務入口、全站搜尋及常用收藏，完整目錄另有頁面。從已提交 Git archive 隔離建置，Node 24.21.0 的 npm ci、173 項測試、lint、格式、TypeScript、公司建置及 SEO 產物檢查通過。SEO 檢查首次漏帶公司 base 參數，修正命令為 `npm run test:seo-build -- /invoice/` 後通過，未改動程式。37 個公開檔案與先前實測本機產物逐檔一致，包含 31 HTML、sitemap、favicon、紙紋及 3 個資源；沒有 Worker 或原始碼。
+
+發布腳本擴充為精確 37 檔及 33 個子目錄，仍能核對前版 31 檔，保留鎖、預期前版檢查與同目錄原子 symlink 切換。獨立撰寫與主代理審查完成，33 項輸入檢查、本機及 origin bash 語法檢查通過；啟用時由 GNU 工具驗證 tar 型態、清單、目錄與新舊 manifest。主機切換及來源位元組核對成功，未修改或重新啟動 Nginx。
+
+獨立公開 HTTPS／SSH 檢查於 **00:06:17–00:07:52 Asia/Taipei** 完成：37／37 檔正常 TLS、HTTP 200、SHA-256 一致，31 HTML 乾淨目錄網址無轉址，metadata／JSON-LD／可展開清單與 sitemap 31 URL 正確；未知路徑 404，公司首頁 200。分類頁一次 TLS 連線逾時，保留首輪紀錄並只重試該網址後通過。主機新版 37 檔與前版 31 檔 manifest 全數正確，Nginx active、兩份設定雜湊不變。
+
+正式站 Chrome 154 的 31 頁啟用／停用 JavaScript、320px 排版、全站搜尋、收藏保存與跨分頁同步、草稿及舊連結、真實 PNG／PDF 輸出另見[工具探索驗證](TOOL_DISCOVERY.md#正式站發布與驗證)。此分支沒有遠端 CI run；工作流程僅監聽 main push 與 pull request，本機檢查不稱為遠端 CI。
+
+未修改公司根目錄 robots 或 Cloudflare 設定；Search Console 提交與搜尋收錄尚未驗證。npm ci 保留 5 項既有開發依賴警示（3 moderate、2 high），npm audit --omit=dev 為 0；入口 547.33 kB／gzip 153.12 kB 保留既有分塊提示。
+
+需要回復時，先確認 live 仍指向本版，核對上述備份的 OLD-SHA256SUMS，再以同目錄 symlink 原子切回前版並重做公開檢查。本次保留並驗證前版，沒有演練故障回復。後續文件提交只記錄發布結果，不改變正式站產物。
+
+## 歷史：2026-09-30 SEO／AEO 版
 
 - 發布時間：**23:23:04 Asia/Taipei**（15:23:04 UTC）。
 - 部署來源：`27c019b4bacf35b957def577be4919aff8ce79e7`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；main 未更動。
