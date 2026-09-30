@@ -2,9 +2,11 @@
 
 公開免登入的行政工具，服務自由工作者與小公司。以暖白紙張、墨黑文字與橘色操作組成工作桌，打開即可製作文件、試算或查詢。
 
-「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。十工具公開版已於 2026-09-30 18:45:57（Asia/Taipei）部署至[公司網站](https://www.ctrls.com.tw/invoice/)，部署來源為 `68b1026`。完整測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)，發布與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)。
+「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。[公司網站](https://www.ctrls.com.tw/invoice/)提供十個公開工具及共用聯絡頁尾。最新發布狀態與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)，各版本的測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)。
 
 頁首右上角的 [Buy me a coffee](https://www.buymeacoffee.com/jacki1860) 支持連結使用網站橘色與白字，手機版與品牌同列。
+
+總覽、四類頁面與十個工具的共用頁尾提供「聯絡開發者」及「許願新功能」，以 `mailto:` 連至 `jacki1860@gmail.com`，分別預填不同主旨與內容提示。本站不直接寄出郵件；實際寄送由使用者在郵件應用程式確認。頁尾不列入文件列印。
 
 ## 十個公開工具
 

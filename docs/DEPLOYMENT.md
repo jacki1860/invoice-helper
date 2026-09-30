@@ -14,7 +14,26 @@
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
-## 2026-09-30 十工具公開版
+## 歷史：2026-09-30 共用聯絡頁尾
+
+- 發布時間：**19:17:18 Asia/Taipei**（11:17:18 UTC）。
+- 部署來源：`a8350fbb42a4af7e1298de07d9d30ef114ef4a93`。
+- 當次 Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/a8350fbb42a4af7e1298de07d9d30ef114ef4a93`。
+- 前版保留於 `/var/www/invoice-helper/releases/68b1026a31367754d36446a647edaa14c39ae10d`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T111718Z-a8350fbb42a4-722373`。
+
+本版在總覽、四分類與十工具共 15 頁加入共用頁尾。「聯絡開發者」與「許願新功能」均使用 `mailto:jacki1860@gmail.com`，預填不同主旨及內容提示。部署前 `npm run lint`、`npm run format:check`、64 項測試及 `npm run build:company` 通過。
+
+| 檢查       | 已驗證結果                                                                         |
+| ---------- | ---------------------------------------------------------------------------------- |
+| 公開 HTTPS | 五個公開檔案均回應 200，SHA-256 與本機產物一致。                                   |
+| 伺服器     | 當次 Live 指向上述 release，Nginx 為 active，設定檔 SHA-256 不變。                 |
+| 頁尾與連結 | 15 頁可找到兩個入口；瀏覽器讀回並解碼 mailto URI，收件者、不同主旨及內容提示正確。 |
+| 排版與列印 | 桌面及 320px viewport 無水平溢出；列印模式的頁尾 CSS 為 `display: none`。          |
+
+證據：[正式站聯絡頁尾](design/contact-production.png)。320px 為瀏覽器尺寸模擬；本次未打開郵件客戶端、未寄出郵件，也未進行實體手機驗證。這份紀錄保留本次已完成部署的狀態，後續發布另列版本，不以此推定目前 Live。
+
+## 歷史：2026-09-30 十工具公開版
 
 - 發布時間：**18:45:57 Asia/Taipei**（10:45:57 UTC）。
 - 部署來源：`68b1026a31367754d36446a647edaa14c39ae10d`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；`main` 未更動。
