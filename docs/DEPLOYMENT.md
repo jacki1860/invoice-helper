@@ -14,7 +14,43 @@
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
-## 2026-09-30 文件 Logo
+## 2026-09-30 十五工具版
+
+- 發布時間：**20:18:01 Asia/Taipei**（12:18:01 UTC）。
+- 部署來源：`89ff50de48efa486243e8f79bd335770b881f49f`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；`main` 未更動。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/89ff50de48efa486243e8f79bd335770b881f49f`。
+- 前版保留：`/var/www/invoice-helper/releases/b6d17eb24f67214ba43469cdb2277351567d3730`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T121800Z-89ff50de48ef-725028`。
+- 新 manifest：`/var/www/invoice-helper/manifests/89ff50de48efa486243e8f79bd335770b881f49f.sha256`。
+
+新增收據、採購單、送貨／簽收單、收款進度與工作天／交期。部署前 Node 24 的 `npm ci`、101 項測試、lint、格式與公司建置通過。程式、文案及版面依本站既有設計獨立實作；官方來源與限制見[行政工具來源](research/admin-tools-sources.md)。
+
+封存僅含五個允許的普通檔案，manifest、逐檔及 tar SHA-256 已核對。部署腳本經獨立唯讀審查，具部署鎖、舊 live 比對、同目錄原子 symlink 替換與驗證失敗時的條件回復；切換前後 origin 位元組比對均通過。沒有改 Nginx、重新啟動服務或部署 Node／Worker 伺服器。
+
+### 本版正式站驗證
+
+- 獨立公開 HTTPS 核對：以下五檔全部 **200**、正常 TLS，SHA-256 與本機封存一致：
+  - `index.html`
+  - `assets/index-BVRi9k5x.js`
+  - `assets/index-B-mBZuLx.css`
+  - `assets/html2canvas-Bv4z6KOT.js`
+  - `paper-grain.png`
+- SSH：live 正確，遠端新檔 5/5 hash 通過；前版 b6d17eb 的五檔及舊 manifest 仍完整。Nginx `active`，default／common.conf 的 hash 與發布前一致。
+- 公司首頁及 `/invoice/` 為 200；舊 `client/index.html`、`invoice_generator/index.js` 仍為 404。
+- Chrome 154：總覽十五工具；三種新文件的範例、複製讀回及 PNG 真實下載通過，逐張檢視完整；送貨 PNG 另在 390px 下載。
+- 收款 12,000 → 實收 3,000 → 餘額 9,000，主動啟用保存後重新整理還原，單筆收據只帶入 3,000。工作天全年 245、跨年交期 2027-01-04。原公司查詢／帶入發票、2027 ICS 下載 24 個事件亦通過；測試分頁沒有 JavaScript runtime error。
+
+證據：[十五工具正式站](design/admin-production-home.png)。輸出尺寸、本機儲存衝突及錯誤狀態的完整測試見[驗證紀錄](VERIFICATION.md)。實體手機、多瀏覽器引擎、實體印表機與美術接受度未涵蓋。本輪分支未觸發遠端 CI：工作流程僅監聽 `main` push 及 pull request，`gh run list` 回讀此分支為空；不將本機檢查稱作遠端 CI。
+
+### 依賴稽核與回復
+
+`npm ci` 顯示五項既有開發依賴警示（3 moderate、2 high），涉及 PostCSS 的 nanoid、Cloudflare 開發工具鏈的 undici 及相依包；`npm explain` 確認為 dev 相依，`npm audit --omit=dev` 為 0。本輪沒有改動依賴版本；正式站只使用上述靜態產物，不包含 `node_modules` 或 Worker。這不表示整個開發工具鏈沒有弱點，依賴更新需另做版本與建置驗證。
+
+需回復時，先確認 live 仍指向本版，並在前版目錄以本次紀錄的 `OLD-SHA256SUMS` 校驗；建立同目錄臨時 symlink 指向前版，以 `mv -Tf` 取代 live，再做公開 HTTPS 與工具驗證。本次保留並校驗了前版，未演練故障回復。
+
+實際驗證後 Jev 四項皆選 `supported`：Git／部署／正式站操作／依賴界線信心為 **0.99／0.99／0.84／0.65**。依賴項低於未校準提醒門檻，沒有附具體反例；主流程已對照 npm audit、npm explain 與僅五個靜態檔案的封存清單，保留五項 dev 警示，不宣稱整體稽核零弱點。Jev 是證據摘要第二意見，沒有自行操作網站或主機。
+
+## 歷史：2026-09-30 文件 Logo
 
 - 發布時間：**19:51:52 Asia/Taipei**（11:51:52 UTC）。
 - 部署來源：`b6d17eb24f67214ba43469cdb2277351567d3730`，已推送至 `codex/admin-tools-foundation`。
