@@ -86,11 +86,11 @@ npx oxfmt src/data/insurance.ts src/data/laws.ts src/data/calendar.ts
 
 一般文件的本機草稿與範本、帳號及雲端服務屬後續評估，詳見[產品計畫](docs/PRODUCT_PLAN.md)。
 
-## SEO／AEO（本機待發布）
+## SEO／AEO
 
 首頁、四分類與二十工具現在會建置為 25 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可讀取；工具間切換保留既有資料，舊 hash 連結仍可用。
 
-本次尚未部署或提交搜尋引擎。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
+已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 發布至正式站；尚未提交 Search Console 或驗證搜尋收錄。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
 
 ## 本機開發
 

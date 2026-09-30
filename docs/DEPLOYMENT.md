@@ -12,15 +12,28 @@
 6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
 7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
-目前已發布版本採 hash；本機 SEO 待發布版會產生 25 個實際 HTML 頁面，站內使用 History API 並相容舊 hash，兩者都不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
+目前版本使用 25 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
 
-## 待發布：SEO／AEO
+## 2026-09-30 SEO／AEO 版
 
-本機產物新增工具／分類子目錄、`sitemap.xml` 與 favicon。發布封存必須遞迴包含全部 `dist/client/` 公開頁面及資源，不能沿用歷史版本的固定五檔清單。先執行 `npm run build:company`、`npm run test:seo-build -- /invoice/`；上線後逐頁檢查 200、深層網址重整、未知路徑 404、canonical 及 sitemap。
+- 發布時間：**23:23:04 Asia/Taipei**（15:23:04 UTC）。
+- 部署來源：`27c019b4bacf35b957def577be4919aff8ce79e7`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；main 未更動。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/27c019b4bacf35b957def577be4919aff8ce79e7`。
+- 前版保留：`/var/www/invoice-helper/releases/b94d7b36170bf48ae0ef796323091103c53ab2d1`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T152304Z-27c019b4bacf-730719`。
+- Manifest：`/var/www/invoice-helper/manifests/27c019b4bacf35b957def577be4919aff8ce79e7.sha256`。
 
-本節尚無正式站發布紀錄，詳細內容及搜尋引擎端後續工作見 [SEO 說明](SEO.md)。
+從已提交 Git archive 隔離建置，Node 24.21.0 的 npm ci、149 項測試、lint、格式、TypeScript、公司建置與 SEO 產物檢查通過，31 個公開檔案與已測本機產物逐檔一致。封存包含 25 HTML、sitemap、favicon、紙紋及 3 個資源，不包含 Worker 或原始碼。
 
-## 2026-09-30 二十工具版
+部署腳本的精確白名單由五檔擴充為 31 檔，保留部署鎖、tar／manifest／型態與目錄核對、預期前版檢查及同目錄原子 symlink 切換。腳本經獨立撰寫與主代理審查，27 項本機輸入檢查與 origin bash 語法檢查通過；啟用時由 GNU 工具實際驗證。切換後錯誤只在 live 仍指向本版時回復前版；本次未實際演練 rollback。
+
+獨立公開 HTTPS／SSH 驗證於 **23:23:45–23:23:55 Asia/Taipei** 完成：正常 TLS 的 31／31 檔 HTTP 200、SHA-256 一致；25 HTML 以乾淨目錄 URL 取回，無轉址，title／description／canonical／JSON-LD 與 sitemap 25 URL 正確。未知路徑 404，公司首頁 200；新31檔與舊5檔 manifest 均通過，Nginx active、default／common.conf 雜湊不變。
+
+沒有修改公司根目錄 robots 或 Cloudflare 設定。尚未提交 Search Console，HTTP 檢查不代表已收錄。npm ci 仍有 5 項既有開發依賴警示（3 moderate、2 high），npm audit --omit=dev 為 0；入口 534.68 kB 保留大小提示。詳細功能與驗證見 [SEO 說明](SEO.md)。
+
+回復時先確認 live 仍指向本版，核對本次備份的 OLD-SHA256SUMS，再以同目錄 symlink 原子切回上述前版並重做公開驗證。後續文件提交只記錄發布結果，不改變已發布產物。
+
+## 歷史：2026-09-30 二十工具版
 
 - 發布時間：**20:58:32 Asia/Taipei**（12:58:32 UTC）。
 - 部署來源：`b94d7b36170bf48ae0ef796323091103c53ab2d1`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；main 未更動。後續文件提交只記錄發布結果，不改變正式站產物。
