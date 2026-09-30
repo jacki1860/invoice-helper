@@ -57,3 +57,9 @@
 新增收據、採購單、送貨／簽收單、收款進度與工作天／交期。本輪以通用商務需求自行實作程式、文案及版面，延用本站既有計算核心與紙感設計；未複製競品程式碼、文案、範本或視覺素材。收據法律適用說明及工作天資料使用已核對的官方來源，詳見[來源與適用範圍](research/admin-tools-sources.md)。
 
 本輪經使用者授權後，以 `89ff50de48efa486243e8f79bd335770b881f49f` 提交並推送 `codex/admin-tools-foundation`，於 2026-09-30 20:18:01（Asia/Taipei）發布至公司 `/invoice/`；`main` 未更動。正式站與回復路徑見[部署紀錄](DEPLOYMENT.md)，本機及正式站證據見[驗證紀錄](VERIFICATION.md)。原始 MIT 授權及來源記錄繼續保留。
+
+## 2026-09-30 第二批五工具與二十工具版發布
+
+新增費用報支、成本與利潤、驗收／結案、多家報價比較及器材借還；沿用本站紙感元件並獨立實作計算、文件、備份與跨工具確認流程。參考與產品規則見[報支／借還](research/expense-equipment-sources.md)、[驗收](research/acceptance-sources.md)、[成本／比價](research/profit-comparison-sources.md)，未複製競品程式碼、文案或素材。
+
+使用者授權 commit、push、部署後，以 `b94d7b36170bf48ae0ef796323091103c53ab2d1` 推送 `codex/admin-tools-foundation`，於 2026-09-30 20:58:32（Asia/Taipei）發布至原公司網址；main 未更動。144 項測試及正式站五工具、輸出、備份與交接流程通過，前版十五工具 release 保留。發布紀錄與驗證界線見[部署紀錄](DEPLOYMENT.md)和[驗證紀錄](VERIFICATION.md)。原始 MIT 授權及來源歷史繼續保留。

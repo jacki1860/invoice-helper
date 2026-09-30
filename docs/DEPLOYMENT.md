@@ -14,7 +14,40 @@
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
-## 2026-09-30 十五工具版
+## 2026-09-30 二十工具版
+
+- 發布時間：**20:58:32 Asia/Taipei**（12:58:32 UTC）。
+- 部署來源：`b94d7b36170bf48ae0ef796323091103c53ab2d1`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；main 未更動。後續文件提交只記錄發布結果，不改變正式站產物。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/b94d7b36170bf48ae0ef796323091103c53ab2d1`。
+- 前版保留：`/var/www/invoice-helper/releases/89ff50de48efa486243e8f79bd335770b881f49f`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T125831Z-b94d7b36170b-726461`。
+- 新 manifest：`/var/www/invoice-helper/manifests/b94d7b36170bf48ae0ef796323091103c53ab2d1.sha256`。
+
+新增費用報支、成本與利潤、驗收／結案、多家報價比較及器材借還，正式站共二十工具。從已提交 Git archive 的獨立目錄執行 Node 24.21.0 的 npm ci、144 項測試、lint、格式、TypeScript 與公司建置，全部通過；五個公開產物與原已測本機產物逐檔雜湊相同。
+
+部署沿用已獨立審查的五檔封存、部署鎖、舊 live 比對、同目錄原子 symlink 替換與失敗條件回復。新舊 manifest、tar、解壓檔案及 origin 位元組核對通過；沒有更改 Nginx、重啟服務或發布 Node／Worker 伺服器。
+
+### 本版正式站驗證
+
+獨立公開 HTTPS／SSH 核對於 **21:00:15–21:00:49 Asia/Taipei** 完成：
+
+- 下列五檔均正常 TLS、HTTP **200**，SHA-256 與本機封存完全一致：`index.html`、`assets/index-DYMNFVR-.js`、`assets/index-B-eMv6A5.css`、`assets/html2canvas-BGKcc9_a.js`、`paper-grain.png`。
+- Live 指向本版；前版 89ff50d 的五檔符合本次 `OLD-SHA256SUMS`。Nginx active，default／common.conf 雜湊與切換前一致。第一次以一般 SSH 使用者讀備份紀錄遇權限不足，改用 sudo -n 重新執行相同唯讀檢查後通過。
+- 公司首頁 200；舊 `client/index.html`、`invoice_generator/index.js` 仍為 404。
+- Chrome 154 實測正式站二十工具入口，五個新工具範例、剪貼簿、PNG 真實下載及列印 PDF 通過；桌面 1440px、手機 390px／320px 無水平溢出，五份 PDF 文字可讀回。首頁及比價 PNG 再次目視，尺寸與頁數詳見[驗證紀錄](VERIFICATION.md)。
+- 正式站跨工具確認、取消取代、驗收／來源價格檢查、成本隔離及採購總額守恆通過；報支與借還備份下載、匯入、錯誤結構拒絕和讀檔途中編輯保護亦通過。測試分頁沒有 JavaScript runtime error 或應用程式資源 HTTP 錯誤，favicon 按既有口徑排除。
+
+證據：[二十工具正式站](design/twenty-production-home.png)。此分支沒有遠端 CI 執行紀錄；工作流程只監聽 main push 及 pull request。本機檢查不稱為遠端 CI。實體手機、多瀏覽器引擎與實體印表機未涵蓋。
+
+### 依賴、回復與第二意見
+
+npm ci 仍有五項既有開發依賴警示（3 moderate、2 high），npm audit --omit=dev 為 0；未更改依賴或 lockfile，只發布五個靜態檔。Vite 的入口約 505.36 kB／gzip 138.01 kB，保留非阻擋大小提示。
+
+需回復時，先確認 live 仍指向本版，於前版目錄依本次 `OLD-SHA256SUMS` 核對，再建立同目錄臨時 symlink 指向 89ff50d，以 `mv -Tf` 替換 live，最後做公開 HTTPS 與工具驗證。前版已保留並校驗，未演練故障回復。
+
+實測後 Jev 三項皆選 supported：Git／公開發布／正式站操作信心為 **0.93／0.86／0.51**。操作項觸發未校準注意門檻，未提供具體反例；主流程已核對實際正式站腳本結果、下載檔及 PDF 讀回，不擴大為所有情境通過，也不將 Jev 摘要當成獨立實測。
+
+## 歷史：2026-09-30 十五工具版
 
 - 發布時間：**20:18:01 Asia/Taipei**（12:18:01 UTC）。
 - 部署來源：`89ff50de48efa486243e8f79bd335770b881f49f`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；`main` 未更動。
