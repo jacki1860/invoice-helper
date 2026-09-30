@@ -1,0 +1,161 @@
+.business-calculator-workspace .document-editor,
+.business-calculator-paper,
+.business-supplier-editor {
+  min-width: 0;
+}
+.business-cost-row,
+.business-supplier-editor {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  margin: 0 0 22px;
+  padding: 0 0 20px;
+}
+.business-cost-row legend,
+.business-supplier-editor legend {
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.business-cost-fields {
+  display: grid;
+  grid-template-columns: minmax(82px, 0.7fr) minmax(0, 1.5fr) minmax(100px, 1fr);
+  gap: 12px;
+}
+.business-row-end {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.business-row-end .field-error {
+  margin: 0;
+}
+.business-next-step {
+  border-top: 1px solid var(--rule);
+  margin-top: 24px;
+  padding-top: 22px;
+}
+.business-next-step h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.business-next-step p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.business-next-step .button,
+.business-supplier-choices .button {
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.business-calculator-paper header p,
+.business-supplier-result h3 {
+  overflow-wrap: anywhere;
+}
+.business-cost-table {
+  margin-top: 24px;
+}
+.business-offer-table {
+  margin-top: 16px;
+}
+.business-offer-table th:first-child,
+.business-offer-table th:nth-child(2) {
+  width: 50%;
+}
+.business-next-step .business-quote-rounding {
+  color: var(--ink);
+}
+.business-cost-table th:first-child {
+  width: 48%;
+}
+.business-cost-table th:nth-child(2) {
+  width: 18%;
+}
+.business-calculation-totals {
+  margin: 20px 0;
+}
+.business-calculation-totals > div,
+.business-supplier-terms > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 14px;
+  padding: 7px 0;
+}
+.business-calculation-totals dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.business-shared-item {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(65px, 0.7fr) 36px;
+  gap: 12px;
+  align-items: center;
+}
+.business-shared-item .icon-button {
+  margin-top: 9px;
+}
+.business-supplier-choices {
+  display: grid;
+  gap: 12px;
+}
+.business-shared-summary {
+  padding: 20px 0 20px 20px;
+  border-bottom: 1px solid #d9d2c6;
+  overflow-wrap: anywhere;
+}
+.business-supplier-result {
+  padding: 24px 0 18px;
+  border-bottom: 1px solid #d9d2c6;
+}
+.business-supplier-result h3 {
+  font-family: var(--serif);
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+.business-supplier-tax,
+.business-supplier-terms dt {
+  color: #7a7367;
+}
+.business-supplier-terms > div {
+  grid-template-columns: 70px minmax(0, 1fr);
+  padding: 4px 0;
+}
+.business-supplier-terms dd {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.business-invalid-result {
+  margin: 18px 0;
+  color: #9b3b28;
+}
+@media (max-width: 600px) {
+  .business-cost-fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .business-cost-fields .tool-field:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .business-shared-item {
+    grid-template-columns: minmax(0, 1fr) 76px 30px;
+    gap: 8px;
+  }
+  .business-calculation-totals > div {
+    gap: 8px;
+    font-size: 11px;
+  }
+  .business-calculation-totals .business-grand-total {
+    font-size: 14px;
+  }
+}
+@media print {
+  .business-calculation-totals,
+  .business-supplier-terms {
+    break-inside: avoid;
+  }
+}

@@ -13,6 +13,17 @@ import {
   PurchaseOrderTool,
   DeliveryNoteTool,
 } from './components/tools/TradeDocuments';
+import { ExpenseClaimTool } from './components/tools/ExpenseClaimTool';
+import { EquipmentLoanTool } from './components/tools/EquipmentLoanTool';
+import { AcceptanceTool } from './components/tools/AcceptanceTool';
+import { ProfitCalculator } from './components/tools/ProfitCalculator';
+import { SupplierComparison } from './components/tools/SupplierComparison';
+import type {
+  AcceptanceSeed,
+  QuoteSeed,
+  PurchaseSeed,
+  CostSeed,
+} from './features/tools/workflowHandoff';
 import { Receivables } from './components/tools/Receivables';
 import { WorkdayCalculator } from './components/tools/WorkdayCalculator';
 import type { ReceiptSeed, ReceivableSeed, ToolHandoff } from './features/tools/handoff';
@@ -40,6 +51,10 @@ export default function App() {
   const [linkNotice, setLinkNotice] = useState(initial.notice);
   const [receiptHandoff, setReceiptHandoff] = useState<ToolHandoff<ReceiptSeed>>();
   const [receivableHandoff, setReceivableHandoff] = useState<ToolHandoff<ReceivableSeed>>();
+  const [acceptanceHandoff, setAcceptanceHandoff] = useState<ToolHandoff<AcceptanceSeed>>();
+  const [quoteHandoff, setQuoteHandoff] = useState<ToolHandoff<QuoteSeed>>();
+  const [purchaseHandoff, setPurchaseHandoff] = useState<ToolHandoff<PurchaseSeed>>();
+  const [costHandoff, setCostHandoff] = useState<ToolHandoff<CostSeed>>();
   const category = categoryForPage(tool);
   const activeTool = tools.find((entry) => entry.id === tool);
 
@@ -69,6 +84,27 @@ export default function App() {
     setReceivableHandoff({ id: crypto.randomUUID(), data });
     window.location.hash = 'receivables';
     setTool('receivables');
+  };
+
+  const createAcceptance = (data: AcceptanceSeed) => {
+    setAcceptanceHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'acceptance';
+    setTool('acceptance');
+  };
+  const createQuote = (data: QuoteSeed) => {
+    setQuoteHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'quote';
+    setTool('quote');
+  };
+  const createPurchase = (data: PurchaseSeed) => {
+    setPurchaseHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'purchase';
+    setTool('purchase');
+  };
+  const createCosts = (data: CostSeed) => {
+    setCostHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'profit';
+    setTool('profit');
   };
 
   return (
@@ -145,16 +181,36 @@ export default function App() {
           <CompanyLookup onUseCompany={useCompany} />
         </section>
         <section hidden={tool !== 'quote'} aria-label="報價與請款單">
-          <DocumentBuilder onCreateReceipt={createReceipt} onCreateReceivable={createReceivable} />
+          <DocumentBuilder
+            incoming={quoteHandoff}
+            onCreateAcceptance={createAcceptance}
+            onCreateReceipt={createReceipt}
+            onCreateReceivable={createReceivable}
+          />
         </section>
         <section hidden={tool !== 'receipt'} aria-label="收據產生器">
           <ReceiptTool incoming={receiptHandoff} />
         </section>
         <section hidden={tool !== 'purchase'} aria-label="採購單">
-          <PurchaseOrderTool />
+          <PurchaseOrderTool incoming={purchaseHandoff} />
         </section>
         <section hidden={tool !== 'delivery'} aria-label="送貨與簽收單">
-          <DeliveryNoteTool />
+          <DeliveryNoteTool onCreateAcceptance={createAcceptance} />
+        </section>
+        <section hidden={tool !== 'expense'} aria-label="費用報支單">
+          <ExpenseClaimTool />
+        </section>
+        <section hidden={tool !== 'profit'} aria-label="成本與利潤試算">
+          <ProfitCalculator incoming={costHandoff} onCreateQuote={createQuote} />
+        </section>
+        <section hidden={tool !== 'acceptance'} aria-label="驗收與結案確認">
+          <AcceptanceTool incoming={acceptanceHandoff} onCreatePayment={createQuote} />
+        </section>
+        <section hidden={tool !== 'compare'} aria-label="多家報價比較">
+          <SupplierComparison onCreatePurchase={createPurchase} />
+        </section>
+        <section hidden={tool !== 'equipment'} aria-label="器材借還單">
+          <EquipmentLoanTool />
         </section>
         <section hidden={tool !== 'receivables'} aria-label="收款進度">
           <Receivables incoming={receivableHandoff} onCreateReceipt={createReceipt} />
@@ -166,7 +222,7 @@ export default function App() {
           <PaymentSplit />
         </section>
         <section hidden={tool !== 'hourly'} aria-label="工時費用">
-          <HourlyCalculator />
+          <HourlyCalculator onCreateCosts={createCosts} />
         </section>
         <section hidden={tool !== 'convert'} aria-label="金額與日期轉換">
           <AdminConverter />

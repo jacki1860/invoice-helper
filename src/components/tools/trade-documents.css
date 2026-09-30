@@ -180,6 +180,9 @@
   }
 }
 @media print {
+  .trade-handoff {
+    display: none !important;
+  }
   .trade-paper[data-valid='false'] {
     display: none !important;
   }

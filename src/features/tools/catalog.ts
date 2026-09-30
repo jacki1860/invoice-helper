@@ -2,6 +2,11 @@ export type Category = 'documents' | 'calculations' | 'conversions' | 'reference
 export type ToolId =
   | 'invoice'
   | 'quote'
+  | 'expense'
+  | 'profit'
+  | 'acceptance'
+  | 'compare'
+  | 'equipment'
   | 'receipt'
   | 'purchase'
   | 'delivery'
@@ -65,6 +70,41 @@ export const tools: {
     label: '送貨與簽收單',
     description: '列清楚交付的物品，留下一份點交紀錄。',
     keywords: '送貨 出貨 交付 簽收 點交 設備 PDF PNG',
+  },
+  {
+    id: 'expense',
+    category: 'documents',
+    label: '費用報支單',
+    description: '彙整代墊支出與預支款，列清楚應補或應繳回的金額。',
+    keywords: '費用 報支 報帳 代墊 交通 憑證 預支 PDF PNG 備份',
+  },
+  {
+    id: 'acceptance',
+    category: 'documents',
+    label: '驗收與結案確認',
+    description: '逐項確認交付成果，記錄通過與待改善事項。',
+    keywords: '驗收 結案 交付 完成 簽章 請款 PDF PNG',
+  },
+  {
+    id: 'equipment',
+    category: 'documents',
+    label: '器材借還單',
+    description: '記下借出的器材、配件與狀況，核對歸還進度。',
+    keywords: '器材 借用 借還 設備 歸還 逾期 配件 PDF PNG 備份',
+  },
+  {
+    id: 'profit',
+    category: 'calculations',
+    label: '成本與利潤試算',
+    description: '整理專案成本，依售價或目標毛利率試算獲利。',
+    keywords: '成本 利潤 毛利 報價 售價 材料 工時 外包',
+  },
+  {
+    id: 'compare',
+    category: 'calculations',
+    label: '多家報價比較',
+    description: '用相同品項比較價格、運費與交期，再整理採購。',
+    keywords: '比較 比價 供應商 採購 報價 運費 保固 付款',
   },
   {
     id: 'receivables',

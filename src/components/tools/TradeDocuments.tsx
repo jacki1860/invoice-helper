@@ -9,6 +9,11 @@ import type {
 import { emptyLine } from '../../features/invoice/draft';
 import type { ReceiptSeed, ToolHandoff } from '../../features/tools/handoff';
 import {
+  deliveryToAcceptance,
+  type AcceptanceSeed,
+  type PurchaseSeed,
+} from '../../features/tools/workflowHandoff';
+import {
   type ReceiptDraft,
   type PurchaseOrderDraft,
   type DeliveryNoteDraft,
@@ -32,7 +37,7 @@ import { CopyAction } from './CopyAction';
 import { ToolPage, SessionNote, SourceNote } from './ToolPage';
 import './trade-documents.css';
 
-function TradeField({
+export function TradeField({
   label,
   value,
   onChange,
@@ -75,7 +80,7 @@ function TradeField({
   );
 }
 
-function SampleButton({ onClick }: { onClick: () => void }) {
+export function SampleButton({ onClick }: { onClick: () => void }) {
   return (
     <div className="trade-sample-row">
       <button className="text-button" onClick={onClick}>
@@ -85,7 +90,7 @@ function SampleButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function TradeErrors({ errors, show }: { errors: string[]; show: boolean }) {
+export function TradeErrors({ errors, show }: { errors: string[]; show: boolean }) {
   return show && errors.length ? (
     <ul className="document-errors field-error" role="alert">
       {errors.map((error) => (
@@ -95,7 +100,7 @@ function TradeErrors({ errors, show }: { errors: string[]; show: boolean }) {
   ) : null;
 }
 
-function TradeActions({
+export function TradeActions({
   paper,
   title,
   date,
@@ -153,7 +158,7 @@ function TradeActions({
   );
 }
 
-function TradePreview({ children }: { children: ReactNode }) {
+export function TradePreview({ children }: { children: ReactNode }) {
   return (
     <aside className="document-preview-stage" aria-label="文件預覽">
       <p className="document-preview-label">文件預覽</p>
@@ -162,7 +167,7 @@ function TradePreview({ children }: { children: ReactNode }) {
   );
 }
 
-function PaperData({ pairs }: { pairs: [string, string][] }) {
+export function PaperData({ pairs }: { pairs: [string, string][] }) {
   return (
     <dl className="trade-paper-data">
       {pairs
@@ -177,7 +182,7 @@ function PaperData({ pairs }: { pairs: [string, string][] }) {
   );
 }
 
-function PaperNotes({ title = '備註', text }: { title?: string; text: string }) {
+export function PaperNotes({ title = '備註', text }: { title?: string; text: string }) {
   return text ? (
     <section className="business-notes">
       <h3>{title}</h3>
@@ -186,7 +191,7 @@ function PaperNotes({ title = '備註', text }: { title?: string; text: string }
   ) : null;
 }
 
-function Signatures({ labels }: { labels: string[] }) {
+export function Signatures({ labels }: { labels: string[] }) {
   return (
     <div className="trade-signatures">
       {labels.map((label) => (
@@ -577,11 +582,12 @@ function emptyPurchase(): PurchaseOrderDraft {
   };
 }
 
-export function PurchaseOrderTool() {
+export function PurchaseOrderTool({ incoming }: { incoming?: ToolHandoff<PurchaseSeed> }) {
   const [draft, setDraft] = useState(emptyPurchase);
   const [initialDate] = useState(draft.date);
   const [lineEditorVersion, setLineEditorVersion] = useState(0);
   const [notice, setNotice] = useState('');
+  const [resolvedHandoff, setResolvedHandoff] = useState('');
   const paper = useRef<HTMLDivElement>(null);
   const { calculation, errors, valid } = purchaseOrderResult(draft);
   const hasContent = hasPurchaseOrderContent(draft, initialDate);
@@ -610,6 +616,33 @@ export function PurchaseOrderTool() {
   };
   return (
     <ToolPage title="採購單產生器" description="列好要買的品項、價格與交貨安排，讓雙方逐項確認。">
+      {incoming && incoming.id !== resolvedHandoff && (
+        <section className="trade-handoff" aria-label="帶入採購資料">
+          <h2>帶入 {incoming.data.supplier} 的報價</h2>
+          <p>套用會取代目前採購單，請補上採購方並核對交貨安排與付款條件。</p>
+          <div>
+            <button
+              className="button button-primary"
+              onClick={() => {
+                if (hasContent && !window.confirm('套用會取代目前採購單內容，確定繼續？')) return;
+                setDraft({
+                  ...emptyPurchase(),
+                  ...incoming.data,
+                  lines: incoming.data.lines.map((line) => ({ ...line, id: crypto.randomUUID() })),
+                });
+                setLineEditorVersion((version) => version + 1);
+                setResolvedHandoff(incoming.id);
+                setNotice('已帶入選定供應商，請補上採購方並確認交貨日期。');
+              }}
+            >
+              確認帶入採購
+            </button>
+            <button className="text-button" onClick={() => setResolvedHandoff(incoming.id)}>
+              略過這次帶入
+            </button>
+          </div>
+        </section>
+      )}
       <div className="document-workspace trade-workspace">
         <div className="document-editor">
           <SampleButton onClick={sample} />
@@ -760,7 +793,11 @@ function emptyDelivery(): DeliveryNoteDraft {
   };
 }
 
-export function DeliveryNoteTool() {
+export function DeliveryNoteTool({
+  onCreateAcceptance,
+}: {
+  onCreateAcceptance?: (seed: AcceptanceSeed) => void;
+}) {
   const [draft, setDraft] = useState(emptyDelivery);
   const [initialDate] = useState(draft.date);
   const [lineEditorVersion, setLineEditorVersion] = useState(0);
@@ -891,6 +928,20 @@ export function DeliveryNoteTool() {
             text={deliveryNoteText(draft)}
             valid={valid}
           />
+          {onCreateAcceptance && (
+            <div className="document-actions">
+              <button
+                className="button button-secondary"
+                disabled={!valid}
+                onClick={() => {
+                  const seed = deliveryToAcceptance(draft);
+                  if (seed) onCreateAcceptance(seed);
+                }}
+              >
+                帶入驗收確認
+              </button>
+            </div>
+          )}
         </div>
         <TradePreview>
           <div

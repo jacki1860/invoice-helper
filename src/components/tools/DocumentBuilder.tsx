@@ -17,6 +17,12 @@ import { PricingControls, taxLabels } from '../workspace/PricingControls';
 import { Totals, formatMoney } from '../workspace/Totals';
 import { ToolPage, SessionNote } from './ToolPage';
 import { CopyAction } from './CopyAction';
+import type { ToolHandoff } from '../../features/tools/handoff';
+import {
+  documentToAcceptance,
+  type AcceptanceSeed,
+  type QuoteSeed,
+} from '../../features/tools/workflowHandoff';
 import {
   paymentToReceipt,
   paymentToReceivable,
@@ -49,12 +55,17 @@ function emptyDocument(): BusinessDocumentDraft {
 export function DocumentBuilder({
   onCreateReceipt,
   onCreateReceivable,
+  incoming,
+  onCreateAcceptance,
 }: {
   onCreateReceipt?: (seed: ReceiptSeed) => void;
   onCreateReceivable?: (seed: ReceivableSeed) => void;
+  incoming?: ToolHandoff<QuoteSeed>;
+  onCreateAcceptance?: (seed: AcceptanceSeed) => void;
 }) {
   const [draft, setDraft] = useState(emptyDocument);
   const [initialDate] = useState(getTaiwanDate);
+  const [resolvedHandoff, setResolvedHandoff] = useState('');
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
   const [attempted, setAttempted] = useState(false);
   const [status, setStatus] = useState('');
@@ -142,6 +153,54 @@ export function DocumentBuilder({
   };
   return (
     <ToolPage title="報價與請款單" description="把合作內容整理好，交給對方一份清楚的文件。">
+      {incoming && incoming.id !== resolvedHandoff && (
+        <section className="trade-handoff" aria-label="帶入文件資料">
+          <h2>有一份待帶入的{incoming.data.kind === 'quote' ? '報價' : '請款'}資料</h2>
+          <p>
+            共 {incoming.data.lines.length}{' '}
+            個品項。套用會取代目前文件；新文件編號與期限留白，請再核對雙方資料。
+          </p>
+          <div>
+            <button
+              className="button button-primary"
+              onClick={() => {
+                if (
+                  (logoLoading || hasBusinessDocumentContent(draft, initialDate)) &&
+                  !window.confirm('套用會取代目前文件內容，確定繼續？')
+                )
+                  return;
+                logoRequest.current += 1;
+                setLogoLoading(false);
+                setLogoError('');
+                setReadyLogo(null);
+                const seed = incoming.data;
+                setDraft({
+                  ...emptyDocument(),
+                  kind: seed.kind,
+                  issuer: seed.issuer,
+                  customer: seed.customer,
+                  priceMode: seed.priceMode,
+                  taxType: seed.taxType,
+                  lines: seed.lines.map((line) => ({ ...line, id: crypto.randomUUID() })),
+                  notes: [seed.reference ? `來源文件：${seed.reference}` : '', seed.notes]
+                    .filter(Boolean)
+                    .join('\n'),
+                });
+                setResolvedHandoff(incoming.id);
+                setSelectedLine(null);
+                setDeleted(null);
+                setAttempted(false);
+                setStatus('已帶入品項，請確認開立方、客戶與新文件資料。');
+              }}
+            >
+              確認帶入文件
+            </button>
+            <button className="text-button" onClick={() => setResolvedHandoff(incoming.id)}>
+              略過這次帶入
+            </button>
+          </div>
+        </section>
+      )}
       <div className="document-workspace">
         <div className="document-editor">
           <div className="document-type-row">
@@ -467,6 +526,20 @@ export function DocumentBuilder({
                   : '列印視窗可選擇另存為 PDF；此文件非統一發票。')}
           </p>
           <CopyAction text={businessDocumentText(draft)} label="複製文件文字" />
+          {onCreateAcceptance && (
+            <div className="document-actions">
+              <button
+                className="button button-secondary"
+                disabled={!valid}
+                onClick={() => {
+                  const seed = documentToAcceptance(draft);
+                  if (seed) onCreateAcceptance(seed);
+                }}
+              >
+                帶入驗收確認
+              </button>
+            </div>
+          )}
           {draft.kind === 'payment' && (onCreateReceipt || onCreateReceivable) && (
             <div className="document-actions" aria-label="後續收款作業">
               {onCreateReceivable && (

@@ -4,6 +4,8 @@ import { calculateHourly, type HourlyInput } from '../../domain/adminTools';
 import { ToolPage, SessionNote } from './ToolPage';
 import { CopyAction } from './CopyAction';
 
+import { hourlyToCosts, type CostSeed } from '../../features/tools/workflowHandoff';
+
 const blankWork = (): HourlyInput => ({
   id: crypto.randomUUID(),
   name: '',
@@ -13,7 +15,7 @@ const blankWork = (): HourlyInput => ({
 });
 const money = (cents: number) =>
   (cents / 100).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-export function HourlyCalculator() {
+export function HourlyCalculator({ onCreateCosts }: { onCreateCosts?: (seed: CostSeed) => void }) {
   const [lines, setLines] = useState<HourlyInput[]>(() => [blankWork()]);
   const result = calculateHourly(lines);
   const patch = (id: string, update: Partial<HourlyInput>) =>
@@ -133,6 +135,20 @@ export function HourlyCalculator() {
             <p className="empty-result">填妥工作項目、時間與時薪，就能整理費用。</p>
           )}
           <CopyAction text={text} />
+          {onCreateCosts && (
+            <div className="document-actions">
+              <button
+                className="button button-secondary"
+                disabled={!result.valid}
+                onClick={() => {
+                  const seed = hourlyToCosts(lines);
+                  if (seed) onCreateCosts(seed);
+                }}
+              >
+                帶入成本試算
+              </button>
+            </div>
+          )}
         </section>
       </div>
     </ToolPage>

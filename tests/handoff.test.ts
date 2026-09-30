@@ -47,10 +47,21 @@ test('quotes, incomplete forms and zero totals cannot become payment handoffs', 
   }
 });
 
-test('five new tools have unique routes and the legacy invoice entry still works', () => {
-  assert.equal(tools.length, 15);
-  assert.equal(new Set(tools.map((tool) => tool.id)).size, 15);
-  for (const id of ['receipt', 'purchase', 'delivery', 'receivables', 'workdays'])
+test('twenty tools have unique routes and the legacy invoice entry still works', () => {
+  assert.equal(tools.length, 20);
+  assert.equal(new Set(tools.map((tool) => tool.id)).size, 20);
+  for (const id of [
+    'receipt',
+    'purchase',
+    'delivery',
+    'receivables',
+    'workdays',
+    'expense',
+    'profit',
+    'acceptance',
+    'compare',
+    'equipment',
+  ])
     assert.equal(resolvePage(`#${id}`), id);
   assert.equal(resolvePage('', '?uniformNumber=22099131'), 'invoice');
   assert.equal(resolvePage('#unknown'), 'tools');

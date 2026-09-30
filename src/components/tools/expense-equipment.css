@@ -1,0 +1,212 @@
+.records-line-card {
+  min-width: 0;
+  border: 1px solid var(--rule);
+  margin: 0 0 22px;
+  padding: 18px;
+  position: relative;
+}
+.records-line-card legend {
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.records-remove-line {
+  margin: -3px 0 12px auto;
+  display: flex;
+}
+.records-line-card > .tool-field:last-child,
+.records-line-card .tool-form-grid:last-child .tool-field {
+  margin-bottom: 0;
+}
+.records-document .trade-line-actions .trade-hint {
+  margin: 0;
+}
+.records-totals {
+  padding: 20px 0;
+  border-block: 1px solid var(--rule);
+  margin: 0 0 26px;
+  font-size: 14px;
+}
+.records-totals > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+}
+.records-totals dd {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.records-grand-total {
+  margin-top: 8px;
+  border-top: 1px solid var(--rule);
+  color: var(--accent);
+  font-weight: 600;
+}
+.records-backup {
+  background: #eee9df;
+  padding: 18px;
+  margin-top: 26px;
+}
+.records-backup h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.records-backup p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.records-backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.records-backup-actions .button {
+  font-size: 12px;
+  padding: 10px 12px;
+}
+.records-expense-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.records-expense-table th,
+.records-expense-table td {
+  padding: 11px 7px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #d9d2c6;
+  overflow-wrap: anywhere;
+}
+.records-expense-table th {
+  background: #eee9df;
+  font-weight: 500;
+}
+.records-expense-table th:first-child {
+  width: 26%;
+}
+.records-expense-table th:last-child,
+.records-expense-table td:last-child {
+  text-align: right;
+  width: 26%;
+  font-variant-numeric: tabular-nums;
+}
+.records-expense-table small {
+  display: block;
+  color: #7a7367;
+  font-size: 10px;
+  margin-top: 4px;
+}
+.expense-paper .business-totals {
+  width: 85%;
+}
+.equipment-progress {
+  padding: 20px;
+  margin: 20px 0;
+  background: #fffdf9;
+  border-left: 3px solid var(--accent);
+}
+.equipment-progress p {
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.equipment-progress strong {
+  font-size: 19px;
+  display: block;
+}
+.equipment-progress small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-top: 10px;
+}
+.equipment-return-fields {
+  border-top: 1px dashed var(--rule);
+  margin-top: 20px;
+  padding-top: 20px;
+}
+.equipment-return-fields .tool-field:last-child {
+  margin-bottom: 0;
+}
+.equipment-paper-summary {
+  padding: 14px 0;
+  margin: 18px 0;
+  border-block: 1px solid #bfb4a2;
+}
+.equipment-paper-summary > * {
+  display: block;
+}
+.equipment-paper-summary strong {
+  font-size: 16px;
+  color: #b9552f;
+}
+.equipment-paper-summary small {
+  color: #7a7367;
+  font-size: 10px;
+}
+.equipment-paper-row {
+  padding: 16px 0 10px;
+  border-bottom: 1px solid #d9d2c6;
+}
+.equipment-paper-row-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+.equipment-paper-row-heading h3 {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.equipment-paper-row-heading span {
+  font-size: 10px;
+  color: #7a7367;
+}
+.equipment-paper-row .trade-paper-data {
+  margin: 12px 0;
+  gap: 6px;
+}
+@media (max-width: 600px) {
+  .records-document .tool-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .records-line-card {
+    padding: 12px;
+  }
+  .records-expense-table {
+    font-size: 10px;
+  }
+  .records-expense-table td,
+  .records-expense-table th {
+    padding: 9px 4px;
+  }
+  .records-backup-actions .button {
+    width: 100%;
+  }
+  .expense-paper .business-totals {
+    width: 100%;
+  }
+}
+@media print {
+  .records-expense-table thead {
+    display: table-header-group;
+  }
+  .records-expense-table tr,
+  .equipment-paper-row,
+  .equipment-paper-summary {
+    break-inside: avoid;
+  }
+  .equipment-paper-row {
+    padding-top: 10px;
+  }
+}

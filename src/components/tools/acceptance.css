@@ -1,0 +1,131 @@
+.acceptance-item {
+  padding: 4px 0 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.acceptance-item-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.acceptance-item-heading h3 {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.acceptance-item-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(64px, 0.7fr) minmax(110px, 1fr);
+  gap: 12px;
+}
+.acceptance-item > .tool-field {
+  margin-bottom: 0;
+}
+.acceptance-item .field-error {
+  margin-top: 10px;
+}
+.acceptance-item-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.acceptance-summary {
+  border-block: 1px solid var(--rule);
+  padding: 20px 0;
+  margin-bottom: 24px;
+}
+.acceptance-summary > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.acceptance-summary > strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 28px;
+  margin: 8px 0;
+}
+.acceptance-summary > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.acceptance-summary[data-state='needs-fix'] > strong {
+  color: #a04b28;
+}
+.acceptance-summary[data-state='accepted'] > strong {
+  color: #426343;
+}
+.acceptance-next-step {
+  margin: 24px 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.acceptance-next-step h2 {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.acceptance-next-step > p {
+  font-size: 13px;
+  line-height: 1.9;
+  margin-bottom: 14px;
+}
+.acceptance-next-step .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+.acceptance-paper-summary {
+  padding: 14px 0;
+  margin-bottom: 18px;
+  border-top: 1px solid #d9d2c6;
+}
+.acceptance-paper-summary > strong {
+  display: block;
+  font-size: 14px;
+}
+.acceptance-paper-summary > p {
+  font-size: 11px;
+  color: #7a7367;
+  margin-top: 5px;
+}
+.acceptance-paper .acceptance-table th:first-child {
+  width: 62%;
+}
+.acceptance-paper .acceptance-table th:nth-child(2) {
+  width: 14%;
+}
+.acceptance-table strong {
+  font-weight: 500;
+}
+.acceptance-line-note {
+  font-size: 11px;
+  color: #6b6357;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .acceptance-item-fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .acceptance-item-fields > :first-child {
+    grid-column: 1 / -1;
+  }
+  .acceptance-paper h2 {
+    font-size: 24px;
+    letter-spacing: 0.04em;
+  }
+}
+@media print {
+  .acceptance-paper-summary {
+    break-inside: avoid;
+    padding: 10px 0;
+    margin-bottom: 14px;
+  }
+}
