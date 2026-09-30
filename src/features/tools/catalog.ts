@@ -20,7 +20,8 @@ export type ToolId =
   | 'insurance'
   | 'laws'
   | 'calendar';
-export type PageId = ToolId | 'tools' | `category-${Category}`;
+export type TaskId = 'quoting' | 'payments' | 'purchasing' | 'expenses' | 'reference';
+export type PageId = ToolId | 'tools' | 'directory' | `category-${Category}` | `task-${TaskId}`;
 
 export const categories: { id: Category; label: string; description: string }[] = [
   { id: 'documents', label: '文件產生', description: '把資料填好，讓文件整齊出門。' },
@@ -29,13 +30,53 @@ export const categories: { id: Category; label: string; description: string }[] 
   { id: 'reference', label: '公開查詢', description: '查有來源、找得到日期的資料。' },
 ];
 
-export const tools: {
+export const taskCollections: {
+  id: TaskId;
+  label: string;
+  description: string;
+  toolIds: ToolId[];
+}[] = [
+  {
+    id: 'quoting',
+    label: '報價與接案',
+    description: '估算成本與工時，整理報價、稅額及交期。',
+    toolIds: ['quote', 'profit', 'hourly', 'tax', 'workdays', 'company'],
+  },
+  {
+    id: 'payments',
+    label: '請款與收款',
+    description: '整理請款文件、訂金尾款與實際收款紀錄。',
+    toolIds: ['quote', 'invoice', 'receivables', 'receipt', 'split', 'acceptance'],
+  },
+  {
+    id: 'purchasing',
+    label: '採購與交付',
+    description: '比較供應商報價，處理採購、送貨與器材點交。',
+    toolIds: ['compare', 'purchase', 'delivery', 'acceptance', 'equipment', 'workdays'],
+  },
+  {
+    id: 'expenses',
+    label: '費用與報帳',
+    description: '彙整代墊支出，計算分攤、工時與文件金額。',
+    toolIds: ['expense', 'split', 'hourly', 'tax', 'convert'],
+  },
+  {
+    id: 'reference',
+    label: '日期與資料查詢',
+    description: '換算日期、安排工作天，查公司與有來源的公開資料。',
+    toolIds: ['workdays', 'calendar', 'convert', 'company', 'insurance', 'laws'],
+  },
+];
+
+export interface Tool {
   id: ToolId;
   category: Category;
   label: string;
   description: string;
   keywords: string;
-}[] = [
+}
+
+export const tools: Tool[] = [
   {
     id: 'invoice',
     category: 'documents',
@@ -181,15 +222,19 @@ export const tools: {
 export function isPageId(value: string): value is PageId {
   return (
     value === 'tools' ||
+    value === 'directory' ||
     tools.some((tool) => tool.id === value) ||
-    categories.some((category) => `category-${category.id}` === value)
+    categories.some((category) => `category-${category.id}` === value) ||
+    taskCollections.some((task) => `task-${task.id}` === value)
   );
 }
 
 export function pagePath(page: PageId, base: string): string {
   const root = `${base.replace(/\/$/, '')}/`;
   if (page === 'tools') return root;
-  return page.startsWith('category-') ? `${root}category/${page.slice(9)}/` : `${root}${page}/`;
+  if (page.startsWith('category-')) return `${root}category/${page.slice(9)}/`;
+  if (page.startsWith('task-')) return `${root}task/${page.slice(5)}/`;
+  return `${root}${page}/`;
 }
 
 export function pageFromPath(pathname: string, base: string): PageId | undefined {
@@ -197,7 +242,11 @@ export function pageFromPath(pathname: string, base: string): PageId | undefined
   if (!pathname.startsWith(root)) return undefined;
   const relative = pathname.slice(root.length).replace(/(?:\/index\.html|\/|^index\.html)$/, '');
   if (!relative) return 'tools';
-  const page = relative.startsWith('category/') ? `category-${relative.slice(9)}` : relative;
+  const page = relative.startsWith('category/')
+    ? `category-${relative.slice(9)}`
+    : relative.startsWith('task/')
+      ? `task-${relative.slice(5)}`
+      : relative;
   return isPageId(page) && page !== 'tools' ? page : undefined;
 }
 
@@ -227,4 +276,27 @@ export function categoryForPage(page: PageId): Category | undefined {
   return page.startsWith('category-')
     ? (page.slice(9) as Category)
     : tools.find((tool) => tool.id === page)?.category;
+}
+
+export function taskForPage(page: PageId) {
+  return taskCollections.find((task) => `task-${task.id}` === page);
+}
+
+export function isOverviewPage(page: PageId): boolean {
+  return (
+    page === 'tools' ||
+    page === 'directory' ||
+    page.startsWith('category-') ||
+    page.startsWith('task-')
+  );
+}
+
+export function toolsForPage(page: PageId): Tool[] {
+  if (page === 'tools' || page === 'directory') return tools;
+  const task = taskForPage(page);
+  if (task) {
+    return task.toolIds.flatMap((id) => tools.filter((tool) => tool.id === id));
+  }
+  const category = categoryForPage(page);
+  return tools.filter((tool) => tool.category === category);
 }

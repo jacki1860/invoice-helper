@@ -4,6 +4,8 @@ import { TaxCalculator } from './components/workspace/TaxCalculator';
 import { CompanyLookup } from './components/workspace/CompanyLookup';
 import { ArrowLeft, Coffee } from 'lucide-react';
 import { ToolOverview } from './components/tools/ToolOverview';
+import { FavoriteButton } from './components/tools/FavoriteButton';
+import { useToolFavorites } from './hooks/useToolFavorites';
 import { PaymentSplit } from './components/tools/PaymentSplit';
 import { HourlyCalculator } from './components/tools/HourlyCalculator';
 import { AdminConverter } from './components/tools/AdminConverter';
@@ -38,7 +40,7 @@ import {
   pagePath,
   pageFromPath,
   isPageId,
-  categoryForPage,
+  isOverviewPage,
   type PageId,
 } from './features/tools/catalog';
 import { createInitialDraft, type InvoiceDraft } from './features/invoice/draft';
@@ -61,8 +63,8 @@ export default function App() {
   const [quoteHandoff, setQuoteHandoff] = useState<ToolHandoff<QuoteSeed>>();
   const [purchaseHandoff, setPurchaseHandoff] = useState<ToolHandoff<PurchaseSeed>>();
   const [costHandoff, setCostHandoff] = useState<ToolHandoff<CostSeed>>();
-  const category = categoryForPage(tool);
   const activeTool = tools.find((entry) => entry.id === tool);
+  const { favorites, toggleFavorite, notice: favoritesNotice } = useToolFavorites();
 
   useEffect(() => {
     const onLocationChange = () => {
@@ -172,15 +174,15 @@ export default function App() {
           <span className="brand-caption">everyday admin</span>
         </a>
         <nav className="tool-nav" aria-label="行政工具">
-          {categories.map(({ id, label }) => (
-            <a
-              key={id}
-              href={pagePath(`category-${id}`, base)}
-              aria-current={category === id ? 'page' : undefined}
-            >
-              {label}
-            </a>
-          ))}
+          <a href={pagePath('tools', base)} aria-current={tool === 'tools' ? 'page' : undefined}>
+            依事情找工具
+          </a>
+          <a
+            href={pagePath('directory', base)}
+            aria-current={tool === 'directory' || tool.startsWith('category-') ? 'page' : undefined}
+          >
+            全部工具
+          </a>
         </nav>
         <a
           className="coffee-link"
@@ -202,7 +204,12 @@ export default function App() {
             </a>
             <span>/</span>
             <span>{activeTool.label}</span>
-            <a className="all-tools-link" href={pagePath('tools', base)}>
+            <FavoriteButton
+              tool={activeTool}
+              selected={favorites.includes(activeTool.id)}
+              onToggle={toggleFavorite}
+            />
+            <a className="all-tools-link" href={pagePath('directory', base)}>
               全部工具
             </a>
           </div>
@@ -215,8 +222,18 @@ export default function App() {
             </button>
           </div>
         )}
-        {(tool === 'tools' || tool.startsWith('category-')) && (
-          <ToolOverview key={tool} category={category} />
+        {favoritesNotice && (
+          <p className="favorites-notice" role="status">
+            {favoritesNotice}
+          </p>
+        )}
+        {isOverviewPage(tool) && (
+          <ToolOverview
+            key={tool}
+            page={tool}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+          />
         )}
         <section hidden={tool !== 'invoice'} aria-label="發票助手">
           <InvoiceWorkspace draft={draft} onChange={setDraft} onPatch={patchDraft} />

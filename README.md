@@ -88,9 +88,9 @@ npx oxfmt src/data/insurance.ts src/data/laws.ts src/data/calendar.ts
 
 ## SEO／AEO
 
-首頁、四分類與二十工具現在會建置為 25 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可讀取；工具間切換保留既有資料，舊 hash 連結仍可用。
+本機版本的首頁、完整目錄、五個任務入口、四分類與二十工具會建置為 31 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
 
-已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 發布至正式站；尚未提交 Search Console 或驗證搜尋收錄。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
+前一版 25 頁 SEO 改善已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 發布至正式站；本輪任務導覽、全站搜尋與常用收藏尚未發布，見[工具探索說明](docs/TOOL_DISCOVERY.md)。尚未提交 Search Console 或驗證搜尋收錄。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
 
 ## 本機開發
 

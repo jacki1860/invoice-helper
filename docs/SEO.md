@@ -1,12 +1,12 @@
 # SEO 與 AI 搜尋
 
-本次改善已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 部署，公開 HTTPS 31 檔與發布 manifest 全部一致。尚未提交 Search Console 或驗證搜尋收錄。正式版本以 [DEPLOYMENT.md](DEPLOYMENT.md) 的發布紀錄為準。
+前一版 SEO 改善已於 2026-09-30 23:23:04（Asia/Taipei）由 `27c019b` 部署，公開 HTTPS 31 檔與發布 manifest 全部一致。本輪本機導覽新增完整目錄與五個任務頁，共 31 HTML／37 公開檔案，尚未發布；本輪證據另見[工具探索說明](TOOL_DISCOVERY.md)。尚未提交 Search Console 或驗證搜尋收錄。正式版本以 [DEPLOYMENT.md](DEPLOYMENT.md) 的發布紀錄為準。
 
 ## 網址與內容
 
-- 首頁 `/invoice/`、4 個 `/invoice/category/<分類>/`、20 個 `/invoice/<工具>/`，共 25 個實際 HTML 檔。
+- 首頁 `/invoice/`、完整目錄 `/invoice/directory/`、5 個 `/invoice/task/<任務>/`、4 個 `/invoice/category/<分類>/`、20 個 `/invoice/<工具>/`，本機共 31 個實際 HTML 檔。舊工具與分類網址沿用。
 - 建置時輸出每頁的用途、操作步驟、常見問題及可跟隨的連結；停用 JavaScript 仍可閱讀。互動計算與文件編輯需要 JavaScript。
-- React 接手後保留同一份說明。站內使用 History API 切換，保持已掛載工具的表單與交接資料；直接重整仍依原本的工具保存規則處理。
+- React 接手後保留同一份說明。總覽頁以原生 details 收合說明與問答，停用 JavaScript 仍可展開；工具頁保持展開。首頁與 ItemList 改列任務入口及完整目錄，各頁清單與結構化資料一致。站內使用 History API 切換，保持已掛載工具的表單與交接資料；直接重整仍依原本的工具保存規則處理。
 - 相容舊 hash 與發票預填 query。合法工具 hash 轉為對應路徑，保留 query；帶 query 的 `#tools` 保留明確的總覽選擇。使用新的站內連結時不攜帶預填 query，避免把交易資料傳到其他工具網址。
 - 每頁提供獨立 title、description、canonical、Open Graph／Twitter 文字資訊與 JSON-LD。標記限於 `WebSite`、`WebPage`／`CollectionPage`、`WebApplication`、`ItemList`、`BreadcrumbList`，沒有虛構評分或收錄承諾。
 - `src/features/seo/content.ts` 是說明文案來源；新增工具時一併補齊內容。年度型工具須在更新資料快照時核對其標題、步驟及 FAQ 年度。
@@ -38,7 +38,7 @@ npm run test:seo-build -- /invoice/
 4. 可在保留既有 robots 規則的前提下，新增 `Sitemap: https://www.ctrls.com.tw/invoice/sitemap.xml`；也可直接透過 Search Console 提交，不必為此覆蓋公司 robots。
 5. 在 Cloudflare 與伺服器紀錄確認真正的 Googlebot／OAI-SearchBot 能取回頁面。一般 curl 或瀏覽器 200 不代表已核實爬蟲放行，也不代表搜尋引擎已收錄。ChatGPT 搜尋使用 OAI-SearchBot，與訓練用 GPTBot 分開，不需為了搜尋而更改訓練授權。
 
-## 本機驗證結果
+## 前版 SEO 本機驗證結果
 
 2026-09-30，Node 24.21.0：149 項測試、lint、格式、TypeScript、一般與公司建置通過。兩種 base 的產物檢查均回報 `SEO build verified: 25 HTML pages`。本次沒有新增依賴；入口約 534.68 kB／gzip 148.84 kB，仍有既有的 500 kB chunk 大小提示。
 
