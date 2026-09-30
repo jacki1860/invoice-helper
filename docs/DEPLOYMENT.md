@@ -8,20 +8,55 @@
 2. 核對 `dist/client/index.html` 的 JS／CSS URL 以 `/invoice/assets/` 開頭；紙紋 URL 為 `/invoice/paper-grain.png`。
 3. 只上傳 `dist/client/` 的公開產物。不要上傳原始碼、Worker 目錄、設定檔或整個 `dist/`。
 4. 新內容先放到 `/var/www/invoice-helper/releases/<commit>/`，對照逐檔 SHA-256。
-5. 舊 `/var/www/html/invoice` 移到 `/var/backups/invoice-helper/` 的具日期備份，確認其內容與搬移前完全相同。
-6. 將 `/var/www/html/invoice` 指向已驗證的新版本。後續發布以替換該符號連結切換版本。
-7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及三工具、公司查詢、複製和 PNG。需要回復時，只切回本次備份或上一個已驗證 release；不修改其他站點。
+5. 首次發布若 live 是實體目錄，先移到 webroot 外備份；後續發布保留上一個 release，記錄並核對舊 live 連結、manifest 與 Nginx 設定雜湊。
+6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
+7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
-## 2026-09-30 發布前檢查
+## 2026-09-30 十工具公開版
+
+- 發布時間：**18:45:57 Asia/Taipei**（10:45:57 UTC）。
+- 部署來源：`68b1026a31367754d36446a647edaa14c39ae10d`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀一致；`main` 未更動。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/68b1026a31367754d36446a647edaa14c39ae10d`。
+- 上一版保留於 `/var/www/invoice-helper/releases/562ae00c1eab4357def3a52f066f708d953f94d7`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T104557Z-68b1026a3136-721244`，含新舊連結、逐檔 manifest、tar 與設定雜湊。
+- 新 manifest：`/var/www/invoice-helper/manifests/68b1026a31367754d36446a647edaa14c39ae10d.sha256`。
+
+切換腳本經主流程及獨立代理檢查，限制為五個公開檔案、核對上傳與解壓後雜湊，對新舊版本執行 origin 位元組比對。切換使用同目錄 symlink rename，保留錯誤時僅在 live 仍指向本版才可回復的條件。沒有更動 Nginx 設定、重新啟動服務或修改其他站點；未實際演練 rollback。
+
+### 本版正式站驗證
+
+獨立唯讀核對於 **18:47:32 Asia/Taipei** 完成：
+
+| 項目         | 結果                                                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 公開 HTTPS   | `index.html`、`index-DS3N4LMg.js`、`index-DPA-YpoR.css`、`html2canvas-efe5BClf.js`、`paper-grain.png` 五檔均 200；正常 TLS，SHA-256 與本機及 manifest 一致。 |
+| 舊路徑與主站 | 舊 `client/index.html`、`invoice_generator/index.js` 均 404；公司首頁 `/` 為 200。                                                                           |
+| 伺服器       | Live 指向本版，Nginx active，default／common.conf 雜湊與前版一致。                                                                                           |
+| 頁首與首頁   | 四大分類、十工具與正確支持連結可見；咖啡按鈕顏色 `rgb(231,100,53)` 與網站 `#e76435` 一致。                                                                   |
+| 發票／公司   | 範例 11,000 + 550 = 11,550；公開統編查詢取得名稱、地址，帶入發票保留原品項與金額。                                                                           |
+| 級距／法規   | 月薪 30,000 的勞保查表結果 30,300；所得稅法搜尋取得一筆，保留官方尚未生效提示。                                                                              |
+| 文件輸出     | 正式站 Chrome 真正下載 1360 × 1760 報價 PNG，圖像包含兩品項與 11,550，已開啟檢視。                                                                           |
+| 日曆輸出     | 正式站下載 2027 ICS：10,139 bytes、24 事件，CRLF／UTF-8 folding 與跨年 DTEND 讀回正確。                                                                      |
+| 瀏覽器錯誤   | 正式站兩個測試分頁的 error log 為空。                                                                                                                        |
+
+證據：[正式站十工具首頁](design/public-tools-production.png)、[正式站報價 PNG](design/public-quote-production.png)。本機 64 項測試、390／320px 與 PDF 等詳細結果見[驗證紀錄](VERIFICATION.md)。資料為有日期的官方快照，由維護者人工刷新；沒有即時同步、背景排程或自動發布。
+
+### 本版回復與 Jev 核對
+
+回復時先確認 live 仍指向本版，並用發布紀錄內的 `OLD-SHA256SUMS` 在上一版 release 核對檔案；建立指向上一版的臨時連結，以同目錄 `mv -Tf` 替換 live，然後重做公開 HTTPS 與工具檢查。保留兩版 release，不回到首版部署前的錯誤目錄結構。
+
+實際驗證後呼叫 Jev：implementation／official_data／ui_outputs／release 皆選 `supported`，信心為 0.35／0.81／0.93／0.59；前後兩項觸發其未校準的低信心提醒。主流程核對 64 項測試、瀏覽器證據及遠端 SHA／正式檔案雜湊後，未找到具體矛盾；保留提醒，不將其稱為獨立驗證通過。Jev 沒有操作瀏覽器或伺服器。遠端 CI、真實行事曆帳號匯入、實體手機與美術接受度不在已驗證範圍。
+
+## 歷史：2026-09-30 首版發布前檢查
 
 - 使用者明確授權 commit、push、部署至上述網址，並取代舊內容。
 - 公司主機與 SSH 身分已現場核對，Nginx 正常執行；本次不更動其他站點設定。
 - 舊站回應 403；舊產物的入口位於 `invoice/client/index.html`，沒有放在網站根目錄。
 - 專用建置、lint、格式檢查通過；已確認 Vite 正確改寫子目錄資源路徑。
 
-## 2026-09-30 正式發布結果
+## 歷史：2026-09-30 三工具首版發布結果
 
 - 發布時間：2026-09-30 **17:54:53 Asia/Taipei**（09:54:53 UTC）。
 - 部署來源：`562ae00c1eab4357def3a52f066f708d953f94d7`，已推送至 `codex/admin-tools-foundation`。`main` 未更動；後續文件提交不改變本次部署產物。
