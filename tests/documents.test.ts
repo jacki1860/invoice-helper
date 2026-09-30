@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   businessDocumentText,
+  businessDocumentContactFields,
   documentResult,
   hasBusinessDocumentContent,
   type BusinessDocumentDraft,
@@ -11,7 +12,9 @@ const draft: BusinessDocumentDraft = {
   kind: 'quote',
   issuer: '工作室',
   issuerNumber: '',
-  issuerContact: '',
+  issuerPhone: '',
+  issuerEmail: '',
+  customFields: [],
   customer: '客戶',
   customerNumber: '',
   number: 'Q1',
@@ -50,7 +53,9 @@ test('loading a sample protects every field that can hold user work', () => {
     kind: 'quote',
     issuer: '',
     issuerNumber: '',
-    issuerContact: '',
+    issuerPhone: '',
+    issuerEmail: '',
+    customFields: [],
     customer: '',
     customerNumber: '',
     number: '',
@@ -67,7 +72,8 @@ test('loading a sample protects every field that can hold user work', () => {
   for (const field of [
     'issuer',
     'issuerNumber',
-    'issuerContact',
+    'issuerPhone',
+    'issuerEmail',
     'customer',
     'customerNumber',
     'number',
@@ -83,6 +89,8 @@ test('loading a sample protects every field that can hold user work', () => {
     );
   }
   for (const patch of [
+    { customFields: [{ id: 'custom', label: '地址', value: '' }] },
+    { customFields: [{ id: 'custom', label: '', value: '示範地址' }] },
     { priceMode: 'total' as const },
     { taxType: 'exempt' as const },
     { lines: [{ ...blank.lines[0], quantity: '2' }] },
@@ -91,5 +99,57 @@ test('loading a sample protects every field that can hold user work', () => {
     { lines: [...blank.lines, { ...blank.lines[0], id: 'two' }] },
   ]) {
     assert.equal(hasBusinessDocumentContent({ ...blank, ...patch }, blank.date), true);
+  }
+});
+
+test('optional contacts and custom fields appear in order in both document types', () => {
+  for (const kind of ['quote', 'payment'] as const) {
+    const withContacts = {
+      ...draft,
+      kind,
+      issuerPhone: ' 02-1234-5678 分機 9 ',
+      issuerEmail: ' hello@example.com ',
+      customFields: [
+        { id: 'address', label: ' 地址 ', value: '示範路 1 號\n2 樓' },
+        { id: 'empty', label: ' ', value: '  ' },
+        { id: 'reference', label: '專案代號', value: '<Demo & Co>' },
+      ],
+    };
+    assert.equal(documentResult(withContacts).valid, true);
+    assert.deepEqual(
+      businessDocumentContactFields(withContacts).map(({ label, value }) => [label, value]),
+      [
+        ['電話', '02-1234-5678 分機 9'],
+        ['信箱', 'hello@example.com'],
+        ['地址', '示範路 1 號\n2 樓'],
+        ['專案代號', '<Demo & Co>'],
+      ],
+    );
+    assert.ok(
+      businessDocumentText(withContacts).includes(
+        '電話：02-1234-5678 分機 9\n信箱：hello@example.com\n地址：示範路 1 號\n2 樓\n專案代號：<Demo & Co>',
+      ),
+    );
+    const removed = {
+      ...withContacts,
+      customFields: withContacts.customFields.filter(({ id }) => id !== 'address'),
+    };
+    assert.ok(!businessDocumentText(removed).includes('示範路'));
+  }
+});
+
+test('blank optional fields are omitted but incomplete custom fields block output', () => {
+  assert.deepEqual(businessDocumentContactFields(draft), []);
+  const blank = { ...draft, customFields: [{ id: 'blank', label: ' ', value: '\n' }] };
+  assert.equal(documentResult(blank).valid, true);
+  assert.equal(businessDocumentText(blank), businessDocumentText(draft));
+  for (const field of [
+    { id: 'one', label: '地址', value: ' ' },
+    { id: 'one', label: ' ', value: '示範路' },
+  ]) {
+    const incomplete = { ...draft, customFields: [field] };
+    assert.equal(documentResult(incomplete).valid, false);
+    assert.ok(documentResult(incomplete).errors.some((error) => error.includes('自訂欄位 1')));
+    assert.equal(businessDocumentText(incomplete), '');
   }
 });

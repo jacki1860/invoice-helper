@@ -465,6 +465,38 @@
 .document-editor {
   min-width: 0;
 }
+.document-custom-fields {
+  margin: 0 0 24px;
+}
+.document-custom-hint {
+  margin: 0 0 16px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.document-custom-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) 36px;
+  gap: 12px;
+  align-items: start;
+}
+.document-custom-row .icon-button {
+  margin-top: 31px;
+}
+@media (max-width: 600px) {
+  .document-custom-row {
+    grid-template-columns: minmax(0, 1fr) 36px;
+    gap: 0 12px;
+  }
+  .document-custom-row > .tool-field:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .document-custom-row > .icon-button {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
 .document-type-row {
   display: flex;
   align-items: start;

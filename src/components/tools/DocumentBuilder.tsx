@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import { Download, Printer, RotateCcw } from 'lucide-react';
+import { Download, Plus, Printer, RotateCcw, Trash2 } from 'lucide-react';
 import {
   type BusinessDocumentDraft,
   documentResult,
   businessDocumentText,
+  businessDocumentContactFields,
   hasBusinessDocumentContent,
 } from '../../features/tools/documents';
 import { emptyLine } from '../../features/invoice/draft';
@@ -21,7 +22,9 @@ function emptyDocument(): BusinessDocumentDraft {
     kind: 'quote',
     issuer: '',
     issuerNumber: '',
-    issuerContact: '',
+    issuerPhone: '',
+    issuerEmail: '',
+    customFields: [],
     customer: '',
     customerNumber: '',
     number: '',
@@ -154,15 +157,93 @@ export function DocumentBuilder() {
               />
             </label>
           </div>
-          <label className="tool-field">
-            <span>聯絡資訊（選填）</span>
-            <input
-              value={draft.issuerContact}
-              maxLength={150}
-              placeholder="電話、Email 或地址"
-              onChange={(event) => patch({ issuerContact: event.target.value })}
-            />
-          </label>
+          <div className="tool-form-grid">
+            <label className="tool-field">
+              <span>電話號碼（選填）</span>
+              <input
+                type="tel"
+                value={draft.issuerPhone}
+                maxLength={50}
+                placeholder="例如 02-1234-5678"
+                onChange={(event) => patch({ issuerPhone: event.target.value })}
+              />
+            </label>
+            <label className="tool-field">
+              <span>信箱（選填）</span>
+              <input
+                type="email"
+                value={draft.issuerEmail}
+                maxLength={254}
+                placeholder="例如 hello@example.com"
+                onChange={(event) => patch({ issuerEmail: event.target.value })}
+              />
+            </label>
+          </div>
+          <section className="document-custom-fields" aria-label="自訂欄位">
+            <p className="document-custom-hint">
+              可新增地址、聯絡人或其他資訊。空白欄位不會顯示在文件中。
+            </p>
+            {draft.customFields.map((field, index) => (
+              <div className="document-custom-row" key={field.id}>
+                <label className="tool-field">
+                  <span>欄位名稱 {index + 1}</span>
+                  <input
+                    value={field.label}
+                    maxLength={40}
+                    placeholder="例如：地址"
+                    onChange={(event) =>
+                      patch({
+                        customFields: draft.customFields.map((item) =>
+                          item.id === field.id ? { ...item, label: event.target.value } : item,
+                        ),
+                      })
+                    }
+                  />
+                </label>
+                <label className="tool-field">
+                  <span>欄位內容 {index + 1}</span>
+                  <textarea
+                    value={field.value}
+                    maxLength={500}
+                    rows={2}
+                    placeholder="填寫內容，可換行"
+                    onChange={(event) =>
+                      patch({
+                        customFields: draft.customFields.map((item) =>
+                          item.id === field.id ? { ...item, value: event.target.value } : item,
+                        ),
+                      })
+                    }
+                  />
+                </label>
+                <button
+                  className="icon-button"
+                  aria-label={`移除自訂欄位 ${index + 1}`}
+                  onClick={() =>
+                    patch({
+                      customFields: draft.customFields.filter((item) => item.id !== field.id),
+                    })
+                  }
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
+            ))}
+            <button
+              className="text-button"
+              onClick={() =>
+                patch({
+                  customFields: [
+                    ...draft.customFields,
+                    { id: crypto.randomUUID(), label: '', value: '' },
+                  ],
+                })
+              }
+            >
+              <Plus size={17} />
+              新增自訂欄位
+            </button>
+          </section>
           <div className="tool-form-grid">
             <label className="tool-field">
               <span>文件編號（選填）</span>
@@ -297,7 +378,11 @@ export function DocumentBuilder() {
             <header>
               <p className="business-issuer">{draft.issuer || '開立方名稱'}</p>
               <h2>{title}</h2>
-              <p className="business-contact">{draft.issuerContact}</p>
+              {businessDocumentContactFields(draft).map((field) => (
+                <p className="business-contact" key={field.id}>
+                  {field.label}：{field.value}
+                </p>
+              ))}
             </header>
             <div className="business-details">
               <div>

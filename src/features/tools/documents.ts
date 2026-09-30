@@ -10,7 +10,9 @@ export interface BusinessDocumentDraft {
   kind: 'quote' | 'payment';
   issuer: string;
   issuerNumber: string;
-  issuerContact: string;
+  issuerPhone: string;
+  issuerEmail: string;
+  customFields: { id: string; label: string; value: string }[];
   customer: string;
   customerNumber: string;
   number: string;
@@ -31,7 +33,8 @@ export function hasBusinessDocumentContent(
     [
       draft.issuer,
       draft.issuerNumber,
-      draft.issuerContact,
+      draft.issuerPhone,
+      draft.issuerEmail,
       draft.customer,
       draft.customerNumber,
       draft.number,
@@ -39,6 +42,7 @@ export function hasBusinessDocumentContent(
       draft.paymentDetails,
       draft.notes,
     ].some(Boolean) ||
+    draft.customFields.some((field) => field.label || field.value) ||
     draft.date !== initialDate ||
     draft.priceMode !== 'subtotal' ||
     draft.taxType !== 'regular' ||
@@ -61,7 +65,21 @@ export function documentResult(draft: BusinessDocumentDraft) {
     )
   )
     errors.push('統一編號可留空；填寫時須為 8 位數字。');
+  draft.customFields.forEach((field, index) => {
+    if (Boolean(field.label.trim()) !== Boolean(field.value.trim()))
+      errors.push(`請填妥自訂欄位 ${index + 1} 的名稱與內容，或清空／移除該欄位。`);
+  });
   return { calculation, errors, valid: calculation.valid && errors.length === 0 };
+}
+
+export function businessDocumentContactFields(draft: BusinessDocumentDraft) {
+  return [
+    { id: 'phone', label: '電話', value: draft.issuerPhone },
+    { id: 'email', label: '信箱', value: draft.issuerEmail },
+    ...draft.customFields,
+  ]
+    .map((field) => ({ ...field, label: field.label.trim(), value: field.value.trim() }))
+    .filter((field) => field.label && field.value);
 }
 
 export function businessDocumentText(draft: BusinessDocumentDraft): string {
@@ -76,7 +94,7 @@ export function businessDocumentText(draft: BusinessDocumentDraft): string {
       : '',
     `開立方：${draft.issuer}`,
     draft.issuerNumber ? `開立方統編：${draft.issuerNumber}` : '',
-    draft.issuerContact,
+    ...businessDocumentContactFields(draft).map((field) => `${field.label}：${field.value}`),
     `客戶：${draft.customer}`,
     draft.customerNumber ? `客戶統編：${draft.customerNumber}` : '',
     `品名\t數量\t單價（${draft.priceMode === 'total' ? '含稅' : '未稅'}）\t金額`,
