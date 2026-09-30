@@ -14,7 +14,24 @@
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
-## 2026-09-30 文件聯絡與自訂欄位
+## 2026-09-30 文件 Logo
+
+- 發布時間：**19:51:52 Asia/Taipei**（11:51:52 UTC）。
+- 部署來源：`b6d17eb24f67214ba43469cdb2277351567d3730`，已推送至 `codex/admin-tools-foundation`。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/b6d17eb24f67214ba43469cdb2277351567d3730`。
+- 前版保留：`/var/www/invoice-helper/releases/69e93d568e7313f6faadc8a0c607cbe4a3f6daf5`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T115152Z-b6d17eb24f67-723863`。
+- 新 manifest：`/var/www/invoice-helper/manifests/b6d17eb24f67214ba43469cdb2277351567d3730.sha256`。
+
+報價與請款單加入本機 Logo 選圖、更換與移除。發布來源版本的 69 項測試、lint、格式、TypeScript、公司建置及瀏覽器 PNG／PDF 檢查通過；實測結果見[驗證紀錄](VERIFICATION.md)。
+
+新舊檔案 SHA-256 及 origin 位元組比對通過；公開 HTTPS 五個檔案均 200，正常 TLS，雜湊與本次封存 manifest 一致。Nginx active、兩份設定雜湊不變，未改其他站點。正式站實際選入透明 PNG，預覽原圖 800 × 240、顯示 135.04 × 40.51，error log 為空。[正式站畫面](design/logo-production.png)。回復時核對 live 與前版 manifest，再依既有 symlink 替換流程切回本節前版；未演練回復。
+
+發布期間共用工作區出現其他工具的進行中變更，保留原狀，未納入本次 Logo 提交或已封存建置；本紀錄不宣稱整個工作區乾淨。
+
+Jev 結案三項皆選 `supported`，behavior／outputs／release 信心為 0.92／0.29／0.45；後兩項觸發未校準提醒門檻。主流程核對實際 PNG、PDF 渲染、正式站選圖及五檔雜湊，未找到具體矛盾；保留低信心結果，不視為 Jev 獨立驗證。未測實體手機、實體印表機及所有瀏覽器引擎。
+
+## 歷史：2026-09-30 文件聯絡與自訂欄位
 
 - 發布時間：**19:27:16 Asia/Taipei**（11:27:16 UTC）。
 - 部署來源：`69e93d568e7313f6faadc8a0c607cbe4a3f6daf5`，已推送至 `codex/admin-tools-foundation`。
