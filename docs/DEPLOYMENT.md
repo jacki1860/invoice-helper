@@ -14,7 +14,22 @@
 
 目前版本使用 31 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
 
-## 2026-10-01 任務導覽與收藏版
+## 2026-10-01 Search Console 驗證標記版
+
+- 發布時間：**00:23:31 Asia/Taipei**（2026-09-30 16:23:31 UTC）。
+- 部署來源：`b6240cb00a9b3bc1e714b2b2ac03202f9ac20acb`，已推送 `codex/admin-tools-foundation`，遠端 SHA 回讀相同。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/b6240cb00a9b3bc1e714b2b2ac03202f9ac20acb`。
+- 前版保留：`/var/www/invoice-helper/releases/09a3150235e8d8514b39d50d3b2cfae677cef1ca`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T162331Z-b6240cb00a9b-733363`。
+- Manifest：`/var/www/invoice-helper/manifests/b6240cb00a9b3bc1e714b2b2ac03202f9ac20acb.sha256`。
+
+唯一來源變更是在 `index.html` 增加公開 Google 驗證 meta。隔離來源的 173 項測試、lint、格式、TypeScript、公司建置與 SEO 31 頁檢查通過；31 HTML 僅增加標記，其他 6 個公開產物與前版完全一致。沿用已審查的 37 檔發布腳本，指定前版 SHA 後原子切換；沒有變更 robots、DNS、Cloudflare 或 Nginx。
+
+獨立 HTTPS／SSH 核對於 **00:24:15–00:24:30 Asia/Taipei** 完成：37 檔正常 TLS、200、SHA 相符、無轉址；31 頁 metadata／JSON-LD 與 sitemap 通過，未知路徑 404、公司首頁 200。首頁 `<head>` 中唯一的驗證標記等於已提交來源；新舊版本各 37 檔及備份 manifest 正確，Nginx active，兩份設定 hash 不變。JS／CSS 未變，沿用前版互動證據，這次沒有重跑完整瀏覽器功能測試。
+
+Search Console 的擁有權驗證已成功，sitemap 最終為成功／31；首頁與報價頁的 Google 即時抓取及索引申請完成，實際收錄仍待確認。過程中的初次讀取異常與結果詳見 [Search Console 紀錄](SEARCH_CONSOLE.md)。需要回復時仍先核對 live 與本次 OLD-SHA256SUMS，再原子切回前版；前版不含驗證標記，回復後必須補回標記以維持網站驗證。未演練 rollback。
+
+## 歷史：2026-10-01 任務導覽與收藏版
 
 - 發布時間：**00:05:31 Asia/Taipei**（2026-09-30 16:05:31 UTC）。
 - 部署來源：`09a3150235e8d8514b39d50d3b2cfae677cef1ca`，已推送 `codex/admin-tools-foundation` 並回讀遠端 SHA 一致；main 未更動。

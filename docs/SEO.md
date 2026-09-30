@@ -1,6 +1,6 @@
 # SEO 與 AI 搜尋
 
-目前正式站為 `09a3150`（2026-10-01 00:05:31 Asia/Taipei），包含完整目錄、五個任務頁及既有工具／分類，共 31 HTML／37 公開檔案。當前功能與驗證見[工具探索說明](TOOL_DISCOVERY.md)，前版 25 頁 SEO 證據保留於下方歷史段落。尚未提交 Search Console 或驗證搜尋收錄。發布紀錄見 [DEPLOYMENT.md](DEPLOYMENT.md)。
+目前正式站為 `b6240cb`（2026-10-01 00:23:31 Asia/Taipei），包含完整目錄、五個任務頁及既有工具／分類，共 31 HTML／37 公開檔案。當前功能與驗證見[工具探索說明](TOOL_DISCOVERY.md)，前版 25 頁 SEO 證據保留於下方歷史段落。Search Console 已驗證擁有權、成功讀取 sitemap 的 31 個網址，並為首頁及報價頁申請索引；實際收錄尚未確認，詳見 [Search Console 紀錄](SEARCH_CONSOLE.md)。發布紀錄見 [DEPLOYMENT.md](DEPLOYMENT.md)。
 
 ## 網址與內容
 
@@ -30,13 +30,13 @@ npm run test:seo-build -- /invoice/
 
 使用實際目錄的 `index.html`，不需要新 SPA rewrite。發布後須在正式主機驗證各工具直接開啟、重新整理、舊 hash、未知路徑 404、CSS／JS 及 sitemap，再確認目前 live 版本。
 
-## 搜尋引擎端的後續工作
+## 搜尋引擎端設定與後續工作
 
-1. 在有權限的 Google Search Console 屬性提交 `https://www.ctrls.com.tw/invoice/sitemap.xml`，並用網址檢查工具查看首頁及代表性工具頁；這一步未執行。
-2. 確認 Search Console 的 Search generative AI 設定是否為 Include，留意父屬性繼承設定；檢查索引及 Generative AI 效能報表。帳號狀態與收錄結果未驗證。
+1. 已建立並驗證 `/invoice/` URL-prefix 資源、提交 sitemap，最終狀態成功／31；首頁與報價頁完成即時測試及索引申請。後續需確認真正收錄及效能數據。
+2. 已確認 Google 搜尋生成式 AI 沿用 `ctrls.com.tw` 預設「包含」，未變更繼承設定；索引及 AI 搜尋成效仍待報表資料。
 3. 本次公開讀取 `/robots.txt` 為 HTTP 200，只有 Cloudflare content-signal 註解，未見生效的 Disallow。公司網域的 robots 只能在根目錄 `/robots.txt` 生效，`/invoice/robots.txt` 不能代替它。本次未修改公司根目錄設定。
 4. 可在保留既有 robots 規則的前提下，新增 `Sitemap: https://www.ctrls.com.tw/invoice/sitemap.xml`；也可直接透過 Search Console 提交，不必為此覆蓋公司 robots。
-5. 在 Cloudflare 與伺服器紀錄確認真正的 Googlebot／OAI-SearchBot 能取回頁面。一般 curl 或瀏覽器 200 不代表已核實爬蟲放行，也不代表搜尋引擎已收錄。ChatGPT 搜尋使用 OAI-SearchBot，與訓練用 GPTBot 分開，不需為了搜尋而更改訓練授權。
+5. Google 即時檢查已確認首頁、報價頁及 sitemap 可抓取，sitemap 報表已成功；這些不等於已收錄，也不代表 OAI-SearchBot 已驗證放行。ChatGPT 搜尋使用 OAI-SearchBot，與訓練用 GPTBot 分開，不需為了搜尋而更改訓練授權。
 
 ## 前版 SEO 本機驗證結果
 

@@ -68,6 +68,6 @@ Chrome **154.0.8037.92** 以正式 HTTPS 實測：
 - 隔離 context 的儲存拒絕、配額不足及壞 JSON 情境均有明確提示、本頁選擇保留，壞原文沒有被覆寫；Space 可操作星號，提示不混入列印。舊 `#tools` 搭配 query 重整仍在首頁，舊發票 hash 升級路徑後預填品名在重整後保留。
 - 桌面 1440px 與手機 320px 首頁已目視，報價 PNG 已目視。首次逐頁檢查與收藏操作共用 context 造成空收藏斷言不符，改用獨立乾淨 context 完整重跑 31 頁後通過；沒有修改產品程式以通過檢查。
 
-證據：[正式站首頁](design/discovery-production-home.png)。操作腳本、完整結果、其他截圖與輸出保留於本機 `.wrangler/discovery-release/`。這些結果不代表其他瀏覽器引擎、實體裝置／印表機、搜尋引擎收錄、排名或 AI 引用已驗證；Search Console 尚未提交。
+證據：[正式站首頁](design/discovery-production-home.png)。操作腳本、完整結果、其他截圖與輸出保留於本機 `.wrangler/discovery-release/`。這些結果不代表其他瀏覽器引擎、實體裝置／印表機、搜尋引擎收錄、排名或 AI 引用已驗證；本版本驗收時 Search Console 尚未提交，後續設定見 [Search Console 紀錄](SEARCH_CONSOLE.md)。
 
 正式站實測後 Jev 第二意見：來源、部署、瀏覽器三項皆為 supported，信心為 0.86／0.89／0.92，沒有 attention 項目。此為需求、宣告與實際證據摘要的比對，不代表 Jev 自行操作正式站，也不擴張上述驗證範圍。

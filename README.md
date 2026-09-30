@@ -90,7 +90,7 @@ npx oxfmt src/data/insurance.ts src/data/laws.ts src/data/calendar.ts
 
 正式站的首頁、完整目錄、五個任務入口、四分類與二十工具會建置為 31 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
 
-任務導覽、全站搜尋與常用收藏已於 2026-10-01 00:05:31（Asia/Taipei）由 `09a3150` 發布，173 項測試通過；見[工具探索說明](docs/TOOL_DISCOVERY.md)。尚未提交 Search Console 或驗證搜尋收錄。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
+任務導覽、全站搜尋與常用收藏已於 2026-10-01 00:05:31（Asia/Taipei）由 `09a3150` 發布，173 項測試通過；見[工具探索說明](docs/TOOL_DISCOVERY.md)。Search Console 已完成擁有權驗證，sitemap 成功讀取 31 個網址；首頁與報價頁已申請索引，實際收錄仍待 Google 處理，詳見 [Search Console 紀錄](docs/SEARCH_CONSOLE.md)。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
 
 ## 本機開發
 
