@@ -2,6 +2,11 @@ export type Category = 'documents' | 'calculations' | 'conversions' | 'reference
 export type ToolId =
   | 'invoice'
   | 'quote'
+  | 'receipt'
+  | 'purchase'
+  | 'delivery'
+  | 'receivables'
+  | 'workdays'
   | 'tax'
   | 'split'
   | 'hourly'
@@ -41,6 +46,34 @@ export const tools: {
     keywords: '報價單 請款單 文件 PDF',
   },
   {
+    id: 'receipt',
+    category: 'documents',
+    label: '收據產生器',
+    description: '記錄這次收到的款項，整理成一份清楚的收據。',
+    keywords: '收據 收款 證明 訂金 尾款 PDF PNG',
+  },
+  {
+    id: 'purchase',
+    category: 'documents',
+    label: '採購單',
+    description: '把訂購品項、金額與交貨約定交給供應商。',
+    keywords: '採購 訂購 供應商 訂單 材料 PDF PNG',
+  },
+  {
+    id: 'delivery',
+    category: 'documents',
+    label: '送貨與簽收單',
+    description: '列清楚交付的物品，留下一份點交紀錄。',
+    keywords: '送貨 出貨 交付 簽收 點交 設備 PDF PNG',
+  },
+  {
+    id: 'receivables',
+    category: 'calculations',
+    label: '收款進度',
+    description: '分次記錄入帳，掌握每一筆尚待收齊的款項。',
+    keywords: '收款 應收 訂金 尾款 逾期 對帳 備份',
+  },
+  {
     id: 'tax',
     category: 'calculations',
     label: '稅額試算',
@@ -60,6 +93,13 @@ export const tools: {
     label: '工時費用',
     description: '用時薪與工作時間，整理每一項服務費用。',
     keywords: '時薪 工時 費用 人力',
+  },
+  {
+    id: 'workdays',
+    category: 'conversions',
+    label: '工作天與交期',
+    description: '依選定的工作規則，計算區間天數或交件日期。',
+    keywords: '工作天 交期 到期 日期 假日 排程 回推',
   },
   {
     id: 'convert',

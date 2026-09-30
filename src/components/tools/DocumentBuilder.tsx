@@ -17,6 +17,12 @@ import { PricingControls, taxLabels } from '../workspace/PricingControls';
 import { Totals, formatMoney } from '../workspace/Totals';
 import { ToolPage, SessionNote } from './ToolPage';
 import { CopyAction } from './CopyAction';
+import {
+  paymentToReceipt,
+  paymentToReceivable,
+  type ReceiptSeed,
+  type ReceivableSeed,
+} from '../../features/tools/handoff';
 
 function emptyDocument(): BusinessDocumentDraft {
   return {
@@ -40,7 +46,13 @@ function emptyDocument(): BusinessDocumentDraft {
   };
 }
 
-export function DocumentBuilder() {
+export function DocumentBuilder({
+  onCreateReceipt,
+  onCreateReceivable,
+}: {
+  onCreateReceipt?: (seed: ReceiptSeed) => void;
+  onCreateReceivable?: (seed: ReceivableSeed) => void;
+}) {
   const [draft, setDraft] = useState(emptyDocument);
   const [initialDate] = useState(getTaiwanDate);
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
@@ -455,6 +467,34 @@ export function DocumentBuilder() {
                   : '列印視窗可選擇另存為 PDF；此文件非統一發票。')}
           </p>
           <CopyAction text={businessDocumentText(draft)} label="複製文件文字" />
+          {draft.kind === 'payment' && (onCreateReceipt || onCreateReceivable) && (
+            <div className="document-actions" aria-label="後續收款作業">
+              {onCreateReceivable && (
+                <button
+                  className="button button-secondary"
+                  disabled={!valid || calculation.amount <= 0}
+                  onClick={() => {
+                    const seed = paymentToReceivable(draft);
+                    if (seed) onCreateReceivable(seed);
+                  }}
+                >
+                  記錄應收款
+                </button>
+              )}
+              {onCreateReceipt && (
+                <button
+                  className="button button-secondary"
+                  disabled={!valid || calculation.amount <= 0}
+                  onClick={() => {
+                    const seed = paymentToReceipt(draft);
+                    if (seed) onCreateReceipt(seed);
+                  }}
+                >
+                  帶入收據
+                </button>
+              )}
+            </div>
+          )}
           <SessionNote />
         </div>
         <aside className="document-preview-stage" aria-label="文件預覽">

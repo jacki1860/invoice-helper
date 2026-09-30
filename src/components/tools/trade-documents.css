@@ -1,0 +1,213 @@
+.trade-sample-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+.trade-sample-row .text-button,
+.trade-line-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.trade-hint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-bottom: 20px;
+}
+.trade-handoff {
+  padding: 20px;
+  margin-bottom: 24px;
+  background: #eee7d9;
+  border: 1px solid #d9cdb9;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.trade-handoff h2 {
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+.trade-handoff > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.trade-workspace .pricing-controls {
+  margin-bottom: 22px;
+}
+.trade-line-card {
+  border-bottom: 1px solid var(--rule);
+  padding: 12px 0 18px;
+  margin-bottom: 14px;
+}
+.trade-line-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.trade-line-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(70px, 1fr);
+  gap: 12px;
+}
+.trade-line-fields.with-prices {
+  grid-template-columns: minmax(0, 2fr) minmax(65px, 0.7fr) minmax(95px, 1fr);
+}
+.trade-line-fields .tool-field {
+  margin-bottom: 0;
+}
+.trade-line-card .field-error {
+  margin-top: 10px;
+}
+.trade-line-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.trade-price-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.trade-price-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.trade-paper-kicker {
+  color: #7a7367;
+  font-size: 11px;
+}
+.trade-paper-data {
+  display: grid;
+  gap: 9px;
+  margin: 24px 0;
+}
+.trade-paper-data > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 12px;
+}
+.trade-paper-data dt {
+  color: #7a7367;
+  font-size: 11px;
+}
+.trade-paper-data dd {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.trade-receipt-amount {
+  padding: 24px 0;
+  margin: 22px 0;
+  border-block: 1px solid #bfb4a2;
+}
+.trade-receipt-amount > span {
+  font-size: 12px;
+  color: #7a7367;
+}
+.trade-receipt-amount strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(25px, 2.5vw, 34px);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  margin: 8px 0;
+}
+.trade-receipt-amount p {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.trade-line-table.without-prices th:first-child {
+  width: 80%;
+}
+.trade-line-table.without-prices th:nth-child(2) {
+  width: 20%;
+}
+.trade-signatures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 38px;
+  break-inside: avoid;
+}
+.trade-signatures span {
+  color: #7a7367;
+  font-size: 11px;
+}
+.trade-signature-blank {
+  height: 48px;
+  border-bottom: 1px solid #bfb4a2;
+}
+.trade-receipt .trade-signatures {
+  grid-template-columns: minmax(0, 1fr);
+  width: 55%;
+  margin-left: auto;
+}
+.export-surface .trade-paper {
+  padding: 44px;
+}
+.export-surface .trade-receipt-amount strong {
+  font-size: 34px;
+}
+@media (max-width: 480px) {
+  .trade-line-fields.with-prices {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .trade-line-fields.with-prices > :first-child {
+    grid-column: 1 / -1;
+  }
+  .trade-paper-data > div {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .trade-signatures {
+    gap: 16px;
+  }
+  .trade-paper h2 {
+    font-size: 26px;
+  }
+}
+@media print {
+  .trade-paper[data-valid='false'] {
+    display: none !important;
+  }
+  .trade-paper {
+    box-shadow: none;
+  }
+  .trade-paper-data {
+    gap: 6px;
+    margin: 18px 0;
+  }
+  .trade-paper .business-chinese {
+    margin-bottom: 18px;
+  }
+  .trade-paper .trade-signatures {
+    margin-top: 24px;
+  }
+  .trade-paper footer {
+    margin-top: 20px;
+  }
+  .trade-paper-data > div,
+  .trade-receipt-amount,
+  .trade-line-table tr {
+    break-inside: avoid;
+  }
+  .trade-line-table thead {
+    display: table-header-group;
+  }
+  .trade-receipt-amount strong {
+    font-size: 30px;
+  }
+}

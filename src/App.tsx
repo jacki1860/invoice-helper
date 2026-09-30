@@ -8,6 +8,14 @@ import { PaymentSplit } from './components/tools/PaymentSplit';
 import { HourlyCalculator } from './components/tools/HourlyCalculator';
 import { AdminConverter } from './components/tools/AdminConverter';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
+import {
+  ReceiptTool,
+  PurchaseOrderTool,
+  DeliveryNoteTool,
+} from './components/tools/TradeDocuments';
+import { Receivables } from './components/tools/Receivables';
+import { WorkdayCalculator } from './components/tools/WorkdayCalculator';
+import type { ReceiptSeed, ReceivableSeed, ToolHandoff } from './features/tools/handoff';
 import InsuranceLookup from './components/tools/InsuranceLookup';
 import { LawLookup } from './components/tools/LawLookup';
 import { CalendarTool } from './components/tools/CalendarTool';
@@ -30,6 +38,8 @@ export default function App() {
   const [initial] = useState(createInitialDraft);
   const [draft, setDraft] = useState(initial.draft);
   const [linkNotice, setLinkNotice] = useState(initial.notice);
+  const [receiptHandoff, setReceiptHandoff] = useState<ToolHandoff<ReceiptSeed>>();
+  const [receivableHandoff, setReceivableHandoff] = useState<ToolHandoff<ReceivableSeed>>();
   const category = categoryForPage(tool);
   const activeTool = tools.find((entry) => entry.id === tool);
 
@@ -48,6 +58,17 @@ export default function App() {
     window.location.hash = 'invoice';
     setTool('invoice');
     setLinkNotice(`已帶入 ${company.name}，原有品項保留。`);
+  };
+
+  const createReceipt = (data: ReceiptSeed) => {
+    setReceiptHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'receipt';
+    setTool('receipt');
+  };
+  const createReceivable = (data: ReceivableSeed) => {
+    setReceivableHandoff({ id: crypto.randomUUID(), data });
+    window.location.hash = 'receivables';
+    setTool('receivables');
   };
 
   return (
@@ -124,7 +145,22 @@ export default function App() {
           <CompanyLookup onUseCompany={useCompany} />
         </section>
         <section hidden={tool !== 'quote'} aria-label="報價與請款單">
-          <DocumentBuilder />
+          <DocumentBuilder onCreateReceipt={createReceipt} onCreateReceivable={createReceivable} />
+        </section>
+        <section hidden={tool !== 'receipt'} aria-label="收據產生器">
+          <ReceiptTool incoming={receiptHandoff} />
+        </section>
+        <section hidden={tool !== 'purchase'} aria-label="採購單">
+          <PurchaseOrderTool />
+        </section>
+        <section hidden={tool !== 'delivery'} aria-label="送貨與簽收單">
+          <DeliveryNoteTool />
+        </section>
+        <section hidden={tool !== 'receivables'} aria-label="收款進度">
+          <Receivables incoming={receivableHandoff} onCreateReceipt={createReceipt} />
+        </section>
+        <section hidden={tool !== 'workdays'} aria-label="工作天與交期">
+          <WorkdayCalculator />
         </section>
         <section hidden={tool !== 'split'} aria-label="款項分攤">
           <PaymentSplit />

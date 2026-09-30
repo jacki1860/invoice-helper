@@ -1,0 +1,350 @@
+.receivables {
+  min-width: 0;
+}
+.receivable-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid var(--accent);
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 0;
+}
+.receivable-summary > div {
+  min-width: 0;
+  padding: 0 24px;
+  border-left: 1px solid var(--rule);
+}
+.receivable-summary > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.receivable-summary dt {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.receivable-summary dd {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.receivable-summary small {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+}
+.receivable-caption {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+.receivable-storage,
+.receivable-handoff {
+  padding: 20px;
+  background: #ede8df;
+  margin: 22px 0;
+  line-height: 1.8;
+  font-size: 13px;
+}
+.receivable-handoff {
+  border-left: 3px solid var(--accent);
+}
+.receivable-storage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+.receivable-storage > div:first-child {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+.receivable-storage p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.receivable-opt-in {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.receivable-opt-in input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.receivable-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+.receivable-handoff .receivable-actions {
+  margin-top: 12px;
+}
+.receivable-recovery {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.receivable-recovery p {
+  width: 100%;
+}
+.receivables .field-error {
+  color: #9c3727;
+}
+.receivable-feedback {
+  min-height: 28px;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: -8px 0 22px;
+  overflow-wrap: anywhere;
+}
+.receivable-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 46px;
+  align-items: start;
+}
+.receivable-editor,
+.receivable-records {
+  min-width: 0;
+}
+.receivable-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+.receivable-section-heading h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+}
+.receivable-section-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.receivable-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(115px, 0.42fr);
+  gap: 16px;
+}
+.receivable-list {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 16px;
+  max-height: 1050px;
+  overflow-y: auto;
+}
+.receivable-list > li {
+  padding: 22px;
+  background: #fffdf9;
+  border: 1px solid var(--rule);
+}
+.receivable-list > li.is-selected {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 var(--accent);
+}
+.receivable-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.receivable-card-heading > p {
+  min-width: 0;
+  flex: 1 1 140px;
+}
+.receivable-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.receivable-badges span {
+  padding: 3px 8px;
+  background: #ece8df;
+  border-radius: 3px;
+}
+.receivable-badges .is-overdue {
+  background: #f8e5db;
+  color: #9c3727;
+}
+.receivable-list h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin: 8px 0 4px;
+  overflow-wrap: anywhere;
+}
+.receivable-card-amounts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 12px;
+}
+.receivable-card-amounts dt {
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.receivable-card-amounts dd {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.receivable-list progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent);
+  margin: 0 0 20px;
+}
+.receivable-empty {
+  padding: 44px 24px;
+  border: 1px dashed #c9c1b4;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.receivable-payments {
+  margin-top: 34px;
+  border-top: 2px solid var(--ink);
+  padding-top: 22px;
+}
+.receivable-payments h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+}
+.receivable-balance {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.receivable-balance strong {
+  color: var(--accent);
+  font-size: 20px;
+}
+.receivable-payment-list {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 28px;
+}
+.receivable-payment-list li {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.receivable-payment-list strong,
+.receivable-payment-list span {
+  display: block;
+}
+.receivable-payment-list span,
+.receivable-payment-list p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-top: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.receivable-payment-list .receivable-actions {
+  margin-top: 8px;
+}
+.receivable-copy {
+  border-top: 1px solid var(--rule);
+  margin-top: 28px;
+  padding-top: 20px;
+}
+.receivable-copy summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.receivable-delete {
+  margin-top: 24px;
+  color: #9c3727;
+}
+.receivables .text-button {
+  min-height: 36px;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .receivable-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 38px;
+  }
+  .receivable-summary > div {
+    padding: 0 14px;
+  }
+  .receivable-summary dd {
+    font-size: 23px;
+  }
+}
+@media (max-width: 600px) {
+  .receivable-summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px 0;
+  }
+  .receivable-summary > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 14px;
+    padding: 0;
+    border-left: 0;
+  }
+  .receivable-summary dt {
+    margin: 0;
+  }
+  .receivable-summary dd {
+    font-size: 25px;
+  }
+  .receivable-storage,
+  .receivable-handoff,
+  .receivable-list > li {
+    padding: 16px;
+  }
+  .receivable-filters,
+  .receivables .tool-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .receivable-list {
+    max-height: 780px;
+  }
+  .receivable-card-amounts {
+    gap: 8px;
+  }
+  .receivable-card-amounts dd {
+    font-size: 14px;
+  }
+  .receivable-list .button {
+    width: 100%;
+  }
+}
