@@ -25,5 +25,8 @@ jobs:
       - name: Format check (oxfmt)
         run: npm run format:check
 
+      - name: Regression tests
+        run: npm test
+
       - name: Type check and build
         run: npm run build
