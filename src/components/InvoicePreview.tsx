@@ -1,17 +1,13 @@
 import { formatTaiwanDate, getInvoicePeriod } from '../utils/dateUtils';
 import { formatChineseAmount } from '../utils/numberUtils';
 import { InvoiceData, InvoiceCalculation } from '../types/invoice';
-import {
-  CalculationSummary,
-  InvoiceHeader,
-  InvoiceTable,
-} from './invoice-preview';
+import { CalculationSummary, InvoiceHeader, InvoiceTable } from './invoice-preview';
 import { InvoiceTips } from './invoice-preview/InvoiceTips';
 import { Download } from 'lucide-react';
 import { useCallback, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
-interface InvoicePreviewProps extends InvoiceData, InvoiceCalculation { }
+interface InvoicePreviewProps extends InvoiceData, InvoiceCalculation {}
 
 export function InvoicePreview({
   buyer,
@@ -50,14 +46,14 @@ export function InvoicePreview({
   }, [uniformNumber, date]);
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Download Button */}
-      <div className='flex justify-end'>
+      <div className="flex justify-end">
         <button
           onClick={handleDownload}
-          className='inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors'
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
         >
-          <Download className='w-4 h-4' />
+          <Download className="w-4 h-4" />
           下載發票預覽
         </button>
       </div>
@@ -69,7 +65,7 @@ export function InvoicePreview({
       <div
         ref={invoiceRef}
         id="invoice-preview"
-        className='border border-gray-300 rounded-lg bg-white print:shadow-none'
+        className="border border-gray-300 rounded-lg bg-white print:shadow-none"
       >
         <InvoiceHeader
           invoicePeriod={invoicePeriod}

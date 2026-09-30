@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { InvoiceItem } from './types/invoice';
 import { InvoiceForm } from './components/InvoiceForm';
 import { InvoicePreview } from './components/InvoicePreview';
 import { calculateInvoiceAmounts } from './utils/invoiceUtils';
@@ -14,14 +15,12 @@ export default function App() {
   const [totalAmount, setTotalAmount] = useState('');
   const [subtotalAmount, setSubtotalAmount] = useState('');
   const [amountType, setAmountType] = useState<'total' | 'subtotal'>('total');
-  const [taxType, setTaxType] = useState<'regular' | 'zero-rate' | 'exempt'>(
-    'regular'
-  );
+  const [taxType, setTaxType] = useState<'regular' | 'zero-rate' | 'exempt'>('regular');
   const [itemName, setItemName] = useState('');
 
   // 取得台灣時間的今天日期
   const [date, setDate] = useState(getTaiwanDate());
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<InvoiceItem[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,15 +52,15 @@ export default function App() {
     subtotalAmount,
     amountType,
     taxType,
-    items
+    items,
   );
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50'>
-      <div className='container mx-auto max-w-7xl px-4 py-6'>
-        <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 items-start'>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <div className="container mx-auto max-w-7xl px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Form Section - 4 columns */}
-          <div className='lg:col-span-4 space-y-6'>
+          <div className="lg:col-span-4 space-y-6">
             <FormCard>
               <InvoiceForm
                 buyer={buyer}
@@ -91,7 +90,7 @@ export default function App() {
           </div>
 
           {/* Preview Section - 8 columns */}
-          <div className='lg:col-span-8'>
+          <div className="lg:col-span-8">
             <PreviewCard>
               <InvoicePreview
                 buyer={buyer}

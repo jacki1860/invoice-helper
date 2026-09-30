@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDebounce } from '../hooks/useDebounce';
 
 interface AmountInputProps {
   value: string;
@@ -12,10 +11,8 @@ export const AmountInput = React.memo(function AmountInput({
   value,
   onChange,
   placeholder,
-  autoFocus
+  autoFocus,
 }: AmountInputProps) {
-  const debouncedValue = useDebounce(value, 300);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/[^\d]/g, '');
     onChange(newValue);
@@ -36,9 +33,7 @@ export const AmountInput = React.memo(function AmountInput({
         onChange={handleChange}
         autoFocus={autoFocus}
       />
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-        元
-      </div>
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">元</div>
     </div>
   );
 });

@@ -1,4 +1,3 @@
-import React from 'react';
 import { TableHeader } from './table/TableHeader';
 import { ItemRows } from './table/ItemRows';
 import { SealRow } from './table/SealRow';
@@ -31,7 +30,7 @@ export function InvoiceTable({
   taxType,
   chineseAmount,
   itemName,
-  items
+  items,
 }: InvoiceTableProps) {
   return (
     <div className="p-4">

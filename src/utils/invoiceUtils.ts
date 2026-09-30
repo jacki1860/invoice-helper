@@ -5,7 +5,7 @@ export const calculateInvoiceAmounts = (
   subtotalAmount: string,
   amountType: 'total' | 'subtotal',
   taxType: 'regular' | 'zero-rate' | 'exempt',
-  items: InvoiceItem[] = []
+  items: InvoiceItem[] = [],
 ) => {
   if (items.length > 0) {
     // If items exist, calculate from items

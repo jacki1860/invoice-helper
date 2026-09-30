@@ -24,7 +24,7 @@ export interface InvoiceCalculation {
   amount: number;
 }
 
-export interface InvoiceFormProps extends Omit<InvoiceData, 'date'> {
+export interface InvoiceFormProps extends InvoiceData {
   setBuyer: (value: string) => void;
   setUniformNumber: (value: string) => void;
   setTotalAmount: (value: string) => void;

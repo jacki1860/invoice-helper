@@ -4,7 +4,7 @@ import { Calculator, Plus, Trash2 } from 'lucide-react';
 import { AmountInput } from './AmountInput';
 import { Select } from './ui/Select';
 import React, { useState } from 'react';
-import { InvoiceItem } from '../types/invoice';
+import { InvoiceItem, InvoiceCalculation } from '../types/invoice';
 
 interface InvoiceInfoStepProps {
   totalAmount: string; // Used as Unit Price input now if manual mode
@@ -21,14 +21,14 @@ interface InvoiceInfoStepProps {
   setDate: (value: string) => void;
   items: InvoiceItem[];
   setItems: (value: InvoiceItem[]) => void;
-  calculation: any;
+  calculation: InvoiceCalculation;
   autoFocus?: boolean;
 }
 
 const taxTypeOptions = [
   { value: 'regular', label: '應稅 (5%)' },
   { value: 'zero-rate', label: '零稅率' },
-  { value: 'exempt', label: '免稅' }
+  { value: 'exempt', label: '免稅' },
 ];
 
 export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
@@ -46,7 +46,7 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
   setDate,
   items,
   setItems,
-  autoFocus
+  autoFocus,
 }: InvoiceInfoStepProps) {
   const [quantity, setQuantity] = useState('1');
 
@@ -59,33 +59,6 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
     const qty = parseInt(quantity);
     if (isNaN(qty) || qty <= 0) return;
 
-    // Calculate line amount (always based on subtotal for standard accounting, but here we honor the input mode)
-    // Actually, we should store pure numbers.
-    // If input is "Total" (with tax), we should probably fetch the subtotal part for storage if we want consistency,
-    // OR we just store what the user gave and let the global calculator handle it.
-    // However, the global calculator iterates items and sums .amount.
-    // Let's assume .amount in InvoiceItem is the "Subtotal" (sales amount) of that line.
-
-    let lineSubtotal = 0;
-    if (amountType === 'total') {
-      // Price is Tax Incl.
-      // Subtotal = (Price / 1.05) * Qty
-      // BUT wait, if we mix tax types?
-      // Let's simplified: The Item stores quantity and unit price.
-      // The amount on the line is usually "Amount" (Sales Amount).
-      // If taxType is regular, Sales Amount = Price / 1.05 * Qty
-    }
-
-    // SIMPLIFICATION:
-    // We will just store the calculated "Amount" (Subtotal) and "Unit Price" and "Quantity".
-    // If the mode is "Total Amount" (Tax Inclusive), then the Unit Price entered is Tax Inclusive.
-    // If the mode is "Subtotal" (Tax Exclusive), the Unit Price entered is Tax Exclusive.
-    // We can rely on the `calculateInvoiceAmounts` to sum up these items.
-    // Wait, `calculateInvoiceAmounts` sums `item.amount`. 
-    // If `item.amount` is Tax Exclusive Subtotal, that works for the standard "Subtotal -> Tax -> Total" flow.
-
-    // Let's do this:
-    // 1. Calculate Unit Price (Tax Excl)
     let unitPriceExcl = 0;
     let lineAmount = 0;
 
@@ -106,7 +79,7 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
       name: itemName,
       quantity: qty,
       unitPrice: unitPriceExcl,
-      amount: lineAmount
+      amount: lineAmount,
     };
 
     setItems([...items, newItem]);
@@ -119,7 +92,7 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
   };
 
   const handleDeleteItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
+    setItems(items.filter((item) => item.id !== id));
   };
 
   return (
@@ -149,9 +122,10 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
             <button
               type="button"
               className={`relative px-4 py-2.5 border rounded-lg text-center transition-all duration-200 group
-                ${amountType === 'total'
-                  ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
-                  : 'bg-white hover:bg-gray-50 hover:border-gray-300'
+                ${
+                  amountType === 'total'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
+                    : 'bg-white hover:bg-gray-50 hover:border-gray-300'
                 }`}
               onClick={() => setAmountType('total')}
             >
@@ -163,9 +137,10 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
             <button
               type="button"
               className={`relative px-4 py-2.5 border rounded-lg text-center transition-all duration-200 group
-                ${amountType === 'subtotal'
-                  ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
-                  : 'bg-white hover:bg-gray-50 hover:border-gray-300'
+                ${
+                  amountType === 'subtotal'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
+                    : 'bg-white hover:bg-gray-50 hover:border-gray-300'
                 }`}
               onClick={() => setAmountType('subtotal')}
             >
@@ -269,7 +244,6 @@ export const InvoiceInfoStep = React.memo(function InvoiceInfoStep({
             </table>
           </div>
         )}
-
       </div>
     </FormStep>
   );
