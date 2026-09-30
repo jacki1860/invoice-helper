@@ -4,6 +4,8 @@
 
 ## 文件電話、信箱與自訂欄位
 
+部署來源 `69e93d568e7313f6faadc8a0c607cbe4a3f6daf5`，已於 **2026-09-30 19:27:16（Asia/Taipei）** 發布；正式站畫面與逐檔驗證見[部署紀錄](DEPLOYMENT.md)。
+
 驗收條件：電話與信箱分開選填；自訂欄位可新增、編輯及移除；報價／請款預覽與輸出包含相同內容。
 
 - Node 24 執行 **66／66 測試通過**，lint、格式檢查、`git diff --check`、TypeScript 及 `build:company` 通過。

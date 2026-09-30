@@ -14,6 +14,23 @@
 
 路由採 hash，不需要伺服器端應用程式或額外 SPA rewrite。既有 Nginx 會將實際目錄的 `/invoice` 導向 `/invoice/`。
 
+## 2026-09-30 文件聯絡與自訂欄位
+
+- 發布時間：**19:27:16 Asia/Taipei**（11:27:16 UTC）。
+- 部署來源：`69e93d568e7313f6faadc8a0c607cbe4a3f6daf5`，已推送至 `codex/admin-tools-foundation`。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/69e93d568e7313f6faadc8a0c607cbe4a3f6daf5`。
+- 前版保留：`/var/www/invoice-helper/releases/a8350fbb42a4af7e1298de07d9d30ef114ef4a93`。
+- 發布紀錄：`/var/backups/invoice-helper/20260930T112716Z-69e93d568e73-722901`。
+- 新 manifest：`/var/www/invoice-helper/manifests/69e93d568e7313f6faadc8a0c607cbe4a3f6daf5.sha256`。
+
+報價與請款單將聯絡資訊拆成電話與信箱，新增多筆自訂名稱／內容欄位。66 項測試、lint、格式、型別與公司建置通過；Chrome 實際複製、下載 PNG、PDF 列印引擎與 320px 排版結果見[驗證紀錄](VERIFICATION.md)。
+
+切換腳本成功完成，新舊 release 逐檔雜湊與 origin 位元組核對通過；正常 TLS 的公開 HTTPS 五檔均回應 200，SHA-256 與本機建置一致。Nginx active、兩份設定雜湊不變，未改其他網站。正式站瀏覽器已填入範例電話、信箱及兩行地址，讀回預覽一致；error log 為空。[正式站畫面](design/custom-fields-production.png)。
+
+回復方式沿用下方十工具版紀錄的條件核對與同目錄 symlink 替換，目標為本節所列前版；本次未實際演練回復。
+
+實際驗證後 Jev 三項均選 `supported`：fields／outputs／release 信心分別 0.75／0.78／0.97。前兩項低於其未校準提醒門檻；主流程核對已執行的測試、瀏覽器文字讀回與實際輸出，未發現具體矛盾。這是第二意見，不是 Jev 自行操作瀏覽器或伺服器的結果。未測實體手機、實體印表機與所有瀏覽器引擎。
+
 ## 歷史：2026-09-30 共用聯絡頁尾
 
 - 發布時間：**19:17:18 Asia/Taipei**（11:17:18 UTC）。
