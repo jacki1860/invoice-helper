@@ -33,6 +33,13 @@
   font-size: 12px;
   line-height: 1.7;
 }
+.calendar-month-export {
+  margin-top: 16px;
+}
+.calendar-month-export .calendar-download {
+  max-width: 100%;
+  white-space: normal;
+}
 .calendar-facts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
