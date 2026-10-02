@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { Download } from 'lucide-react';
 import {
+  buildWorkdaysCsv,
   countWorkdays,
   defaultWorkdayOptions,
+  getWorkdaysCsvFilename,
   shiftWorkdays,
   workdaySummary,
   type WorkdayOptions,
@@ -25,6 +28,7 @@ export function WorkdayCalculator() {
   const [options, setOptions] = useState<WorkdayOptions>(defaultWorkdayOptions);
   const [page, setPage] = useState(0);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState('');
   const result =
     mode === 'interval'
       ? countWorkdays(start, end, includeStart, options)
@@ -36,10 +40,34 @@ export function WorkdayCalculator() {
     mode === 'interval'
       ? `區間計算：${includeStart ? '包含' : '不含'}開始日、包含結束日`
       : `自起始日${direction === 'forward' ? '向後' : '向前'} ${count} 個工作天（不計起始日）`;
+  const resetResultFeedback = () => {
+    setPage(0);
+    setDownloadStatus('');
+  };
   const patchOptions = (patch: Partial<WorkdayOptions>) => {
     setOptions((current) => ({ ...current, ...patch }));
-    setPage(0);
+    resetResultFeedback();
   };
+
+  function downloadCsv() {
+    try {
+      const csv = buildWorkdaysCsv(result);
+      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      const link = document.createElement('a');
+      try {
+        link.href = url;
+        link.download = getWorkdaysCsvFilename(result);
+        document.body.appendChild(link);
+        link.click();
+        setDownloadStatus(`已產生完整 CSV，共 ${result.entries.length} 筆，依推算順序排列。`);
+      } finally {
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+    } catch {
+      setDownloadStatus('無法產生 CSV，請重試或使用「複製計算與每日明細」。');
+    }
+  }
   return (
     <ToolPage
       title="工作天與交期"
@@ -55,7 +83,7 @@ export function WorkdayCalculator() {
               aria-pressed={mode === 'interval'}
               onClick={() => {
                 setMode('interval');
-                setPage(0);
+                resetResultFeedback();
               }}
             >
               計算區間
@@ -64,7 +92,7 @@ export function WorkdayCalculator() {
               aria-pressed={mode === 'shift'}
               onClick={() => {
                 setMode('shift');
-                setPage(0);
+                resetResultFeedback();
               }}
             >
               推算交期
@@ -80,7 +108,7 @@ export function WorkdayCalculator() {
                 value={start}
                 onChange={(event) => {
                   setStart(event.target.value);
-                  setPage(0);
+                  resetResultFeedback();
                 }}
               />
             </label>
@@ -94,7 +122,7 @@ export function WorkdayCalculator() {
                   value={end}
                   onChange={(event) => {
                     setEnd(event.target.value);
-                    setPage(0);
+                    resetResultFeedback();
                   }}
                 />
               </label>
@@ -107,7 +135,7 @@ export function WorkdayCalculator() {
                   maxLength={5}
                   onChange={(event) => {
                     setCount(event.target.value);
-                    setPage(0);
+                    resetResultFeedback();
                   }}
                 />
               </label>
@@ -120,7 +148,7 @@ export function WorkdayCalculator() {
                 checked={includeStart}
                 onChange={(event) => {
                   setIncludeStart(event.target.checked);
-                  setPage(0);
+                  resetResultFeedback();
                 }}
               />
               包含開始日（結束日固定包含）
@@ -133,7 +161,7 @@ export function WorkdayCalculator() {
                   value={direction}
                   onChange={(event) => {
                     setDirection(event.target.value as 'forward' | 'backward');
-                    setPage(0);
+                    resetResultFeedback();
                   }}
                 >
                   <option value="forward">向後推算（未來）</option>
@@ -257,10 +285,28 @@ export function WorkdayCalculator() {
               <p className="workdays-hint">
                 同一天符合多個休假條件時只扣一次，明細優先顯示節日或補假。
               </p>
-              <CopyAction
-                text={workdaySummary(result, options, calculationLabel)}
-                label="複製計算與每日明細"
-              />
+              <div className="workdays-actions">
+                <CopyAction
+                  text={workdaySummary(result, options, calculationLabel)}
+                  label="複製計算與每日明細"
+                />
+                <button
+                  className="button button-secondary"
+                  type="button"
+                  disabled={result.entries.length === 0}
+                  aria-describedby="workdays-csv-status"
+                  onClick={downloadCsv}
+                >
+                  <Download size={17} aria-hidden="true" />
+                  下載完整逐日 CSV
+                </button>
+              </div>
+              <p id="workdays-csv-status" className="workdays-hint" role="status">
+                {downloadStatus ||
+                  (result.entries.length
+                    ? `下載全部 ${result.entries.length} 筆，不受目前明細頁數影響。`
+                    : '目前沒有計入日期，無逐日明細可下載。')}
+              </p>
               <details
                 className="workdays-details"
                 open={detailsOpen}
@@ -272,25 +318,34 @@ export function WorkdayCalculator() {
                     {result.entries.length === 0 ? (
                       <p className="workdays-hint">依目前起算設定，沒有需要計入的日期。</p>
                     ) : (
-                      <table>
-                        <caption className="sr-only">依推算順序列出每日工作狀態</caption>
-                        <thead>
-                          <tr>
-                            <th>日期</th>
-                            <th>星期</th>
-                            <th>計算依據</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {detailRows.map((day) => (
-                            <tr key={day.date} className={day.working ? 'is-working' : ''}>
-                              <td>{day.date}</td>
-                              <td>{weekdays[day.weekday]}</td>
-                              <td>{day.label}</td>
+                      <>
+                        <p className="workdays-hint workdays-visible-range">
+                          目前第 {activePage * PAGE_SIZE + 1}–
+                          {Math.min((activePage + 1) * PAGE_SIZE, result.entries.length)} 筆／共{' '}
+                          {result.entries.length} 筆
+                        </p>
+                        <table>
+                          <caption className="sr-only">依推算順序列出每日工作狀態</caption>
+                          <thead>
+                            <tr>
+                              <th scope="col">日期</th>
+                              <th scope="col">星期</th>
+                              <th scope="col">狀態</th>
+                              <th scope="col">計算依據</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {detailRows.map((day) => (
+                              <tr key={day.date} className={day.working ? 'is-working' : ''}>
+                                <td>{day.date}</td>
+                                <td>{weekdays[day.weekday]}</td>
+                                <td>{day.working ? '工作' : '休息'}</td>
+                                <td>{day.label}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </>
                     )}
                     {pageCount > 1 && (
                       <div className="workdays-pagination">
