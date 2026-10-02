@@ -67,6 +67,23 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+.workdays-result {
+  min-width: 0;
+}
+.workdays-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+.workdays-actions .button {
+  max-width: 100%;
+  white-space: normal;
+}
+.workdays-actions .copy-action {
+  max-width: 100%;
+  margin-top: 0;
+}
 .workdays-details {
   margin-top: 20px;
   border-top: 1px solid var(--rule);
@@ -77,8 +94,9 @@
   font-size: 14px;
 }
 .workdays-details table {
-  margin-top: 18px;
+  margin-top: 8px;
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 12px;
 }
@@ -92,11 +110,14 @@
 }
 .workdays-details th:first-child,
 .workdays-details td:first-child {
-  white-space: nowrap;
+  width: 37%;
   padding-left: 0;
 }
 .workdays-details th:nth-child(2) {
-  min-width: 32px;
+  width: 13%;
+}
+.workdays-details th:nth-child(3) {
+  width: 19%;
 }
 .workdays-details td {
   color: var(--muted);
