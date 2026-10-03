@@ -207,6 +207,35 @@ export function equipmentLoanText(draft: EquipmentLoanDraft, today = getTaiwanDa
     .join('\n');
 }
 
+export function equipmentReminderText(draft: EquipmentLoanDraft, today = getTaiwanDate()): string {
+  if (!isValidInvoiceDate(today)) return '';
+  const result = equipmentLoanResult(draft, today);
+  if (!result.valid || result.outstanding === 0) return '';
+  const outstandingLines = result.lines.flatMap((line, index) => {
+    if (line.outstanding === null || line.outstanding <= 0) return [];
+    const item = draft.lines[index];
+    return [
+      `${item.name}${item.assetId.trim() ? `（器材編號：${item.assetId}）` : ''}｜待還 ${line.outstanding} 件`,
+    ];
+  });
+  return [
+    '器材待還提醒',
+    `借用人：${draft.borrower}`,
+    `出借人：${draft.lender}`,
+    draft.reference.trim() ? `借用編號：${draft.reference}` : '',
+    `預定歸還日期：${draft.dueDate}`,
+    `核對日期：${today}（臺北時間）`,
+    result.overdue
+      ? '預定歸還日期已過，請協助核對以下待還器材與歸還安排。'
+      : '請協助核對以下待還器材與歸還安排。',
+    ...outstandingLines.map((line, index) => `${index + 1}. ${line}`),
+    '配件與歸還狀況請由雙方另行核對；本提醒不判定配件待還數量。',
+    '如已完成歸還，請雙方核對並更新借還紀錄。',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
 function objectFields(value: unknown, fields: string[]): Record<string, unknown> {
   if (
     !value ||
