@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 25);
+  assert.equal(legacyPages.length, 26);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -132,6 +132,8 @@ test('global search matches user vocabulary across functional categories', () =>
   assert.deepEqual(ids(searchTools('報帳')), ['expense']);
   assert.deepEqual(ids(searchTools('統一編號')), ['company']);
   assert.deepEqual(ids(searchTools('營業日')), ['workdays']);
+  assert.deepEqual(ids(searchTools('清除重複')), ['list-cleanup']);
+  assert.deepEqual(ids(searchTools('清單 TXT')), ['list-cleanup']);
   assert.ok(searchTools('付款').some((tool) => tool.category === 'documents'));
   assert.ok(searchTools('付款').some((tool) => tool.category === 'calculations'));
   assert.deepEqual(ids(searchTools('催款 備份')), ['receivables']);

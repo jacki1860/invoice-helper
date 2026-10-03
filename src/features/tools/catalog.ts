@@ -16,6 +16,7 @@ export type ToolId =
   | 'split'
   | 'hourly'
   | 'convert'
+  | 'list-cleanup'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -52,7 +53,15 @@ export const taskCollections: {
     id: 'purchasing',
     label: '採購與交付',
     description: '比較供應商報價，處理採購、送貨與器材點交。',
-    toolIds: ['compare', 'purchase', 'delivery', 'acceptance', 'equipment', 'workdays'],
+    toolIds: [
+      'compare',
+      'purchase',
+      'delivery',
+      'acceptance',
+      'equipment',
+      'workdays',
+      'list-cleanup',
+    ],
   },
   {
     id: 'expenses',
@@ -63,8 +72,8 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天，查公司與有來源的公開資料。',
-    toolIds: ['workdays', 'calendar', 'convert', 'company', 'insurance', 'laws'],
+    description: '換算日期、安排工作天、整理清單，查公司與有來源的公開資料。',
+    toolIds: ['workdays', 'calendar', 'convert', 'list-cleanup', 'company', 'insurance', 'laws'],
   },
 ];
 
@@ -188,6 +197,13 @@ export const tools: Tool[] = [
     label: '金額與日期轉換',
     description: '中文大寫金額、民國與西元日期，隨手複製。',
     keywords: '大寫 數字 民國 西元 日期',
+  },
+  {
+    id: 'list-cleanup',
+    category: 'conversions',
+    label: '清單整理與去重',
+    description: '整理多行名單、品項或代碼，去除空行與重複項目。',
+    keywords: '清單 名單 去重 重複 空白 空行 文字 品項 代碼 TXT',
   },
   {
     id: 'company',
