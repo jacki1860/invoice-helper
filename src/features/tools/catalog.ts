@@ -16,6 +16,7 @@ export type ToolId =
   | 'split'
   | 'hourly'
   | 'convert'
+  | 'meeting-agenda'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -40,7 +41,7 @@ export const taskCollections: {
     id: 'quoting',
     label: '報價與接案',
     description: '估算成本與工時，整理報價、稅額及交期。',
-    toolIds: ['quote', 'profit', 'hourly', 'tax', 'workdays', 'company'],
+    toolIds: ['quote', 'profit', 'hourly', 'tax', 'workdays', 'company', 'meeting-agenda'],
   },
   {
     id: 'payments',
@@ -63,8 +64,8 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天，查公司與有來源的公開資料。',
-    toolIds: ['workdays', 'calendar', 'convert', 'company', 'insurance', 'laws'],
+    description: '換算日期、安排工作天與會議時間，查公司及公開資料。',
+    toolIds: ['workdays', 'calendar', 'convert', 'meeting-agenda', 'company', 'insurance', 'laws'],
   },
 ];
 
@@ -188,6 +189,13 @@ export const tools: Tool[] = [
     label: '金額與日期轉換',
     description: '中文大寫金額、民國與西元日期，隨手複製。',
     keywords: '大寫 數字 民國 西元 日期',
+  },
+  {
+    id: 'meeting-agenda',
+    category: 'conversions',
+    label: '會議議程時間表',
+    description: '填入開始時間與議題分鐘數，排出每項起訖時間及完整議程。',
+    keywords: '會議 議程 時間表 開會 分鐘 排程 討論 TXT',
   },
   {
     id: 'company',

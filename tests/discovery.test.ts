@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 25);
+  assert.equal(legacyPages.length, 26);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -145,4 +145,10 @@ test('search normalizes full-width characters, case and whitespace with AND matc
   assert.deepEqual(ids(searchTools('')), ids(tools));
   assert.deepEqual(ids(searchTools(' \n\t　')), ids(tools));
   assert.deepEqual(ids(searchTools('不存在的行政工具')), []);
+});
+
+test('meeting agenda is discoverable by practical meeting preparation terms', () => {
+  for (const query of ['會議安排', '議程表', '開會流程', '討論時程']) {
+    assert.deepEqual(ids(searchTools(query)), ['meeting-agenda']);
+  }
 });
