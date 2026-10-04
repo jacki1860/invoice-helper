@@ -136,6 +136,56 @@
 .equipment-return-fields .tool-field:last-child {
   margin-bottom: 0;
 }
+.equipment-line-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  background: #fffdf9;
+  overflow-wrap: anywhere;
+}
+.equipment-line-progress strong {
+  font-size: 13px;
+}
+.equipment-line-progress span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.equipment-reminder {
+  min-width: 0;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.equipment-reminder h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.equipment-reminder-preview {
+  max-width: 100%;
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid var(--rule);
+  background: #fffdf9;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.equipment-reminder-empty {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 14px 0;
+}
+.equipment-reminder .button {
+  max-width: 100%;
+  white-space: normal;
+}
 .equipment-paper-summary {
   padding: 14px 0;
   margin: 18px 0;
