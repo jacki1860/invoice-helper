@@ -148,3 +148,9 @@ test('search normalizes full-width characters, case and whitespace with AND matc
   assert.deepEqual(ids(searchTools(' \n\t　')), ids(tools));
   assert.deepEqual(ids(searchTools('不存在的行政工具')), []);
 });
+
+test('meeting agenda is discoverable by practical meeting preparation terms', () => {
+  for (const query of ['會議安排', '議程表', '開會流程', '討論時程']) {
+    assert.deepEqual(ids(searchTools(query)), ['meeting-agenda']);
+  }
+});
