@@ -74,7 +74,16 @@ export const taskCollections: {
     id: 'reference',
     label: '日期與資料查詢',
     description: '換算日期、安排工作天與會議時間、整理清單，查公司及公開資料。',
-    toolIds: ['workdays', 'calendar', 'convert', 'list-cleanup', 'meeting-agenda', 'company', 'insurance', 'laws'],
+    toolIds: [
+      'workdays',
+      'calendar',
+      'convert',
+      'list-cleanup',
+      'meeting-agenda',
+      'company',
+      'insurance',
+      'laws',
+    ],
   },
 ];
 

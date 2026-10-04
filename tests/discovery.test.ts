@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 26);
+  assert.equal(legacyPages.length, 27);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);

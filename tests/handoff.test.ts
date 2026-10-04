@@ -49,7 +49,7 @@ test('quotes, incomplete forms and zero totals cannot become payment handoffs', 
 
 test('twenty-two tools have unique routes and the legacy invoice entry still works', () => {
   assert.equal(tools.length, 22);
-  assert.equal(new Set(tools.map((tool) => tool.id )).size, 22);
+  assert.equal(new Set(tools.map((tool) => tool.id)).size, 22);
   for (const id of [
     'receipt',
     'purchase',
