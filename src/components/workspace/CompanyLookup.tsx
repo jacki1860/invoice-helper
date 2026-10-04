@@ -58,7 +58,6 @@ export function CompanyLookup({ onUseCompany }: Props) {
               <input
                 type="text"
                 inputMode="numeric"
-                maxLength={8}
                 autoComplete="off"
                 placeholder="8 碼統一編號"
                 value={input}
