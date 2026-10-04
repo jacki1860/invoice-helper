@@ -4,6 +4,7 @@ import {
   emptyEquipmentLoan,
   equipmentLoanResult,
   equipmentLoanText,
+  equipmentReminderText,
   exportEquipmentLoan,
   hasEquipmentLoanContent,
   importEquipmentLoan,
@@ -271,4 +272,121 @@ test('equipment backup checks every string, quantity and date before replacing t
       importEquipmentLoan(JSON.stringify({ ...backup, draft: { ...base, ...patch } }), today),
     );
   assert.equal(base.lines[0].returnedQuantity, '0');
+});
+
+test('reminders list only outstanding quantities while omitting fully returned equipment and private fields', () => {
+  const mixed: EquipmentLoanDraft = {
+    ...base,
+    lenderContact: 'PRIVATE_LENDER_CONTACT',
+    borrowerContact: 'PRIVATE_BORROWER_CONTACT',
+    purpose: 'PRIVATE_PURPOSE',
+    notes: 'PRIVATE_NOTES',
+    lines: [
+      {
+        ...base.lines[0],
+        quantity: '5',
+        returnedQuantity: '2',
+        returnDate: today,
+        returnCondition: 'PRIVATE_RETURN_CONDITION',
+        outCondition: 'PRIVATE_OUT_CONDITION',
+        accessories: 'PRIVATE_ACCESSORIES',
+      },
+      {
+        ...base.lines[0],
+        id: 'returned',
+        name: '已還相機',
+        assetId: 'RETURNED-ASSET',
+        returnedQuantity: '2',
+        returnDate: today,
+        returnCondition: '正常',
+      },
+      { ...base.lines[0], id: 'pending', name: '延長線', assetId: '' },
+    ],
+  };
+  const text = equipmentReminderText(mixed, today);
+  assert.match(text, /^器材待還提醒\n借用人：活動團隊\n出借人：工作室\n借用編號：EQ-1\n/);
+  assert.match(text, /預定歸還日期：2026-09-30\n核對日期：2026-09-30（臺北時間）/);
+  assert.deepEqual(
+    text.split('\n').filter((line) => /^\d+\./.test(line)),
+    ['1. 投影機（器材編號：EQ-001）｜待還 3 件', '2. 延長線｜待還 2 件'],
+  );
+  assert.doesNotMatch(text, /已還相機|RETURNED-ASSET|PRIVATE_/);
+  assert.match(text, /配件與歸還狀況請由雙方另行核對；本提醒不判定配件待還數量。/);
+  assert.doesNotMatch(text, /電源線 2 條|借出 5|累計已還/);
+});
+
+test('reminders omit optional identifiers and use the existing Taipei due-day boundary', () => {
+  const withoutIds = { ...base, reference: '', lines: [{ ...base.lines[0], assetId: '' }] };
+  const text = equipmentReminderText(withoutIds, today);
+  assert.doesNotMatch(text, /借用編號：|器材編號：|（）/);
+  assert.match(text, /1\. 投影機｜待還 2 件/);
+  const whitespaceIds = {
+    ...withoutIds,
+    reference: ' ',
+    lines: [{ ...withoutIds.lines[0], assetId: ' ' }],
+  };
+  assert.equal(equipmentReminderText(whitespaceIds, today), text);
+  const dueDay = getTaiwanDate(new Date('2026-09-30T15:59:59Z'));
+  const followingDay = getTaiwanDate(new Date('2026-09-30T16:00:00Z'));
+  assert.doesNotMatch(equipmentReminderText(base, dueDay), /已過|逾期/);
+  assert.match(equipmentReminderText(base, followingDay), /預定歸還日期已過，請協助核對/);
+  assert.match(equipmentReminderText(base, followingDay), /核對日期：2026-10-01（臺北時間）/);
+  assert.doesNotMatch(
+    equipmentReminderText({ ...base, dueDate: '2026-10-02' }, today),
+    /已過|逾期/,
+  );
+});
+
+test('reminders are empty for fully returned, invalid drafts, contradictory quantities and invalid check dates', () => {
+  const full = {
+    ...base,
+    lines: [
+      { ...base.lines[0], returnedQuantity: '2', returnDate: today, returnCondition: '正常' },
+    ],
+  };
+  assert.equal(equipmentReminderText(full, today), '');
+  assert.equal(equipmentReminderText(full, '2026-10-01'), '');
+  for (const draft of [
+    emptyEquipmentLoan(today),
+    { ...base, lines: [] },
+    { ...base, borrower: '' },
+    { ...base, dueDate: '2026-09-28' },
+    { ...base, lines: [{ ...base.lines[0], quantity: '0' }] },
+    {
+      ...base,
+      lines: [
+        { ...base.lines[0], returnedQuantity: '3', returnDate: today, returnCondition: '正常' },
+      ],
+    },
+    { ...base, lines: [{ ...base.lines[0], returnedQuantity: '1' }] },
+    { ...base, lines: [{ ...base.lines[0], name: '' }] },
+  ]) {
+    assert.equal(equipmentLoanResult(draft, today).valid, false);
+    assert.equal(equipmentReminderText(draft, today), '');
+  }
+  for (const invalidDate of ['', '2026-02-29', '2026-9-30', '0000-01-01', 'not-a-date'])
+    assert.equal(equipmentReminderText(base, invalidDate), '', invalidDate);
+});
+
+test('building reminders does not mutate drafts or change complete document and version-1 backup exports', () => {
+  const draft = structuredClone(base);
+  const original = structuredClone(draft);
+  const documentBefore = equipmentLoanText(draft, today);
+  const backupBefore = exportEquipmentLoan(draft, today);
+  for (const line of draft.lines) Object.freeze(line);
+  Object.freeze(draft.lines);
+  Object.freeze(draft);
+  assert.match(equipmentReminderText(draft, today), /待還 2 件/);
+  assert.deepEqual(draft, original);
+  assert.equal(equipmentLoanText(draft, today), documentBefore);
+  assert.equal(exportEquipmentLoan(draft, today), backupBefore);
+  assert.match(documentBefore, /出借聯絡資訊：出借窗口/);
+  assert.match(documentBefore, /配件：電源線 2 條/);
+  assert.doesNotMatch(documentBefore, /器材待還提醒/);
+  assert.deepEqual(JSON.parse(backupBefore), {
+    schema: 'xiaoshiwu-equipment-loan',
+    version: 1,
+    draft: original,
+  });
+  assert.deepEqual(importEquipmentLoan(backupBefore, today), original);
 });

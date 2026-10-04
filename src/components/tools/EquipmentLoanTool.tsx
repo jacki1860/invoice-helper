@@ -5,6 +5,7 @@ import {
   emptyEquipmentLine,
   equipmentLoanResult,
   equipmentLoanText,
+  equipmentReminderText,
   exportEquipmentLoan,
   hasEquipmentLoanContent,
   importEquipmentLoan,
@@ -16,6 +17,7 @@ import {
 } from '../../features/tools/equipmentLoan';
 import { getTaiwanDate } from '../../utils/dateUtils';
 import { ToolPage, SourceNote } from './ToolPage';
+import { CopyAction } from './CopyAction';
 import {
   TradeField,
   SampleButton,
@@ -49,6 +51,7 @@ export function EquipmentLoanTool() {
     };
   }, []);
   const result = equipmentLoanResult(draft, today);
+  const reminderText = equipmentReminderText(draft, today);
   const hasContent = hasEquipmentLoanContent(draft, initialDate);
   const patch = (update: Partial<EquipmentLoanDraft>) => {
     setDraft((current) => ({ ...current, ...update }));
@@ -221,6 +224,18 @@ export function EquipmentLoanTool() {
               >
                 <Trash2 size={17} />
               </button>
+              <div className="equipment-line-progress" aria-live="polite">
+                <strong>
+                  {result.valid
+                    ? `待還 ${result.lines[index].outstanding} / 借出 ${result.lines[index].quantity} 件`
+                    : '資料待確認'}
+                </strong>
+                <span>
+                  {result.valid
+                    ? `${equipmentLoanStatusLabel[result.lines[index].status]}${result.lines[index].overdue ? '・已逾期' : ''}`
+                    : '請先確認整份借還資料。'}
+                </span>
+              </div>
               <div className="tool-form-grid">
                 <TradeField
                   label={`器材名稱 ${index + 1} *`}
@@ -301,6 +316,22 @@ export function EquipmentLoanTool() {
             onChange={(notes) => patch({ notes })}
           />
           <TradeErrors errors={result.errors} show={hasContent} />
+          <section className="equipment-reminder" aria-labelledby="equipment-reminder-title">
+            <h3 id="equipment-reminder-title">待還提醒</h3>
+            <p className="trade-hint">
+              僅在本機整理待還文字，不會自動傳送。請先核對內容，再自行傳送給借用人。
+            </p>
+            {reminderText ? (
+              <pre className="equipment-reminder-preview">{reminderText}</pre>
+            ) : (
+              <p className="equipment-reminder-empty" role="status">
+                {result.valid
+                  ? '目前沒有待還器材，無需產生提醒。'
+                  : '請先填妥並確認借還資料，才能產生待還提醒。'}
+              </p>
+            )}
+            <CopyAction text={reminderText} disabled={!reminderText} label="複製待還提醒" />
+          </section>
           <section className="records-backup" aria-label="器材借還文件備份">
             <h3>把借還進度帶到下一次</h3>
             <p>填妥後可下載 JSON 備份；下次匯入可更新歸還數量。最多 50 筆，檔案上限 5 MB。</p>

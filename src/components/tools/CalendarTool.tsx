@@ -22,10 +22,13 @@ export function CalendarTool() {
   const todayIsAvailable = calendarSnapshots.some((item) => item.year === todayYear);
   const [year, setYear] = useState(todayIsAvailable ? todayYear : calendarSnapshots[0].year);
   const [month, setMonth] = useState(todayIsAvailable ? todayMonth : 1);
-  const [downloadStatus, setDownloadStatus] = useState('');
+  const [downloadStatus, setDownloadStatus] = useState<{
+    scope: 'year' | 'month';
+    message: string;
+  } | null>(null);
   const calendar = calendarSnapshots.find((item) => item.year === year) ?? calendarSnapshots[0];
   const events = getCalendarEvents(calendar);
-  const monthEvents = events.filter((day) => Number(day.date.slice(5, 7)) === month);
+  const monthEvents = getCalendarEvents(calendar, month);
   const weeks = getCalendarMonth(calendar, month);
   const substitutes = events.filter((day) => day.note === '補假').length;
   const firstYear = calendarSnapshots[0].year;
@@ -35,26 +38,31 @@ export function CalendarTool() {
     const next = new Date(Date.UTC(year, month - 1 + offset, 1));
     setYear(next.getUTCFullYear());
     setMonth(next.getUTCMonth() + 1);
-    setDownloadStatus('');
+    setDownloadStatus(null);
   }
 
-  function downloadCalendar() {
-    const blob = new Blob([buildCalendarIcs(calendar)], { type: 'text/calendar;charset=utf-8' });
+  function downloadCalendar(scope: 'year' | 'month') {
+    const exportMonth = scope === 'month' ? month : undefined;
+    const blob = new Blob([buildCalendarIcs(calendar, new Date(), exportMonth)], {
+      type: 'text/calendar;charset=utf-8',
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = getCalendarFilename(year);
+    link.download = getCalendarFilename(year, exportMonth);
     document.body.appendChild(link);
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setDownloadStatus(`已產生 ${year} 年 ICS，共 ${events.length} 筆節日與補假。`);
+    const range = scope === 'month' ? `${year} 年 ${month} 月` : `${year} 年`;
+    const count = scope === 'month' ? monthEvents.length : events.length;
+    setDownloadStatus({ scope, message: `已產生 ${range} ICS，共 ${count} 筆節日與補假。` });
   }
 
   return (
     <ToolPage
       title="國定假日行事曆"
-      description="查看國定假日與政府機關補假，把一整年的重要日期帶進你的行事曆。"
+      description="查看國定假日與政府機關補假，下載全年或指定月份的重要日期，帶進你的行事曆。"
     >
       <div className="calendar-toolbar">
         <div className="calendar-year-field">
@@ -64,7 +72,7 @@ export function CalendarTool() {
             value={year}
             onChange={(event) => {
               setYear(Number(event.target.value));
-              setDownloadStatus('');
+              setDownloadStatus(null);
             }}
           >
             {calendarSnapshots.map((item) => (
@@ -78,13 +86,15 @@ export function CalendarTool() {
           <button
             className="button button-primary calendar-download"
             type="button"
-            onClick={downloadCalendar}
+            onClick={() => downloadCalendar('year')}
           >
             <Download size={17} aria-hidden="true" />
-            下載 {year} 節日與補假 ICS
+            下載 {year} 全年 ICS
           </button>
           <p className="calendar-export-note" role="status">
-            {downloadStatus || `全年 ${events.length} 筆；不含一般週末。下載後可匯入行事曆。`}
+            {downloadStatus?.scope === 'year'
+              ? downloadStatus.message
+              : `全年 ${events.length} 筆；不含一般週末。下載後可匯入行事曆。`}
           </p>
         </div>
       </div>
@@ -138,7 +148,10 @@ export function CalendarTool() {
               <select
                 id="calendar-month"
                 value={month}
-                onChange={(event) => setMonth(Number(event.target.value))}
+                onChange={(event) => {
+                  setMonth(Number(event.target.value));
+                  setDownloadStatus(null);
+                }}
               >
                 {Array.from({ length: 12 }, (_, index) => (
                   <option key={index} value={index + 1}>
@@ -162,7 +175,7 @@ export function CalendarTool() {
                   onClick={() => {
                     setYear(todayYear);
                     setMonth(todayMonth);
-                    setDownloadStatus('');
+                    setDownloadStatus(null);
                   }}
                 >
                   本月
@@ -235,6 +248,25 @@ export function CalendarTool() {
             <h2 id="calendar-agenda-title">{month} 月節日與補假</h2>
             <span>{monthEvents.length} 筆</span>
           </div>
+          <div className="calendar-month-export">
+            <button
+              className="button button-outline calendar-download"
+              type="button"
+              onClick={() => downloadCalendar('month')}
+              disabled={monthEvents.length === 0}
+              aria-describedby="calendar-month-export-note"
+            >
+              <Download size={17} aria-hidden="true" />
+              下載 {year} 年 {month} 月 ICS
+            </button>
+            <p id="calendar-month-export-note" className="calendar-export-note" role="status">
+              {downloadStatus?.scope === 'month'
+                ? downloadStatus.message
+                : monthEvents.length
+                  ? `只下載目前選定月份的 ${monthEvents.length} 筆節日與補假。`
+                  : '本月沒有節日與補假可下載；可切換月份或下載全年。'}
+            </p>
+          </div>
           {monthEvents.length ? (
             <ol className="calendar-event-list">
               {monthEvents.map((day) => (
@@ -260,7 +292,7 @@ export function CalendarTool() {
           <p className="calendar-agenda-note">一般週末顯示在月曆中，不列入節日清單與 ICS。</p>
           {year === 2027 && (
             <p className="calendar-agenda-note">
-              2027 年 12 月 31 日為 2028 年元旦的政府機關補假，已納入全年下載。
+              2027 年 12 月 31 日為 2028 年元旦的政府機關補假，已納入全年及 12 月下載。
             </p>
           )}
         </section>

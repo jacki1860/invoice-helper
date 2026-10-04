@@ -199,3 +199,52 @@ export function workdaySummary(
     '此為依所選規則排程的結果；實際交期及工作日以雙方約定為準。',
   ].join('\n');
 }
+
+function validateWorkdayExport(result: WorkdayResult): void {
+  if (
+    !result.valid ||
+    result.entries.length === 0 ||
+    !isValidInvoiceDate(result.start) ||
+    !isValidInvoiceDate(result.end)
+  )
+    throw new Error('目前沒有有效的逐日明細可下載。');
+}
+
+/** Export calculated entries in their original order, independently of UI pagination. */
+export function buildWorkdaysCsv(result: WorkdayResult): string {
+  validateWorkdayExport(result);
+  const weekdayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  const rows = [
+    ['日期', '星期', '是否工作日', '計算依據'],
+    ...result.entries.map((day) => {
+      if (
+        !isValidInvoiceDate(day.date) ||
+        !Number.isInteger(day.weekday) ||
+        day.weekday < 0 ||
+        day.weekday > 6 ||
+        typeof day.working !== 'boolean' ||
+        typeof day.label !== 'string'
+      )
+        throw new Error('逐日明細資料無效，無法下載 CSV。');
+      return [day.date, `星期${weekdayNames[day.weekday]}`, day.working ? '是' : '否', day.label];
+    }),
+  ];
+  return `\uFEFF${rows
+    .map((row) =>
+      row
+        .map((value) => {
+          // Labels come from our calculated calendar data, never from free-text inputs.
+          // Refuse unexpected formula-like content instead of adding spreadsheet formulas.
+          if (/^\s*[=+@-]/u.test(value))
+            throw new Error('明細包含不支援的試算表內容，無法下載 CSV。');
+          return `"${value.replace(/"/g, '""')}"`;
+        })
+        .join(','),
+    )
+    .join('\r\n')}\r\n`;
+}
+
+export function getWorkdaysCsvFilename(result: WorkdayResult): string {
+  validateWorkdayExport(result);
+  return `workdays-${result.start}-to-${result.end}.csv`;
+}

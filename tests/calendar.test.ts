@@ -166,3 +166,73 @@ test('ICS keeps event identities stable when a user downloads again', () => {
   const later = buildCalendarIcs(calendar, new Date('2026-10-01T08:00:00Z'));
   assert.deepEqual(first.match(/^UID:.+$/gm), later.match(/^UID:.+$/gm));
 });
+
+test('monthly ICS includes exactly the selected month and preserves full-year event identities', () => {
+  const stamp = new Date('2026-10-01T08:00:00Z');
+  for (const calendar of calendarSnapshots) {
+    const annualEvents = [
+      ...buildCalendarIcs(calendar, stamp)
+        .replace(/\r\n[ \t]/g, '')
+        .matchAll(/BEGIN:VEVENT\r\n([\s\S]*?)END:VEVENT/g),
+    ].map((match) => match[1]);
+    const allMonthlyEvents: string[] = [];
+    for (let month = 1; month <= 12; month++) {
+      const ics = buildCalendarIcs(calendar, stamp, month);
+      const unfolded = ics.replace(/\r\n[ \t]/g, '');
+      const events = [...unfolded.matchAll(/BEGIN:VEVENT\r\n([\s\S]*?)END:VEVENT/g)].map(
+        (match) => match[1],
+      );
+      const monthDigits = String(month).padStart(2, '0');
+      const expected = calendar.days.filter(
+        (day) => day.note && day.date.startsWith(`${calendar.year}-${monthDigits}-`),
+      );
+      assert.equal(events.length, expected.length);
+      assert.deepEqual(getCalendarEvents(calendar, month), expected);
+      assert.match(
+        unfolded,
+        new RegExp(`X-WR-CALNAME:${calendar.year} 年 ${month} 月 國定假日與政府機關補假\r\n`),
+      );
+      for (const [index, event] of events.entries()) {
+        assert.match(
+          event,
+          new RegExp(`DTSTART;VALUE=DATE:${calendar.year}${monthDigits}\\d{2}\r\n`),
+        );
+        assert.ok(event.includes(`UID:tw-dgpa-${expected[index].date}@invoice-helper.local\r\n`));
+        assert.ok(annualEvents.includes(event));
+      }
+      assert.equal(
+        getCalendarFilename(calendar.year, month),
+        `taiwan-holidays-${calendar.year}-${monthDigits}.ics`,
+      );
+      for (const line of ics.split('\r\n')) assert.ok(Buffer.byteLength(line, 'utf8') <= 75);
+      allMonthlyEvents.push(...events);
+    }
+    assert.deepEqual(allMonthlyEvents, annualEvents);
+  }
+});
+
+test('December export keeps the following New Year substitute holiday and exclusive end date', () => {
+  const december = buildCalendarIcs(
+    calendarSnapshots[1],
+    new Date('2026-10-01T08:00:00Z'),
+    12,
+  ).replace(/\r\n[ \t]/g, '');
+  assert.match(december, /DTSTART;VALUE=DATE:20271231\r\nDTEND;VALUE=DATE:20280101/);
+  assert.match(december, /SUMMARY:2028 年元旦補假\r\n/);
+  assert.equal((december.match(/BEGIN:VEVENT/g) ?? []).length, 3);
+});
+
+test('empty months produce no fabricated events and invalid export months are rejected', () => {
+  const calendar = calendarSnapshots[0];
+  const stamp = new Date('2026-10-01T08:00:00Z');
+  assert.deepEqual(getCalendarEvents(calendar, 7), []);
+  const empty = buildCalendarIcs(calendar, stamp, 7).replace(/\r\n[ \t]/g, '');
+  assert.ok(empty.startsWith('BEGIN:VCALENDAR\r\n'));
+  assert.ok(empty.endsWith('END:VCALENDAR\r\n'));
+  assert.equal(empty.includes('BEGIN:VEVENT'), false);
+  for (const month of [0, -1, 13, 1.5, NaN, Infinity, -Infinity]) {
+    assert.throws(() => getCalendarEvents(calendar, month), RangeError);
+    assert.throws(() => buildCalendarIcs(calendar, stamp, month), RangeError);
+    assert.throws(() => getCalendarFilename(calendar.year, month), RangeError);
+  }
+});
