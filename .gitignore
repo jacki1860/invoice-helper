@@ -30,6 +30,7 @@ dist-ssr
 
 # Local browser verification
 .playwright-cli
+browser-results/
 
 # Claude
 .claude/*.local.json

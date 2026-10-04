@@ -125,6 +125,7 @@ npm run build:company
 
 ## 設計與開發紀錄
 
+- [每日新功能與持續改善：工程基礎提案及啟用門檻](docs/ENGINEERING_LOOP.md)
 - [產品計畫與階段驗收](docs/PRODUCT_PLAN.md)
 - [十工具擴充與資料維護](docs/PUBLIC_TOOLS_PLAN.md)
 - [本機驗證與設計對照](docs/VERIFICATION.md)
