@@ -16,8 +16,16 @@ export function getCalendarEventLabel(day: CalendarDay): string {
   return day.note === '補假' ? '政府機關補假' : day.note;
 }
 
-export function getCalendarEvents(calendar: CalendarYear): CalendarDay[] {
-  return calendar.days.filter((day) => day.note !== '');
+function validateExportMonth(month: number | undefined): void {
+  if (month !== undefined && (!Number.isInteger(month) || month < 1 || month > 12)) {
+    throw new RangeError('Calendar month must be an integer from 1 to 12.');
+  }
+}
+
+export function getCalendarEvents(calendar: CalendarYear, month?: number): CalendarDay[] {
+  validateExportMonth(month);
+  const prefix = month === undefined ? '' : `${calendar.year}-${String(month).padStart(2, '0')}-`;
+  return calendar.days.filter((day) => day.note !== '' && day.date.startsWith(prefix));
 }
 
 export function getCalendarMonth(calendar: CalendarYear, month: number): (CalendarDay | null)[][] {
@@ -59,11 +67,19 @@ export function foldIcsLine(value: string): string {
   return lines.join('\r\n');
 }
 
-export function getCalendarFilename(year: number): string {
-  return `taiwan-holidays-${year}.ics`;
+export function getCalendarFilename(year: number, month?: number): string {
+  validateExportMonth(month);
+  const suffix = month === undefined ? '' : `-${String(month).padStart(2, '0')}`;
+  return `taiwan-holidays-${year}${suffix}.ics`;
 }
 
-export function buildCalendarIcs(calendar: CalendarYear, generatedAt = new Date()): string {
+export function buildCalendarIcs(
+  calendar: CalendarYear,
+  generatedAt = new Date(),
+  month?: number,
+): string {
+  const events = getCalendarEvents(calendar, month);
+  const range = month === undefined ? `${calendar.year}` : `${calendar.year} 年 ${month} 月`;
   const stamp = generatedAt
     .toISOString()
     .replace(/[-:]/g, '')
@@ -73,9 +89,9 @@ export function buildCalendarIcs(calendar: CalendarYear, generatedAt = new Date(
     'VERSION:2.0',
     'PRODID:-//Invoice Helper//Taiwan Government Calendar//ZH-TW',
     'CALSCALE:GREGORIAN',
-    `X-WR-CALNAME:${escapeIcsText(`${calendar.year} 國定假日與政府機關補假`)}`,
+    `X-WR-CALNAME:${escapeIcsText(`${range} 國定假日與政府機關補假`)}`,
   ];
-  for (const day of getCalendarEvents(calendar)) {
+  for (const day of events) {
     const end = new Date(`${day.date}T00:00:00Z`);
     end.setUTCDate(end.getUTCDate() + 1);
     const scope = day.note === '補假' ? '政府行政機關補假。' : '國定假日原日期。';

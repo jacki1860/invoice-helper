@@ -22,6 +22,18 @@ export function AdminConverter() {
     ? `${roc.before ? '民國前' : '民國'} ${roc.year} 年 ${roc.month} 月 ${roc.day} 日`
     : '';
   const amountText = amountValid ? formatChineseAmountText(Number(amount)) : '';
+  const switchDateDirection = (next: 'gregorian' | 'roc') => {
+    if (next === direction || !roc || !converted) return;
+    if (next === 'roc') {
+      setRocYear(String(roc.year));
+      setMonth(String(roc.month));
+      setDay(String(roc.day));
+      setBefore(roc.before);
+    } else {
+      setDate(converted);
+    }
+    setDirection(next);
+  };
   return (
     <ToolPage title="金額與日期轉換" description="需要的寫法，轉好就能用。">
       <div className="tab-buttons" role="group" aria-label="轉換工具">
@@ -70,11 +82,16 @@ export function AdminConverter() {
             <div className="tab-buttons" role="group" aria-label="日期輸入方式">
               <button
                 aria-pressed={direction === 'gregorian'}
-                onClick={() => setDirection('gregorian')}
+                disabled={!roc && direction !== 'gregorian'}
+                onClick={() => switchDateDirection('gregorian')}
               >
                 輸入西元
               </button>
-              <button aria-pressed={direction === 'roc'} onClick={() => setDirection('roc')}>
+              <button
+                aria-pressed={direction === 'roc'}
+                disabled={!roc && direction !== 'roc'}
+                onClick={() => switchDateDirection('roc')}
+              >
                 輸入民國
               </button>
             </div>
@@ -131,7 +148,7 @@ export function AdminConverter() {
             )}
             {!roc && (
               <p className="field-error" role="alert">
-                請輸入有效日期；民國與民國前都從 1 年開始。
+                請輸入有效日期；民國與民國前都從 1 年開始。修正日期後即可切換輸入方式。
               </p>
             )}
             <p className="calculation-note">
