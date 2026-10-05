@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Copy, ArrowDown, RotateCcw } from 'lucide-react';
 import { calculateInvoice, type PriceMode, type TaxType } from '../../domain/invoice';
 import { formatChineseAmountText } from '../../utils/numberUtils';
@@ -10,6 +10,18 @@ export function TaxCalculator() {
   const [priceMode, setPriceMode] = useState<PriceMode>('total');
   const [taxType, setTaxType] = useState<TaxType>('regular');
   const [notice, setNotice] = useState('');
+  const copyVersion = useRef(0);
+  useEffect(
+    () => () => {
+      copyVersion.current += 1;
+    },
+    [],
+  );
+
+  function updateNotice(message = '') {
+    copyVersion.current += 1;
+    setNotice(message);
+  }
   const result = calculateInvoice(
     [{ id: 'tax', name: '金額試算', quantity: '1', unitPrice: amount }],
     priceMode,
@@ -18,13 +30,15 @@ export function TaxCalculator() {
   const error = amount ? result.errors['tax.unitPrice'] || result.errors.total : '';
 
   const copy = async () => {
+    const version = ++copyVersion.current;
+    setNotice('');
     try {
       await navigator.clipboard.writeText(
         `${taxLabels[taxType]}\n銷售額：${result.subtotal}\n稅額：${result.tax}\n總計：${result.amount}`,
       );
-      setNotice('已複製試算結果。');
+      if (copyVersion.current === version) setNotice('已複製試算結果。');
     } catch {
-      setNotice('瀏覽器未允許複製，請允許剪貼簿存取後重試。');
+      if (copyVersion.current === version) setNotice('瀏覽器未允許複製，請允許剪貼簿存取後重試。');
     }
   };
 
@@ -50,11 +64,11 @@ export function TaxCalculator() {
               taxType={taxType}
               onModeChange={(mode) => {
                 setPriceMode(mode);
-                setNotice('');
+                updateNotice();
               }}
               onTaxChange={(tax) => {
                 setTaxType(tax);
-                setNotice('');
+                updateNotice();
               }}
             />
           </div>
@@ -71,7 +85,7 @@ export function TaxCalculator() {
                 aria-describedby="calculator-hint"
                 onChange={(event) => {
                   setAmount(event.target.value);
-                  setNotice('');
+                  updateNotice();
                 }}
               />
             </div>
@@ -85,7 +99,7 @@ export function TaxCalculator() {
               setAmount('1050');
               setPriceMode('total');
               setTaxType('regular');
-              setNotice('已帶入 1,050 元範例。');
+              updateNotice('已帶入 1,050 元範例。');
             }}
           >
             <RotateCcw size={15} />

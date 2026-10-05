@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 27);
+  assert.equal(legacyPages.length, 28);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -152,5 +152,23 @@ test('search normalizes full-width characters, case and whitespace with AND matc
 test('meeting agenda is discoverable by practical meeting preparation terms', () => {
   for (const query of ['會議安排', '議程表', '開會流程', '討論時程']) {
     assert.deepEqual(ids(searchTools(query)), ['meeting-agenda']);
+  }
+});
+
+test('text diff has an independent route, category, task entries and practical search aliases', () => {
+  assert.equal(pagePath('text-diff', '/invoice/'), '/invoice/text-diff/');
+  assert.equal(categoryForPage('text-diff'), 'conversions');
+  for (const task of ['task-purchasing', 'task-reference'] as const) {
+    assert.ok(ids(toolsForPage(task)).includes('text-diff'));
+  }
+  for (const query of [
+    '文字比對',
+    '版本比較',
+    '差異檢查',
+    '修訂核對',
+    'ＤＩＦＦ',
+    '文字 TXT 差異',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['text-diff']);
   }
 });

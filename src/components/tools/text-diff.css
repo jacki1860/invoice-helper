@@ -1,0 +1,198 @@
+.text-diff-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.text-diff-input-panel {
+  min-width: 0;
+}
+
+.text-diff-textarea {
+  white-space: pre;
+  overflow-x: auto;
+  overflow-wrap: normal;
+  font-family: monospace;
+}
+
+.text-diff-note,
+.text-diff-error,
+.text-diff-download-status {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.text-diff-error {
+  color: #a53e2c;
+}
+
+.text-diff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.text-diff-actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.text-diff-actions .button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.text-diff-download-status {
+  min-height: 22px;
+}
+
+.text-diff-results {
+  margin-top: 36px;
+}
+
+.text-diff-results h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+}
+
+.text-diff-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.text-diff-stats dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.text-diff-stats dd {
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 28px;
+  font-family: var(--serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.text-diff-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.text-diff-table th,
+.text-diff-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.text-diff-table th:nth-child(-n + 2),
+.text-diff-table td:nth-child(-n + 2) {
+  width: 62px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-diff-kind {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.text-diff-content {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: monospace;
+  line-height: 1.8;
+}
+
+.text-diff-blank {
+  display: block;
+  color: #6b665d;
+  font-size: 11px;
+}
+
+.text-diff-removed {
+  background: #fae9e3;
+}
+
+.text-diff-removed .text-diff-kind {
+  color: #943d29;
+}
+
+.text-diff-added {
+  background: #edf1e5;
+}
+
+.text-diff-added .text-diff-kind {
+  color: #3f652e;
+}
+
+.text-diff-report {
+  margin-top: 16px;
+}
+
+.text-diff-report summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 13px;
+}
+
+.text-diff-report textarea {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.text-diff-rules {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  background: #ede8df;
+  color: #6b665d;
+  font-size: 13px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.text-diff-rules h2 {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.text-diff-rules p + p {
+  margin-top: 8px;
+}
+
+@media (max-width: 700px) {
+  .text-diff-inputs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .text-diff-table th,
+  .text-diff-table td {
+    padding: 8px 4px;
+  }
+
+  .text-diff-table th:nth-child(-n + 2),
+  .text-diff-table td:nth-child(-n + 2) {
+    width: 40px;
+    font-size: 11px;
+  }
+}
