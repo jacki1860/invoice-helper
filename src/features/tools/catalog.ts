@@ -17,6 +17,7 @@ export type ToolId =
   | 'hourly'
   | 'convert'
   | 'list-cleanup'
+  | 'text-diff'
   | 'meeting-agenda'
   | 'company'
   | 'insurance'
@@ -62,6 +63,7 @@ export const taskCollections: {
       'equipment',
       'workdays',
       'list-cleanup',
+      'text-diff',
     ],
   },
   {
@@ -73,12 +75,13 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議時間、整理清單，查公司及公開資料。',
+    description: '換算日期、安排工作天與會議時間、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
       'convert',
       'list-cleanup',
+      'text-diff',
       'meeting-agenda',
       'company',
       'insurance',
@@ -214,6 +217,13 @@ export const tools: Tool[] = [
     label: '清單整理與去重',
     description: '整理多行名單、品項或代碼，去除空行與重複項目。',
     keywords: '清單 名單 去重 重複 空白 空行 文字 品項 代碼 TXT',
+  },
+  {
+    id: 'text-diff',
+    category: 'conversions',
+    label: '文字版本差異',
+    description: '逐行比對兩版通知或流程文字，列出相同、新增與刪除內容。',
+    keywords: '文字 版本 差異 比對 比較 通知 流程 原文 修改 TXT',
   },
   {
     id: 'meeting-agenda',
