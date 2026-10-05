@@ -2,6 +2,32 @@
 
 目標：[https://www.ctrls.com.tw/invoice/](https://www.ctrls.com.tw/invoice/)。使用既有公司 SSH 設定與 Nginx 靜態檔案服務。
 
+## 2026-10-05 文字版本差異與稅額提示改善
+
+- 發布時間：**11:16:13 Asia/Taipei**（03:16:13 UTC）。
+- 使用者明確要求重新驗收、合併及部署。[PR #8](https://github.com/jacki1860/invoice-helper/pull/8) 已合併至 `codex/admin-tools-foundation`，核對的 PR head 為 `aad41cc6b691e8b316e3d81d03d93717c5caf053`。
+- 部署來源：`5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9`；merge 與已測 PR head 的 tree 同為 `5f2ea38f4d87c52237fb01873d7b28e65ea49b0f`，發布保留的同一份已測建置。後續文件提交不改變線上產物。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9`。
+- 前版保留：`/var/www/invoice-helper/releases/41af9025336f5d06d19179ff3524890c7fc598c4`。
+- 受保護發布紀錄：`/var/backups/invoice-helper/manual-5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9`，包含固定版本 `release.py` 與新 artifact；前版紀錄保留於下節路徑。
+- 新 manifest：`/var/www/invoice-helper/manifests/5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9.json`；SHA-256 `4d11db2924cd94bb560d7fe3329ffc6e66e4828d1bcce87fb7a7307ad1768baf`。
+
+本版提供 **23 工具、34 個 HTML、40 個公開檔案**。新增[文字版本差異](https://www.ctrls.com.tw/invoice/text-diff/)，支援逐行比較、雙側行號、完整報告複製與 TXT 下載。獨立改善稅額試算的過期複製提示；金額、模式、稅別或範例變更後，舊成功／失敗提示與延遲回呼均失效，稅額計算核心沒有改動。
+
+Node 24.21.0 的 npm ci、lint、格式、**276/276 測試**、TypeScript、一般／公司建置及兩種 base 各 34 頁 SEO 檢查通過。獨立 AI 審查涵蓋 16 個變更檔，聚焦測試 **38/38** 及獨立子序列 oracle 的 **10,000 組**輸入通過，未發現阻擋問題。[PR CI](https://github.com/jacki1860/invoice-helper/actions/runs/37252300996) 與[合併提交 CI](https://github.com/jacki1860/invoice-helper/actions/runs/37258649554) 均成功。
+
+本機及正式站各完成 **16/16 Playwright 回歸測試、12/12 獨立補充檢查**。真實剪貼簿與 TXT 驗證涵蓋 Unicode、tab、前後空白、換行、組合字與 emoji；補充案例兩個寬度的正式站 TXT 均為 703 bytes，與本機檔案完全相同。另確認 PNG、PDF、ICS 既有輸出，以及稅額實際複製、等值金額編輯與無效輸入。延遲剪貼簿競態使用受控 Promise mock，與真實剪貼簿證據分開記錄。
+
+獨立代理目視 Chromium 153.0.8010.12 的 1440／320px 截圖，所測搜尋、文字差異與稅額狀態沒有裁切、重疊或頁面水平溢出；補充檢查沒有 runtime、console error 或 request failure。公司既有 Cloudflare beacon 與 Google Fonts 另列為外部網路觀察，未稽核其行為；此次未呼叫真實公司查詢 API。
+
+公開 HTTPS 使用正常 TLS，40 檔皆 HTTP 200，大小與 SHA-256 全數符合固定 manifest；未知及舊路徑仍為 404。公司首頁 bytes 與 27 份 Nginx 檔案 hash 均未變，Nginx active。前版 manifest 及本機／主機 artifact hash 已核對；同一發布腳本在正式機隔離 `/tmp` 目錄完成舊版啟用→新版啟用→回復舊版。正式 live 先 dry-run，再以共同部署鎖及預期前版檢查原子啟用，**未在真實 live 演練回復**。
+
+需要回復時，使用本節受保護紀錄內的 `release.py rollback --to 41af9025336f5d06d19179ff3524890c7fc598c4 --expected-current 5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9` 先 dry-run，核對後加 `--apply`，再驗證 HTTPS 與關鍵輸出。腳本拒絕覆蓋他人已發布的新版本。
+
+Jev 五項皆判定 supported；來源檢查（0.13）與瀏覽器範圍（0.50）低於未校準注意門檻，未附具體反例。主流程再次對照原始 276 項測試 log、兩份 16/16 瀏覽器 log 及兩份 12/12 JSON，確認宣告限於已列情境；Jev 不取代實際驗證。完整本機紀錄與 151 個逐檔核對的保存檔案位於 `.wrangler/release-20261005/`。
+
+未測 Safari／Firefox、實體手機及印表機；保留既有 5 項開發依賴審計警示及 bundle 大小提示。此次未啟用 auto-merge 或自動部署，main、預設分支、分支保護與排程均未變更。
+
 ## 2026-10-04 六項 PR 整合發布
 
 - 發布時間：**12:37:34 Asia/Taipei**（04:37:34 UTC）。
@@ -38,7 +64,7 @@ Jev 已完成第二意見核對：合併與部署判定 supported；驗證項為
 6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
 7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
-目前版本使用 33 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
+目前版本使用 34 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
 
 ## 2026-10-01 Search Console 驗證標記版
 
