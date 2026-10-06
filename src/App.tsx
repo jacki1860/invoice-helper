@@ -10,6 +10,7 @@ import { PaymentSplit } from './components/tools/PaymentSplit';
 import { HourlyCalculator } from './components/tools/HourlyCalculator';
 import { AdminConverter } from './components/tools/AdminConverter';
 import { ListCleanupTool } from './components/tools/ListCleanupTool';
+import { ListCompareTool } from './components/tools/ListCompareTool';
 import { TextDiffTool } from './components/tools/TextDiffTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
@@ -296,6 +297,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'list-cleanup'} aria-label="清單整理與去重">
           <ListCleanupTool />
+        </section>
+        <section hidden={tool !== 'list-compare'} aria-label="雙清單比對">
+          <ListCompareTool />
         </section>
         <section hidden={tool !== 'text-diff'} aria-label="文字版本差異">
           <TextDiffTool />
