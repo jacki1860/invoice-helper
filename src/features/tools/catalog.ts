@@ -17,6 +17,7 @@ export type ToolId =
   | 'hourly'
   | 'convert'
   | 'list-cleanup'
+  | 'list-compare'
   | 'text-diff'
   | 'meeting-agenda'
   | 'company'
@@ -63,6 +64,7 @@ export const taskCollections: {
       'equipment',
       'workdays',
       'list-cleanup',
+      'list-compare',
       'text-diff',
     ],
   },
@@ -81,6 +83,7 @@ export const taskCollections: {
       'calendar',
       'convert',
       'list-cleanup',
+      'list-compare',
       'text-diff',
       'meeting-agenda',
       'company',
@@ -217,6 +220,13 @@ export const tools: Tool[] = [
     label: '清單整理與去重',
     description: '整理多行名單、品項或代碼，去除空行與重複項目。',
     keywords: '清單 名單 去重 重複 空白 空行 文字 品項 代碼 TXT',
+  },
+  {
+    id: 'list-compare',
+    category: 'conversions',
+    label: '雙清單比對',
+    description: '核對預定與實際清單，列出只在 A、雙方都有與只在 B 的項目。',
+    keywords: '清單 名單 比對 比較 集合 預定 實際 缺漏 共有 額外 品項 代碼 TXT',
   },
   {
     id: 'text-diff',

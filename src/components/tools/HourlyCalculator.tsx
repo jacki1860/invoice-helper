@@ -17,9 +17,12 @@ const money = (cents: number) =>
   (cents / 100).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export function HourlyCalculator({ onCreateCosts }: { onCreateCosts?: (seed: CostSeed) => void }) {
   const [lines, setLines] = useState<HourlyInput[]>(() => [blankWork()]);
+  const [editedLines, setEditedLines] = useState<Set<string>>(() => new Set());
   const result = calculateHourly(lines);
-  const patch = (id: string, update: Partial<HourlyInput>) =>
+  const patch = (id: string, update: Partial<HourlyInput>) => {
+    setEditedLines((current) => new Set(current).add(id));
     setLines((current) => current.map((line) => (line.id === id ? { ...line, ...update } : line)));
+  };
   const text = result.valid
     ? `${result.lines.map((line) => `${line.name}：${Math.floor(line.minutes / 60)} 小時 ${line.minutes % 60} 分鐘，NT$ ${money(line.cents)}`).join('\n')}\n總費用：NT$ ${money(result.cents)}（未加計稅額）`
     : '';
@@ -34,7 +37,7 @@ export function HourlyCalculator({ onCreateCosts }: { onCreateCosts?: (seed: Cos
             const errors = ['name', 'time', 'rate']
               .map((key) => result.errors[`${line.id}.${key}`])
               .filter(Boolean);
-            const touched = Boolean(line.name || line.rate);
+            const touched = editedLines.has(line.id);
             return (
               <fieldset className="hourly-row" key={line.id}>
                 <legend>工作 {index + 1}</legend>
@@ -82,9 +85,14 @@ export function HourlyCalculator({ onCreateCosts }: { onCreateCosts?: (seed: Cos
                     className="icon-button"
                     aria-label={`刪除工作 ${index + 1}`}
                     disabled={lines.length === 1}
-                    onClick={() =>
-                      setLines((current) => current.filter((entry) => entry.id !== line.id))
-                    }
+                    onClick={() => {
+                      setLines((current) => current.filter((entry) => entry.id !== line.id));
+                      setEditedLines((current) => {
+                        const next = new Set(current);
+                        next.delete(line.id);
+                        return next;
+                      });
+                    }}
                   >
                     <Trash2 size={18} />
                   </button>
