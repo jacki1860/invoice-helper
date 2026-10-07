@@ -17,7 +17,9 @@ export type ToolId =
   | 'hourly'
   | 'convert'
   | 'list-cleanup'
+  | 'list-compare'
   | 'text-diff'
+  | 'filename-plan'
   | 'meeting-agenda'
   | 'company'
   | 'insurance'
@@ -63,7 +65,9 @@ export const taskCollections: {
       'equipment',
       'workdays',
       'list-cleanup',
+      'list-compare',
       'text-diff',
+      'filename-plan',
     ],
   },
   {
@@ -81,6 +85,7 @@ export const taskCollections: {
       'calendar',
       'convert',
       'list-cleanup',
+      'list-compare',
       'text-diff',
       'meeting-agenda',
       'company',
@@ -219,11 +224,25 @@ export const tools: Tool[] = [
     keywords: '清單 名單 去重 重複 空白 空行 文字 品項 代碼 TXT',
   },
   {
+    id: 'list-compare',
+    category: 'conversions',
+    label: '雙清單比對',
+    description: '核對預定與實際清單，列出只在 A、雙方都有與只在 B 的項目。',
+    keywords: '清單 名單 比對 比較 集合 預定 實際 缺漏 共有 額外 品項 代碼 TXT',
+  },
+  {
     id: 'text-diff',
     category: 'conversions',
     label: '文字版本差異',
     description: '逐行比對兩版通知或流程文字，列出相同、新增與刪除內容。',
     keywords: '文字 版本 差異 比對 比較 通知 流程 原文 修改 TXT',
+  },
+  {
+    id: 'filename-plan',
+    category: 'conversions',
+    label: '批次檔名規劃器',
+    description: '貼上檔名，安排前綴、流水號與副檔名，帶走完整對照表。',
+    keywords: '批次 檔名 重新命名 改名 前綴 流水號 補零 副檔名 對照表 TXT',
   },
   {
     id: 'meeting-agenda',

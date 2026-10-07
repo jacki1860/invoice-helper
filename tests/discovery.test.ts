@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 28);
+  assert.equal(legacyPages.length, 30);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -133,7 +133,7 @@ test('global search matches user vocabulary across functional categories', () =>
   assert.deepEqual(ids(searchTools('統一編號')), ['company']);
   assert.deepEqual(ids(searchTools('營業日')), ['workdays']);
   assert.deepEqual(ids(searchTools('清除重複')), ['list-cleanup']);
-  assert.deepEqual(ids(searchTools('清單 TXT')), ['list-cleanup']);
+  assert.deepEqual(ids(searchTools('清單 TXT')), ['list-cleanup', 'list-compare']);
   assert.ok(searchTools('付款').some((tool) => tool.category === 'documents'));
   assert.ok(searchTools('付款').some((tool) => tool.category === 'calculations'));
   assert.deepEqual(ids(searchTools('催款 備份')), ['receivables']);
@@ -170,5 +170,46 @@ test('text diff has an independent route, category, task entries and practical s
     '文字 TXT 差異',
   ]) {
     assert.deepEqual(ids(searchTools(query)), ['text-diff']);
+  }
+});
+
+test('list comparison has a distinct direct route and practical set comparison discovery', () => {
+  assert.equal(pagePath('list-compare', '/invoice/'), '/invoice/list-compare/');
+  assert.equal(categoryForPage('list-compare'), 'conversions');
+  for (const page of [
+    'tools',
+    'directory',
+    'task-purchasing',
+    'task-reference',
+    'category-conversions',
+  ] as const) {
+    assert.ok(ids(toolsForPage(page)).includes('list-compare'));
+  }
+  for (const query of [
+    '雙清單',
+    '名單核對',
+    '缺漏清單',
+    '集合比對',
+    '清單交集',
+    '清單差集',
+    '預定與實際',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['list-compare']);
+  }
+});
+
+test('filename planner has its own route, conversion category, purchasing entry and aliases', () => {
+  assert.equal(pagePath('filename-plan', '/invoice/'), '/invoice/filename-plan/');
+  assert.equal(categoryForPage('filename-plan'), 'conversions');
+  assert.ok(ids(toolsForPage('task-purchasing')).includes('filename-plan'));
+  for (const query of [
+    '批次改名',
+    '檔名編號',
+    '檔案命名',
+    '檔名對照',
+    'ＲＥＮＡＭＥ',
+    '副檔名 TXT',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['filename-plan']);
   }
 });

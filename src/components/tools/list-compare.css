@@ -1,0 +1,164 @@
+.list-compare-inputs,
+.list-compare-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.list-compare-groups {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.list-compare-input-panel,
+.list-compare-group {
+  min-width: 0;
+}
+
+.list-compare-group {
+  padding: 22px 18px;
+}
+
+.list-compare-textarea {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: monospace;
+}
+
+.list-compare-note,
+.list-compare-error,
+.list-compare-download-status {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.list-compare-error {
+  color: #a53e2c;
+}
+
+.list-compare-input-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.list-compare-input-stats dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.list-compare-input-stats dd {
+  margin-top: 5px;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-variant-numeric: tabular-nums;
+}
+
+.list-compare-results {
+  margin-top: 36px;
+}
+
+.list-compare-results h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+}
+
+.list-compare-group h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--serif);
+  font-size: 21px;
+}
+
+.list-compare-count {
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
+.list-compare-group .tool-field,
+.list-compare-group .copy-action {
+  margin-top: 16px;
+}
+
+.list-compare-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.list-compare-actions > *,
+.list-compare-group .copy-action {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.list-compare-actions .button,
+.list-compare-group .button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.list-compare-download-status {
+  min-height: 22px;
+}
+
+.list-compare-report {
+  margin-top: 16px;
+}
+
+.list-compare-report summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 13px;
+}
+
+.list-compare-rules {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  background: #ede8df;
+  color: #6b665d;
+  font-size: 13px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.list-compare-rules h2 {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.list-compare-rules p + p {
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .list-compare-groups {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .list-compare-inputs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .list-compare-input-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
