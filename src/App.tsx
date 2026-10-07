@@ -12,6 +12,7 @@ import { AdminConverter } from './components/tools/AdminConverter';
 import { ListCleanupTool } from './components/tools/ListCleanupTool';
 import { ListCompareTool } from './components/tools/ListCompareTool';
 import { TextDiffTool } from './components/tools/TextDiffTool';
+import { FilenamePlanTool } from './components/tools/FilenamePlanTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import {
@@ -303,6 +304,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'text-diff'} aria-label="文字版本差異">
           <TextDiffTool />
+        </section>
+        <section hidden={tool !== 'filename-plan'} aria-label="批次檔名規劃器">
+          <FilenamePlanTool />
         </section>
         <section hidden={tool !== 'meeting-agenda'} aria-label="會議議程時間表">
           <MeetingAgendaTool />

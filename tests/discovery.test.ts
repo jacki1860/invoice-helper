@@ -197,3 +197,19 @@ test('list comparison has a distinct direct route and practical set comparison d
     assert.deepEqual(ids(searchTools(query)), ['list-compare']);
   }
 });
+
+test('filename planner has its own route, conversion category, purchasing entry and aliases', () => {
+  assert.equal(pagePath('filename-plan', '/invoice/'), '/invoice/filename-plan/');
+  assert.equal(categoryForPage('filename-plan'), 'conversions');
+  assert.ok(ids(toolsForPage('task-purchasing')).includes('filename-plan'));
+  for (const query of [
+    '批次改名',
+    '檔名編號',
+    '檔案命名',
+    '檔名對照',
+    'ＲＥＮＡＭＥ',
+    '副檔名 TXT',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['filename-plan']);
+  }
+});

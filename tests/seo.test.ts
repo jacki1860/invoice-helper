@@ -21,11 +21,11 @@ import {
   serializeJsonLd,
 } from '../src/features/seo/pages.ts';
 
-test('all 35 public pages have unique direct paths and preserve existing tool and category URLs', () => {
-  assert.equal(pageIds.length, 35);
+test('all 36 public pages have unique direct paths and preserve existing tool and category URLs', () => {
+  assert.equal(pageIds.length, 36);
   for (const base of ['/', '/invoice/']) {
     const paths = pageIds.map((page) => pagePath(page, base));
-    assert.equal(new Set(paths).size, 35);
+    assert.equal(new Set(paths).size, 36);
     pageIds.forEach((page, index) => {
       assert.equal(pageFromPath(paths[index], base), page);
       assert.equal(pageFromPath(`${paths[index]}index.html`, base), page);
@@ -116,14 +116,14 @@ test('every page exposes matching public copy, canonical and parseable structure
   assert.equal(titles.size, pageIds.length);
 });
 
-test('sitemap has only the 35 canonical URLs, no private prefill or pretend modification dates', () => {
+test('sitemap has only the 36 canonical URLs, no private prefill or pretend modification dates', () => {
   const sitemap = renderSitemap();
   const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
   assert.deepEqual(
     urls,
     pageIds.map((page) => metadataForPage(page).canonical),
   );
-  assert.equal(new Set(urls).size, 35);
+  assert.equal(new Set(urls).size, 36);
   assert.doesNotMatch(sitemap, /lastmod/);
   for (const url of urls) assert.doesNotMatch(url, /\?|#/);
 });
