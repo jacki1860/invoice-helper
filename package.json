@@ -30,7 +30,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
-    "oxfmt": "^0.59.0",
+    "oxfmt": "^0.67.0",
     "oxlint": "^1.74.0",
     "postcss": "^8.5.25",
     "tailwindcss": "^4.3.1",

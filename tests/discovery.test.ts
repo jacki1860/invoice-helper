@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 28);
+  assert.equal(legacyPages.length, 29);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -170,5 +170,21 @@ test('text diff has an independent route, category, task entries and practical s
     '文字 TXT 差異',
   ]) {
     assert.deepEqual(ids(searchTools(query)), ['text-diff']);
+  }
+});
+
+test('filename planner has its own route, conversion category, purchasing entry and aliases', () => {
+  assert.equal(pagePath('filename-plan', '/invoice/'), '/invoice/filename-plan/');
+  assert.equal(categoryForPage('filename-plan'), 'conversions');
+  assert.ok(ids(toolsForPage('task-purchasing')).includes('filename-plan'));
+  for (const query of [
+    '批次改名',
+    '檔名編號',
+    '檔案命名',
+    '檔名對照',
+    'ＲＥＮＡＭＥ',
+    '副檔名 TXT',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['filename-plan']);
   }
 });

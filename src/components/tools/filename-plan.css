@@ -1,0 +1,201 @@
+.filename-plan,
+.filename-plan .tool-form,
+.filename-plan .tool-result,
+.filename-plan .tool-field,
+.filename-plan .tool-field textarea,
+.filename-plan .tool-field input,
+.filename-plan .tool-field select {
+  min-width: 0;
+}
+.filename-plan .tool-columns {
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.filename-plan .tool-field textarea {
+  min-height: 48px;
+  line-height: 1.7;
+  resize: vertical;
+  overflow-wrap: anywhere;
+}
+.filename-plan .tool-field [aria-invalid='true'] {
+  border-color: var(--accent);
+}
+.filename-plan-number-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.filename-plan-number-fields .tool-field {
+  margin-bottom: 0;
+}
+.filename-plan-checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 20px;
+}
+.filename-plan-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.filename-plan-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 14px 0 22px;
+  overflow-wrap: anywhere;
+}
+.filename-plan-actions,
+.filename-plan-output-actions,
+.filename-plan-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+.filename-plan-errors,
+.filename-plan-warnings {
+  background: #fff4ed;
+  border-left: 3px solid var(--accent);
+  color: #874021;
+  margin: 24px 0;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.filename-plan-errors ul,
+.filename-plan-warnings ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin-top: 8px;
+}
+.filename-plan-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border-block: 1px solid var(--rule);
+  padding: 18px 0;
+  margin-bottom: 24px;
+}
+.filename-plan-stats dt {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.filename-plan-stats dd {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.filename-plan-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.filename-plan-table caption {
+  text-align: left;
+  color: var(--muted);
+  font-size: 12px;
+  padding-bottom: 12px;
+}
+.filename-plan-table th,
+.filename-plan-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.filename-plan-table th:first-child,
+.filename-plan-table td:first-child {
+  width: 44px;
+  padding-left: 0;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.filename-plan-table td span {
+  white-space: pre-wrap;
+}
+.filename-plan-table td:last-child {
+  color: var(--accent);
+}
+.filename-plan-pagination {
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.filename-plan-pagination .button {
+  padding: 9px 12px;
+}
+.filename-plan-empty {
+  min-height: 130px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+  padding: 16px 0;
+}
+.filename-plan-output-actions > *,
+.filename-plan-output-actions .copy-action {
+  min-width: 0;
+}
+.filename-plan .action-status {
+  overflow-wrap: anywhere;
+}
+.filename-plan-output-text {
+  margin-top: 20px;
+  font-size: 13px;
+}
+.filename-plan-output-text summary {
+  cursor: pointer;
+  margin-bottom: 18px;
+  color: var(--accent);
+}
+.filename-plan-rules {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.filename-plan-rules h2 {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.filename-plan-rules p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  margin-bottom: 12px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1000px) {
+  .filename-plan .tool-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .filename-plan-number-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .filename-plan-number-fields .tool-field {
+    margin-bottom: 8px;
+  }
+  .filename-plan-output-actions,
+  .filename-plan-output-actions > *,
+  .filename-plan-output-actions .button {
+    width: 100%;
+  }
+  .filename-plan-table th,
+  .filename-plan-table td {
+    padding-inline: 5px;
+  }
+  .filename-plan-table th:first-child,
+  .filename-plan-table td:first-child {
+    width: 34px;
+  }
+}

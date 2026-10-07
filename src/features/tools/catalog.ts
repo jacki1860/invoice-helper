@@ -18,6 +18,7 @@ export type ToolId =
   | 'convert'
   | 'list-cleanup'
   | 'text-diff'
+  | 'filename-plan'
   | 'meeting-agenda'
   | 'company'
   | 'insurance'
@@ -64,6 +65,7 @@ export const taskCollections: {
       'workdays',
       'list-cleanup',
       'text-diff',
+      'filename-plan',
     ],
   },
   {
@@ -224,6 +226,13 @@ export const tools: Tool[] = [
     label: '文字版本差異',
     description: '逐行比對兩版通知或流程文字，列出相同、新增與刪除內容。',
     keywords: '文字 版本 差異 比對 比較 通知 流程 原文 修改 TXT',
+  },
+  {
+    id: 'filename-plan',
+    category: 'conversions',
+    label: '批次檔名規劃器',
+    description: '貼上檔名，安排前綴、流水號與副檔名，帶走完整對照表。',
+    keywords: '批次 檔名 重新命名 改名 前綴 流水號 補零 副檔名 對照表 TXT',
   },
   {
     id: 'meeting-agenda',
