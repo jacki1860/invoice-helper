@@ -2,11 +2,20 @@
 
 公開免登入的行政工具，服務自由工作者與小公司。以暖白紙張、墨黑文字與橘色操作組成工作桌，打開即可製作文件、試算或查詢。
 
-「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。[公司網站](https://www.ctrls.com.tw/invoice/)提供二十三個公開工具及共用聯絡頁尾。最新發布狀態與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)，各版本的測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)。
+「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。[公司網站](https://www.ctrls.com.tw/invoice/)提供二十五個公開工具及共用聯絡頁尾。最新發布狀態與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)，各版本的測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)。
 
 頁首右上角的 [Buy me a coffee](https://www.buymeacoffee.com/jacki1860) 支持連結使用網站橘色與白字，手機版與品牌同列。
 
 總覽、四類頁面與各工具的共用頁尾提供「聯絡開發者」及「許願新功能」，以 `mailto:` 連至 `jacki1860@gmail.com`，分別預填不同主旨與內容提示。本站不直接寄出郵件；實際寄送由使用者在郵件應用程式確認。頁尾不列入文件列印。
+
+## 2026-10-07 雙清單比對與批次檔名規劃器
+
+新增兩個獨立工具，已於 2026-10-07 18:50:09（Asia/Taipei）由 `758501c` 發布：
+
+- [雙清單比對](https://www.ctrls.com.tw/invoice/list-compare/)：貼上預定與實際清單，取得只在 A、雙方都有、只在 B 的項目，可複製各組或下載完整 TXT。去除每行首尾空白、空行及重複項目，忽略清單順序與重複次數，其餘文字精確比對。
+- [批次檔名規劃器](https://www.ctrls.com.tw/invoice/filename-plan/)：貼上原檔名，設定前綴、連號、補零與副檔名，預覽並複製新名或下載完整對照表。檢查貼入名單的重名與跨列更名順序風險；只產生規劃文字，不存取或更名磁碟檔案。
+
+兩工具只在本次瀏覽器頁面處理內容，超限或無效時保留原文並停止整份輸出。同時修正工時費用只編輯時間時未顯示既有錯誤的問題，並修補部分開發依賴；金額計算規則未變。驗收結果、剩餘依賴警示與回復資訊見部署紀錄。
 
 ## 2026-10-05 文字版本差異與稅額提示改善
 
@@ -108,7 +117,7 @@ npx oxfmt src/data/insurance.ts src/data/laws.ts src/data/calendar.ts
 
 ## SEO／AEO
 
-正式站的首頁、完整目錄、五個任務入口、四分類與二十三工具會建置為 34 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
+正式站的首頁、完整目錄、五個任務入口、四分類與二十五工具會建置為 36 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
 
 任務導覽、全站搜尋與常用收藏已於 2026-10-01 00:05:31（Asia/Taipei）由 `09a3150` 發布，173 項測試通過；見[工具探索說明](docs/TOOL_DISCOVERY.md)。Search Console 已完成擁有權驗證，sitemap 成功讀取 31 個網址；首頁與報價頁已申請索引，實際收錄仍待 Google 處理，詳見 [Search Console 紀錄](docs/SEARCH_CONSOLE.md)。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
 

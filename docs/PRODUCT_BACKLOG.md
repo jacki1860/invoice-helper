@@ -43,8 +43,8 @@
 
 - 器材待還提醒已包含在PR #4及2026-10-04發布中，不再列為新待辦。
 - PR #1–#7 已合併；2026-10-04 人工發布 `41af902`，包含工程基礎與當時功能。單次人工發布不等同啟用自動發布。
-- [PR #8：文字版本差異](https://github.com/jacki1860/invoice-helper/pull/8) 已合併並於2026-10-05人工發布 `5b48e5e`；正式站23工具、34 HTML。
-- [PR #9：雙清單比對與工時錯誤提示](https://github.com/jacki1860/invoice-helper/pull/9) 於2026-10-06完成驗收、獨立AI審查與CI；2026-10-07查驗仍OPEN，未上線，不重建相同需求。
-- 自動合併及發布必要條件仍未就緒，依 [工程迴圈](ENGINEERING_LOOP.md) 保持僅驗證 PR。不得把獨立AI審查當成不同GitHub身分的正式approval。
+- [PR #8：文字版本差異](https://github.com/jacki1860/invoice-helper/pull/8) 已合併並於2026-10-05人工發布 `5b48e5e`；該版為23工具、34 HTML。
+- [PR #9：雙清單比對與工時錯誤提示](https://github.com/jacki1860/invoice-helper/pull/9)、[PR #10：批次檔名規劃器與依賴修補](https://github.com/jacki1860/invoice-helper/pull/10) 經重新驗收後，透過 [PR #11](https://github.com/jacki1860/invoice-helper/pull/11) 保留原始提交合併，於2026-10-07 18:50:09（Asia/Taipei）人工發布 `758501c`；目前25工具、36 HTML。
+- 自動合併及發布必要條件仍未就緒，每日自動化依 [工程迴圈](ENGINEERING_LOOP.md) 保持僅交付已驗證 PR。不得把獨立AI審查當成不同GitHub身分的正式approval。
 
-本次維護者另行授權「驗收然後合併、部署」，PR #9、#10 正在整合驗收；正式發布結果以部署紀錄為準。此為單次人工授權，不改變每日自動發布門檻。
+本次維護者另行授權「驗收然後合併、部署」，上述人工發布結果與證據見部署紀錄；每日開發紀錄保留當時 PR 尚未發布的歷史狀態。此為單次人工授權，不改變每日自動發布門檻。

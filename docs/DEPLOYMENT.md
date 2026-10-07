@@ -2,6 +2,34 @@
 
 目標：[https://www.ctrls.com.tw/invoice/](https://www.ctrls.com.tw/invoice/)。使用既有公司 SSH 設定與 Nginx 靜態檔案服務。
 
+## 2026-10-07 雙清單比對與批次檔名規劃器
+
+- 發布時間：**18:50:09 Asia/Taipei**（10:50:09 UTC）。
+- 使用者明確要求「驗收然後合併、部署」。[PR #9](https://github.com/jacki1860/invoice-helper/pull/9)、[PR #10](https://github.com/jacki1860/invoice-helper/pull/10) 經 [整合 PR #11](https://github.com/jacki1860/invoice-helper/pull/11) 保留原始提交合併至 `codex/admin-tools-foundation`，三者均已確認為 MERGED。
+- 已測整合 head：`22c2d108df1dc35b4fdd17320a17cc8e8aa4c4e2`；部署來源：`758501cefe88511e437cb73e37509cdd5f51e4e8`。兩者 tree 同為 `a383c377135ba3cd9950655c326ae99b699dc123`，合併後沿用同一份已測建置，沒有重新建置。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/758501cefe88511e437cb73e37509cdd5f51e4e8`。
+- 前版保留：`/var/www/invoice-helper/releases/5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9`。
+- 受保護發布紀錄：`/var/backups/invoice-helper/manual-758501cefe88511e437cb73e37509cdd5f51e4e8`，包含固定版本 `release.py` 與新 artifact；前版紀錄保留於下節路徑。
+- 新 manifest：`/var/www/invoice-helper/manifests/758501cefe88511e437cb73e37509cdd5f51e4e8.json`；SHA-256 `933db1d193930784ef07b2e68b9be4133a4e32c780a1b945e958c9c68b520d1f`。
+
+本版提供 **25 工具、36 個 HTML、42 個公開檔案**。新增[雙清單比對](https://www.ctrls.com.tw/invoice/list-compare/)及[批次檔名規劃器](https://www.ctrls.com.tw/invoice/filename-plan/)，各自有完整輸入、結果與 TXT 輸出；同時修正工時費用只編輯時間時未顯示既有錯誤的問題，並修補部分開發依賴。金額計算核心、生產依賴與既有資料保存規則未改。檔名工具只產生文字規劃，不讀取或更名磁碟檔案。
+
+Node 24.21.0 的 npm ci、lint、格式、**300/300 測試**、TypeScript、一般／公司建置與各 **36 頁 SEO** 檢查通過。首次整合測試為 299 通過／1 失敗：legacy 路由斷言仍為 29，整合兩工具後應為 30；校正後完整重跑通過。兩個 PR 的原始 head 均在合併歷史中，獨立 AI 審查確認 16 個單一 PR 檔案原樣保留、9 個共同修改檔保留雙方功能，未找到阻擋問題；另以 Node 26.9.0 補跑 **52/52** 聚焦測試，不混稱為 Node 24 主驗收。[整合 CI](https://github.com/jacki1860/invoice-helper/actions/runs/37609311049) 與[合併提交 CI](https://github.com/jacki1860/invoice-helper/actions/runs/37609836455) 均成功。
+
+本機及正式站各完成 **40/40 Playwright 回歸、14/14 獨立補充檢查**。Chromium 153.0.8010.12、1440／320px 驗證兩工具入口、真實剪貼簿、Unicode／空白／換行、集合分組、檔名碰撞及跨列警示、分頁時完整下載、輸入上下限與工時錯誤恢復；既有 PNG、PDF、ICS 真實產出與讀回通過。補充驗收 6 份 TXT 與 2 份工時複製文字在本機／正式站逐 byte 相同；三種 TXT 每個寬度分別為 563、160、8,220 bytes。40 項回歸中的延遲剪貼簿 mock 與真實輸出分開記錄，補充流程未使用資料或剪貼簿 mock。
+
+補充首輪 12/14 是測試誤以為空白時薪下會優先出現零工時訊息；既有核心先回報時薪錯誤。調整案例為先驗小數分鐘，再填有效名稱／時薪驗零工時及修正後的真實複製，同一 final 腳本於本機／正式均通過。未改產品、放寬 timeout 或省略檢查，失敗證據保留。正式站 28 張截圖均無頁面水平溢出，其中 15 張主要狀態經獨立目視無阻擋；補充流程的 runtime／console error、warning 與 request failure 均為零，未呼叫真實公司查詢 API。Cloudflare Insights 與 Google Fonts 外部請求另列為環境觀察，不代表第三方安全稽核。
+
+正常 TLS 的公開 HTTPS 核對確認 42 檔皆 HTTP 200，大小及 SHA-256 全數符合固定 manifest，未知／舊路徑仍 404。公司首頁 bytes 與 27 份 Nginx 檔案 hash 均未變，Nginx active。發布腳本相對前版未改，受保護副本與本機 hash 相同；前版 artifact 及新 artifact 均經核對。正式機隔離 `/tmp` 目錄完成舊版啟用→新版啟用→回復舊版，正式 live 先 dry-run，再以共同部署鎖與預期前版檢查原子啟用；**未在真實 live 演練回復**。
+
+需要回復時，使用本節受保護紀錄內的 `release.py rollback --to 5b48e5e3f7737f29fae2f628255d98a5a4b6d5f9 --expected-current 758501cefe88511e437cb73e37509cdd5f51e4e8` 先 dry-run，核對後加 `--apply`，再驗證 HTTPS 與關鍵輸出。腳本會拒絕覆蓋他人已發布的新版本。
+
+Fresh audit 為 **5 high、0 critical**，`--omit=dev` 全為 0；剩餘 Cloudflare／miniflare／undici／sharp 開發工具鏈問題仍列待辦，未宣稱整體安全認證。保留 bundle 超過 500 kB 提示，以及 CI 固定 Actions 版本的 Node 20 runtime 棄用提示。未測 Safari／Firefox、實體手機、輔助科技、印表機或磁碟更名。
+
+Jev 五項皆判定 supported；合併（0.55）及瀏覽器（0.76）低於未校準注意門檻，未附具體反例。主流程重新對照 GitHub MERGED readback、相同 tree、42 檔 manifest、兩份 40/40 log 與兩份 14/14 JSON，完成宣告限定於上述證據。Jev 不取代實測或獨立審查。完整本機證據保存於 `.wrangler/release-20261007/`。
+
+每日已完成的 PR 開發紀錄保持原樣，此次人工發布獨立記錄並使用共用工作鎖。未啟用 auto-merge／自動部署，未改 main、預設分支、分支保護或排程。後續文件提交只記錄結果，不改變已發布產物。
+
 ## 2026-10-05 文字版本差異與稅額提示改善
 
 - 發布時間：**11:16:13 Asia/Taipei**（03:16:13 UTC）。
@@ -64,7 +92,7 @@ Jev 已完成第二意見核對：合併與部署判定 supported；驗證項為
 6. 將新符號連結建在 `/var/www/html/`，以 `mv -Tf` 原子替換 `/var/www/html/invoice`。切換前再次確認 live 仍指向預期舊版。
 7. 驗證公開首頁、JS、CSS、紙紋、動態匯出 chunk，以及工具操作、公司查詢、複製和實際匯出。需要回復時，只切回上一個已驗證 release；不修改其他站點。
 
-目前版本使用 34 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
+目前版本使用 36 個實際 HTML 頁面，站內以 History API 切換並相容舊 hash，不需要額外 SPA rewrite。Nginx 會將實際目錄導向結尾含 `/` 的網址。
 
 ## 2026-10-01 Search Console 驗證標記版
 
