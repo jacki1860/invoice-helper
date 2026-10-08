@@ -99,6 +99,25 @@ test('full input limit counts raw Unicode code points including whitespace and n
   invalid(draft(astral + '😀'), /100,000/);
 });
 
+test('the 1000-line limit counts blank and terminal lines with LF, CRLF and CR', () => {
+  for (const newline of ['\n', '\r\n', '\r']) {
+    const exact = `甲${newline}乙${newline.repeat(998)}`;
+    const result = validateRandomGroups(draft(exact));
+    assert.equal(result.valid, true);
+    assert.deepEqual(result.names, ['甲', '乙']);
+    assert.equal(result.blankLines, 998);
+    invalid(draft(exact + newline), /1,000 行/);
+  }
+  invalid(draft(`甲\r\n乙${'\r\n\r\n'.repeat(499)}\r`), /1,000 行/);
+});
+
+test('very large multiline input is rejected whole before participant diagnostics', () => {
+  for (const names of ['A\n'.repeat(50_000), '\t\n'.repeat(50_000)]) {
+    invalid(draft(names), /1,000 行/);
+    assert.equal(validateRandomGroups(draft(names)).errorCount, 1);
+  }
+});
+
 test('control characters are rejected before trimming even on otherwise blank lines', () => {
   for (const control of ['\t', '\0', '\x1b', '\x7f', '\x85', '\u2028', '\u2029']) {
     invalid(draft(`甲\n ${control} \n乙`), /控制字元/);
@@ -208,13 +227,13 @@ test('default generator can use real Web Crypto without asserting a particular p
   assert.equal(new Set(output.groups.flat()).size, 8);
 });
 
-test('100000-code-point duplicate or control-character lists remain invalid with bounded diagnostics', () => {
-  for (const names of ['A\n'.repeat(50_000), '\t\n'.repeat(50_000)]) {
+test('1000-line duplicate or control-character lists remain invalid with bounded diagnostics', () => {
+  for (const names of ['A\n'.repeat(999) + 'A', '\t\n'.repeat(999) + '\t']) {
     const input = draft(names);
     const result = validateRandomGroups(input);
     assert.equal(result.valid, false);
     assert.equal(result.errors.length, 20);
-    assert.ok(result.errorCount >= 50_000);
+    assert.ok(result.errorCount >= 1_000);
     assert.deepEqual(result.names, []);
     assert.equal(input.names, names);
   }

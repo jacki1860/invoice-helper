@@ -1,6 +1,7 @@
 export const MAX_RANDOM_GROUP_PARTICIPANTS = 500;
 export const MAX_RANDOM_GROUP_NAME_LENGTH = 80;
 export const MAX_RANDOM_GROUP_CODE_POINTS = 100_000;
+export const MAX_RANDOM_GROUP_INPUT_LINES = 1_000;
 export const MAX_RANDOM_GROUPS = 100;
 
 export interface RandomGroupsDraft {
@@ -37,6 +38,22 @@ export function exampleRandomGroups(): RandomGroupsDraft {
   return { names: '小安\n小晴\n阿哲\n小岑\n小宇\n小禾\n阿凱\n小寧', groupCountRaw: '3' };
 }
 
+export function randomGroupsInputLimitError(names: string): string | null {
+  let codePoints = 0;
+  let lines = 1;
+  let previousWasCarriageReturn = false;
+  for (const character of names) {
+    codePoints += 1;
+    if (codePoints > MAX_RANDOM_GROUP_CODE_POINTS)
+      return '整份文字最多 100,000 個 Unicode 碼點；請縮短後再分組，沒有截斷或產生部分結果。';
+    if (character === '\r' || (character === '\n' && !previousWasCarriageReturn)) lines += 1;
+    previousWasCarriageReturn = character === '\r';
+    if (lines > MAX_RANDOM_GROUP_INPUT_LINES)
+      return '整份文字最多 1,000 行（含空白行，最後換行也算一行）；請縮短後再分組。';
+  }
+  return null;
+}
+
 export function validateRandomGroups(draft: RandomGroupsDraft): RandomGroupsValidation {
   const result: RandomGroupsValidation = {
     valid: false,
@@ -50,17 +67,10 @@ export function validateRandomGroups(draft: RandomGroupsDraft): RandomGroupsVali
     result.errorCount += 1;
     if (result.errors.length < 20) result.errors.push(issue);
   };
-  let codePoints = 0;
-  const characters = draft.names[Symbol.iterator]();
-  while (!characters.next().done) {
-    codePoints += 1;
-    if (codePoints > MAX_RANDOM_GROUP_CODE_POINTS) {
-      addError({
-        field: 'names',
-        message: '整份文字最多 100,000 個 Unicode 碼點；請縮短後再分組，沒有截斷或產生部分結果。',
-      });
-      return result;
-    }
+  const inputLimitError = randomGroupsInputLimitError(draft.names);
+  if (inputLimitError) {
+    addError({ field: 'names', message: inputLimitError });
+    return result;
   }
 
   const names: string[] = [];

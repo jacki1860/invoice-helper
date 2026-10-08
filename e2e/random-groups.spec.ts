@@ -78,7 +78,7 @@ test('explicit grouping produces a stable, balanced complete result and real cli
   const report = await verifyResult(page, people, 3);
   await verifyExport(page, report, info);
   await page.screenshot({ path: info.outputPath('random-groups-result.png'), fullPage: true });
-  await page.getByText('查看可選取的完整文字', { exact: true }).click();
+  await page.locator('.random-groups').getByText('查看可選取的完整文字', { exact: true }).click();
   await expect(page.locator('#random-groups-report')).toHaveValue(report);
   await page.getByRole('button', { name: '重新分組', exact: true }).click();
   await expect(page.locator('.random-groups-summary')).toContainText('第 2 次分組');
@@ -104,7 +104,8 @@ test('all 500 participants appear once across 100 groups and export without trun
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const people = names(500);
   people[499] = '😀'.repeat(80);
-  await page.getByLabel('參與者名單', { exact: true }).fill(people.join('\n'));
+  await page.evaluate((text) => navigator.clipboard.writeText(text), people.join('\n'));
+  await page.getByLabel('參與者名單', { exact: true }).press('ControlOrMeta+V');
   await page.getByLabel('組數', { exact: true }).fill('100');
   await page.getByRole('button', { name: '產生分組', exact: true }).click();
   await verifyExport(page, await verifyResult(page, people, 100), info, '-500');
@@ -116,7 +117,9 @@ test('all 500 participants appear once across 100 groups and export without trun
 
 test('duplicates, controls and limits preserve raw input and stop the whole result', async ({
   page,
+  context,
 }, info) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const input = page.getByLabel('參與者名單', { exact: true });
   const cases: [string, string][] = [
     ['甲\n\n Café \n乙\nCafe\u0301', '第 5 行：與第 3 行'],
@@ -131,8 +134,11 @@ test('duplicates, controls and limits preserve raw input and stop the whole resu
     await expect(page.getByRole('button', { name: '產生分組', exact: true })).toBeDisabled();
     await expect(page.locator('#random-groups-report')).toHaveValue('');
   }
-  for (const raw of ['A\n'.repeat(50_000), '\t\n'.repeat(50_000)]) {
-    await input.fill(raw);
+  for (const raw of ['A\n'.repeat(999) + 'A', '\t\n'.repeat(999) + '\t']) {
+    // Exercise consecutive native replacement at the complete 1,000-line input limit.
+    await page.evaluate((text) => navigator.clipboard.writeText(text), raw);
+    await input.press('ControlOrMeta+A');
+    await input.press('ControlOrMeta+V');
     await expect(input).toHaveValue(raw);
     await expect(page.locator('#random-groups-errors li')).toHaveCount(20);
     await expect(page.locator('#random-groups-errors')).toContainText('項輸入問題未逐一列出');
@@ -147,6 +153,74 @@ test('duplicates, controls and limits preserve raw input and stop the whole resu
   await page.getByLabel('組數', { exact: true }).fill('2');
   await page.getByRole('button', { name: '產生分組', exact: true }).click();
   await verifyResult(page, ['甲', '乙'], 2);
+});
+
+test('excessive native paste is rejected as a whole, preserves the draft and recovers', async ({
+  page,
+  context,
+}, info) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  const input = page.getByLabel('參與者名單', { exact: true });
+  const original = '甲\n乙';
+  await input.fill(original);
+  await page.getByRole('button', { name: '產生分組', exact: true }).click();
+  await verifyExport(
+    page,
+    await verifyResult(page, ['甲', '乙'], 2),
+    info,
+    '-before-rejected-paste',
+  );
+  for (const raw of [
+    'A\n'.repeat(50_000),
+    '\t\n'.repeat(50_000),
+    `甲\n乙${'\n'.repeat(999)}`,
+    `甲\n乙${' '.repeat(99_998)}`,
+  ]) {
+    await page.evaluate((text) => navigator.clipboard.writeText(text), raw);
+    await input.press('ControlOrMeta+A');
+    await input.press('ControlOrMeta+V');
+    await expect(input).toHaveValue(original);
+    await expect(page.locator('#random-groups-paste-error')).toContainText('未套用');
+    await expect(page.locator('#random-groups-report')).toHaveValue('');
+    await expect(page.locator('.random-groups .copy-action [role="status"]')).toHaveText('');
+    await expect(page.locator('.random-groups-download-status')).toHaveText('');
+    await expect(page.getByRole('button', { name: '複製完整分組', exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: '下載分組 TXT', exact: true })).toBeDisabled();
+  }
+  await page.screenshot({
+    path: info.outputPath('random-groups-paste-rejected.png'),
+    fullPage: true,
+  });
+  // Exactly 1,000 total lines is accepted, including 998 blank lines.
+  const boundary = `甲\n乙${'\n'.repeat(998)}`;
+  await page.evaluate((text) => navigator.clipboard.writeText(text), boundary);
+  await input.press('ControlOrMeta+A');
+  await input.press('ControlOrMeta+V');
+  await expect(input).toHaveValue(boundary);
+  await expect(page.locator('#random-groups-paste-error')).toHaveCount(0);
+  await page.getByRole('button', { name: '產生分組', exact: true }).click();
+  await verifyResult(page, ['甲', '乙'], 2);
+  // Inserting at the start must count the retained suffix, not only clipboard text.
+  await page.evaluate(() => navigator.clipboard.writeText('丙\n'));
+  await input.press('ControlOrMeta+A');
+  await input.press('ArrowLeft');
+  expect(await input.evaluate((element) => element.selectionStart)).toBe(0);
+  await input.press('ControlOrMeta+V');
+  await expect(input).toHaveValue(boundary);
+  await expect(page.locator('#random-groups-paste-error')).toContainText('未套用');
+  await expect(page.locator('#random-groups-report')).toHaveValue('');
+  await page.evaluate(() => navigator.clipboard.writeText('丙\n丁\n戊'));
+  await input.press('ControlOrMeta+A');
+  await input.press('ControlOrMeta+V');
+  await expect(input).toHaveValue('丙\n丁\n戊');
+  await expect(page.locator('#random-groups-paste-error')).toHaveCount(0);
+  await page.getByRole('button', { name: '產生分組', exact: true }).click();
+  await verifyExport(
+    page,
+    await verifyResult(page, ['丙', '丁', '戊'], 2),
+    info,
+    '-paste-recovery',
+  );
 });
 
 test('random failure clears an earlier result and retry recovers without losing input', async ({

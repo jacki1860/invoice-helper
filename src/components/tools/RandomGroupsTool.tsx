@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ClipboardEvent } from 'react';
 import { Download, Eraser, FileText, Shuffle } from 'lucide-react';
 import {
   createRandomGroups,
   emptyRandomGroups,
   exampleRandomGroups,
+  randomGroupsInputLimitError,
   validateRandomGroups,
   type RandomGroupsDraft,
   type RandomGroupsOutput,
@@ -19,6 +20,7 @@ export function RandomGroupsTool() {
   const [drawCount, setDrawCount] = useState(0);
   const [randomError, setRandomError] = useState('');
   const [downloadStatus, setDownloadStatus] = useState('');
+  const [pasteError, setPasteError] = useState('');
   const validation = useMemo(() => validateRandomGroups(draft), [draft]);
   const hasInput = draft.names !== '' || draft.groupCountRaw !== '2';
 
@@ -29,6 +31,20 @@ export function RandomGroupsTool() {
     setDrawCount(0);
     setRandomError('');
     setDownloadStatus('');
+    setPasteError('');
+  };
+
+  const pasteNames = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    const { selectionStart, selectionEnd } = event.currentTarget;
+    const pasted = event.clipboardData.getData('text/plain').replace(/\r\n?/gu, '\n');
+    const candidate =
+      draft.names.slice(0, selectionStart) + pasted + draft.names.slice(selectionEnd);
+    const limitError = randomGroupsInputLimitError(candidate);
+    if (!limitError) return;
+    // Reject before native insertion: enormous multiline edits can stall the browser.
+    event.preventDefault();
+    changeDraft(draft);
+    setPasteError(`${limitError} 此次貼上未套用，原名單已保留；請縮短貼上文字後重試。`);
   };
 
   const generate = () => {
@@ -96,14 +112,21 @@ export function RandomGroupsTool() {
                 aria-invalid={
                   hasInput && validation.errors.some((error) => error.field === 'names')
                 }
-                aria-describedby={`random-groups-names-hint${hasInput && !validation.valid ? ' random-groups-errors' : ''}`}
+                aria-describedby={`random-groups-names-hint${hasInput && !validation.valid ? ' random-groups-errors' : ''}${pasteError ? ' random-groups-paste-error' : ''}`}
                 onChange={(event) => changeDraft({ ...draft, names: event.target.value })}
+                onPaste={pasteNames}
               />
               <small id="random-groups-names-hint">
                 每行一名，共 2–500 人；刪除首尾空白、略過空白行。每名最多 80 個 Unicode
-                碼點（不含首尾空白），整份最多 100,000 個碼點。不可含控制字元或 Tab。
+                碼點（不含首尾空白），整份最多 1,000 行（含空白行）及 100,000
+                個碼點。不可含控制字元或 Tab。
               </small>
             </label>
+            {pasteError && (
+              <p className="random-groups-errors" id="random-groups-paste-error" role="alert">
+                {pasteError}
+              </p>
+            )}
             <label className="tool-field" htmlFor="random-groups-count">
               <span id="random-groups-count-label">組數</span>
               <input
