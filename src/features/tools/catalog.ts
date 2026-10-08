@@ -21,6 +21,7 @@ export type ToolId =
   | 'text-diff'
   | 'filename-plan'
   | 'meeting-agenda'
+  | 'random-groups'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -79,7 +80,7 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議時間、整理清單與比對文字，查公司及公開資料。',
+    description: '換算日期、安排工作天與會議、隨機分組、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
@@ -88,6 +89,7 @@ export const taskCollections: {
       'list-compare',
       'text-diff',
       'meeting-agenda',
+      'random-groups',
       'company',
       'insurance',
       'laws',
@@ -250,6 +252,13 @@ export const tools: Tool[] = [
     label: '會議議程時間表',
     description: '填入開始時間與議題分鐘數，排出每項起訖時間及完整議程。',
     keywords: '會議 議程 時間表 開會 分鐘 排程 討論 TXT',
+  },
+  {
+    id: 'random-groups',
+    category: 'conversions',
+    label: '隨機分組器',
+    description: '貼上參與者名單，指定組數，排出人數均衡的隨機分組。',
+    keywords: '隨機 分組 參與者 活動 工作坊 組數 平均 均衡 TXT',
   },
   {
     id: 'company',

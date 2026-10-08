@@ -22,6 +22,7 @@ const searchAliases: Partial<Record<ToolId, string[]>> = {
   'text-diff': ['文字比對', '版本比較', '差異檢查', '修訂核對', 'diff'],
   'filename-plan': ['批次改名', '檔名編號', '檔案命名', '檔名對照', '重新命名', 'rename'],
   'meeting-agenda': ['會議安排', '議程表', '開會流程', '討論時程', '會議時間'],
+  'random-groups': ['隨機分隊', '分組器', '活動分組', '工作坊分組', '抽籤分組', 'random groups'],
   company: ['統一編號', '公司名稱', '公司地址', '公司登記'],
   insurance: ['投保級距', '投保金額', '勞工保險', '全民健康保險'],
   laws: ['法條', '法律條文', '法規資料庫'],

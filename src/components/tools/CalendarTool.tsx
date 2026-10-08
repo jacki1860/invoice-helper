@@ -42,21 +42,32 @@ export function CalendarTool() {
   }
 
   function downloadCalendar(scope: 'year' | 'month') {
+    setDownloadStatus(null);
     const exportMonth = scope === 'month' ? month : undefined;
-    const blob = new Blob([buildCalendarIcs(calendar, new Date(), exportMonth)], {
-      type: 'text/calendar;charset=utf-8',
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = getCalendarFilename(year, exportMonth);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     const range = scope === 'month' ? `${year} 年 ${month} 月` : `${year} 年`;
-    const count = scope === 'month' ? monthEvents.length : events.length;
-    setDownloadStatus({ scope, message: `已產生 ${range} ICS，共 ${count} 筆節日與補假。` });
+    let url: string | undefined;
+    let link: HTMLAnchorElement | undefined;
+    try {
+      const blob = new Blob([buildCalendarIcs(calendar, new Date(), exportMonth)], {
+        type: 'text/calendar;charset=utf-8',
+      });
+      url = URL.createObjectURL(blob);
+      link = document.createElement('a');
+      link.href = url;
+      link.download = getCalendarFilename(year, exportMonth);
+      document.body.appendChild(link);
+      link.click();
+      const count = scope === 'month' ? monthEvents.length : events.length;
+      setDownloadStatus({ scope, message: `已產生 ${range} ICS，共 ${count} 筆節日與補假。` });
+    } catch {
+      setDownloadStatus({ scope, message: `無法產生 ${range} ICS，請重試下載。` });
+    } finally {
+      link?.remove();
+      if (url) {
+        const downloadUrl = url;
+        window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+      }
+    }
   }
 
   return (
