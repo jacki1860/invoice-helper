@@ -1,0 +1,200 @@
+.attendance-sheet {
+  min-width: 0;
+}
+.attendance-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.6fr);
+  gap: 32px;
+  align-items: start;
+}
+.attendance-editor,
+.attendance-preview {
+  min-width: 0;
+}
+.attendance-toolbar,
+.attendance-output-actions,
+.attendance-page-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+}
+.attendance-editor .tool-field > label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+.attendance-editor .tool-field small {
+  line-height: 1.8;
+}
+.attendance-errors {
+  padding: 16px;
+  margin: 20px 0;
+  border-left: 3px solid var(--accent);
+  background: #fff4ed;
+  color: #874021;
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.attendance-errors ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.attendance-summary {
+  font-size: 16px;
+  font-weight: 500;
+}
+.attendance-hint {
+  margin: 12px 0 20px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.attendance-sheet .action-status {
+  overflow-wrap: anywhere;
+}
+.attendance-page-block {
+  margin-top: 24px;
+}
+.attendance-page-controls {
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.attendance-page-controls h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.attendance-page-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  border: 1px solid var(--rule);
+  background: #e9e5df;
+}
+.attendance-paper {
+  width: 760px;
+  min-height: 1075px;
+  padding: 44px;
+  color: #302c27;
+  background: #fffdf9;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.attendance-paper header {
+  margin-bottom: 12px;
+}
+.attendance-paper-kicker {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+.attendance-paper h3 {
+  margin: 6px 0 10px;
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+.attendance-paper dl > div {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 3px;
+}
+.attendance-paper dt {
+  font-weight: 600;
+}
+.attendance-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #938d82;
+  padding: 1px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+.attendance-table th {
+  height: 30px;
+  background: #f1eee7;
+  font-weight: 600;
+}
+.attendance-table td {
+  height: 36px;
+}
+.attendance-paper footer {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 11px;
+}
+.attendance-text-output {
+  margin-top: 24px;
+  font-size: 13px;
+}
+.attendance-text-output summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+.attendance-text-output textarea {
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  line-height: 1.7;
+  padding: 12px;
+}
+.export-surface:has(.attendance-paper) {
+  width: 760px;
+}
+@media (max-width: 900px) {
+  .attendance-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .attendance-output-actions > *,
+  .attendance-output-actions .button,
+  .attendance-page-controls .button {
+    width: 100%;
+  }
+}
+@media print {
+  .attendance-layout {
+    display: block;
+  }
+  .attendance-editor,
+  .attendance-output-controls,
+  .attendance-page-controls,
+  .attendance-text-output {
+    display: none !important;
+  }
+  .attendance-page-block {
+    margin: 0;
+    break-after: page;
+  }
+  .attendance-page-block:last-child {
+    break-after: auto;
+  }
+  .attendance-page-scroll {
+    border: 0;
+    overflow: visible;
+    background: transparent;
+  }
+  .attendance-paper {
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    background: white;
+    break-inside: avoid;
+  }
+  .attendance-paper header,
+  .attendance-table tr,
+  .attendance-paper footer {
+    break-inside: avoid;
+  }
+}

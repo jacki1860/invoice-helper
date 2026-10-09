@@ -14,6 +14,7 @@ import { ListCompareTool } from './components/tools/ListCompareTool';
 import { TextDiffTool } from './components/tools/TextDiffTool';
 import { FilenamePlanTool } from './components/tools/FilenamePlanTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
+import { AttendanceSheetTool } from './components/tools/AttendanceSheetTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import {
   ReceiptTool,
@@ -310,6 +311,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'meeting-agenda'} aria-label="會議議程時間表">
           <MeetingAgendaTool />
+        </section>
+        <section hidden={tool !== 'attendance-sheet'} aria-label="活動簽到表">
+          <AttendanceSheetTool />
         </section>
         <section hidden={tool !== 'insurance'} aria-label="勞健保級距">
           <InsuranceLookup />

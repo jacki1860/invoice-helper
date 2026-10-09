@@ -8,6 +8,7 @@ const searchAliases: Partial<Record<ToolId, string[]>> = {
   acceptance: ['驗收單', '結案單', '成果確認', '交付確認'],
   compare: ['比價', '詢價', '廠商比較', '供應商比較'],
   equipment: ['借用單', '借據', '設備借用', '器材歸還'],
+  'attendance-sheet': ['簽到表', '出席名冊', '報到表', '會議簽到', '課程簽到', '活動安排'],
   receipt: ['收款證明', '收據單'],
   purchase: ['訂購單', '訂貨單', '進貨'],
   delivery: ['出貨單', '簽收單', '點交單'],
