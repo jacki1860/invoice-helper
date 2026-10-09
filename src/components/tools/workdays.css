@@ -4,6 +4,24 @@
   line-height: 1.85;
   margin: 12px 0;
 }
+.workdays-handoff {
+  padding: 20px;
+  margin: 24px 0;
+  border: 1px solid var(--rule);
+  background: #fffdfa;
+  overflow-wrap: anywhere;
+}
+.workdays-handoff h2 {
+  margin-bottom: 10px;
+  font-family: var(--serif);
+  font-size: 20px;
+}
+.workdays-handoff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
 .workdays-week {
   border: 0;
   padding: 0;

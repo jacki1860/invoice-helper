@@ -10,18 +10,32 @@ import {
   getCalendarMonth,
 } from '../../domain/calendar';
 import { getTaiwanDate } from '../../utils/dateUtils';
+import {
+  calendarRangeError,
+  calendarRangeMax,
+  calendarRangeMin,
+  calendarToWorkdays,
+  selectCalendarDate,
+  type CalendarRangeSeed,
+} from '../../features/tools/calendarHandoff';
 import { SourceNote, ToolPage } from './ToolPage';
 import './calendar.css';
 
 const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 
-export function CalendarTool() {
+export function CalendarTool({
+  onCalculateWorkdays,
+}: {
+  onCalculateWorkdays?: (seed: CalendarRangeSeed) => void;
+}) {
   const today = getTaiwanDate();
   const todayYear = Number(today.slice(0, 4));
   const todayMonth = Number(today.slice(5, 7));
   const todayIsAvailable = calendarSnapshots.some((item) => item.year === todayYear);
   const [year, setYear] = useState(todayIsAvailable ? todayYear : calendarSnapshots[0].year);
   const [month, setMonth] = useState(todayIsAvailable ? todayMonth : 1);
+  const [range, setRange] = useState<CalendarRangeSeed>({ start: '', end: '' });
+  const [rangeAttempted, setRangeAttempted] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState<{
     scope: 'year' | 'month';
     message: string;
@@ -33,6 +47,19 @@ export function CalendarTool() {
   const substitutes = events.filter((day) => day.note === '補假').length;
   const firstYear = calendarSnapshots[0].year;
   const lastYear = calendarSnapshots[calendarSnapshots.length - 1].year;
+  const rangeError = calendarRangeError(range);
+  const showRangeError = rangeAttempted || Boolean(range.start && range.end);
+  const rangeDescription = range.start
+    ? range.end
+      ? `已選 ${range.start} 至 ${range.end}，包含開始日與結束日。再選一天可重新開始。`
+      : `開始日：${range.start}。請選結束日；選同一天可計算單日。可切換月份或年份接續選取。`
+    : '先選開始日，再選結束日。可用 Tab 移動、Enter 或空白鍵選日期，也可直接填寫日期。';
+
+  function transferRange() {
+    setRangeAttempted(true);
+    const seed = calendarToWorkdays(range);
+    if (seed) onCalculateWorkdays?.(seed);
+  }
 
   function changeMonth(offset: number) {
     const next = new Date(Date.UTC(year, month - 1 + offset, 1));
@@ -54,9 +81,9 @@ export function CalendarTool() {
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    const range = scope === 'month' ? `${year} 年 ${month} 月` : `${year} 年`;
+    const exportRange = scope === 'month' ? `${year} 年 ${month} 月` : `${year} 年`;
     const count = scope === 'month' ? monthEvents.length : events.length;
-    setDownloadStatus({ scope, message: `已產生 ${range} ICS，共 ${count} 筆節日與補假。` });
+    setDownloadStatus({ scope, message: `已產生 ${exportRange} ICS，共 ${count} 筆節日與補假。` });
   }
 
   return (
@@ -122,6 +149,58 @@ export function CalendarTool() {
           </dd>
         </div>
       </dl>
+
+      <section className="calendar-range" aria-labelledby="calendar-range-title">
+        <h2 id="calendar-range-title">選一段時間，計算工作天</h2>
+        <p id="calendar-range-instructions" className="calendar-range-note">
+          選好日期後帶到工作天工具，再確認套用。計算會沿用工作天工具目前的政府日曆或自訂休息日設定。
+        </p>
+        <div className="calendar-range-fields">
+          <label className="tool-field">
+            <span>區間開始日期</span>
+            <input
+              type="date"
+              min={calendarRangeMin}
+              max={calendarRangeMax}
+              value={range.start}
+              aria-describedby="calendar-range-status calendar-range-error"
+              onChange={(event) => setRange({ ...range, start: event.target.value })}
+            />
+          </label>
+          <label className="tool-field">
+            <span>區間結束日期</span>
+            <input
+              type="date"
+              min={calendarRangeMin}
+              max={calendarRangeMax}
+              value={range.end}
+              aria-describedby="calendar-range-status calendar-range-error"
+              onChange={(event) => setRange({ ...range, end: event.target.value })}
+            />
+          </label>
+        </div>
+        <p id="calendar-range-status" className="calendar-range-note" role="status">
+          {rangeDescription}
+        </p>
+        <p id="calendar-range-error" className="field-error" role="alert">
+          {showRangeError ? rangeError : ''}
+        </p>
+        <div className="calendar-range-actions">
+          <button className="button button-primary" type="button" onClick={transferRange}>
+            帶入工作天計算
+          </button>
+          <button
+            className="text-button"
+            type="button"
+            onClick={() => {
+              setRange({ start: '', end: '' });
+              setRangeAttempted(false);
+            }}
+          >
+            清除日期區間
+          </button>
+        </div>
+      </section>
 
       <div className="calendar-layout">
         <section className="calendar-panel" aria-labelledby="calendar-month-title">
@@ -203,21 +282,45 @@ export function CalendarTool() {
                     day ? (
                       <td
                         key={day.date}
-                        className={`calendar-day calendar-day--${getCalendarDayKind(day)}${day.date === today ? ' calendar-day--today' : ''}`}
+                        className={`calendar-day calendar-day--${getCalendarDayKind(day)}${day.date === today ? ' calendar-day--today' : ''}${day.date === range.start || day.date === range.end || (!rangeError && day.date > range.start && day.date < range.end) ? ' calendar-day--selected' : ''}`}
                         title={`${day.date} 星期${weekdays[day.weekday]}${day.note ? `・${getCalendarEventLabel(day)}` : day.isDayOff ? '・週末' : ''}`}
                       >
-                        <time
-                          dateTime={day.date}
-                          aria-current={day.date === today ? 'date' : undefined}
+                        <button
+                          className="calendar-day-button"
+                          type="button"
+                          aria-label={`${day.date} 星期${weekdays[day.weekday]}${day.note ? `，${getCalendarEventLabel(day)}` : day.isDayOff ? '，週末' : ''}${day.date === range.start ? '，開始日' : ''}${day.date === range.end ? '，結束日' : ''}${!rangeError && day.date > range.start && day.date < range.end ? '，區間內' : ''}`}
+                          aria-pressed={
+                            day.date === range.start ||
+                            day.date === range.end ||
+                            (!rangeError && day.date > range.start && day.date < range.end)
+                          }
+                          aria-describedby="calendar-range-status"
+                          onClick={() => {
+                            setRange((current) => selectCalendarDate(current, day.date));
+                            setRangeAttempted(false);
+                          }}
                         >
-                          {Number(day.date.slice(8))}
-                        </time>
-                        {day.note && (
-                          <span className="calendar-day-label">
-                            {day.note === '補假' ? '補假' : day.note}
-                          </span>
-                        )}
-                        {day.isDayOff && !day.note && <span className="sr-only">週末</span>}
+                          <time
+                            dateTime={day.date}
+                            aria-current={day.date === today ? 'date' : undefined}
+                          >
+                            {Number(day.date.slice(8))}
+                          </time>
+                          {(day.date === range.start || day.date === range.end) && (
+                            <span className="calendar-range-marker">
+                              {day.date === range.start && day.date === range.end
+                                ? '起迄'
+                                : day.date === range.start
+                                  ? '開始'
+                                  : '結束'}
+                            </span>
+                          )}
+                          {day.note && (
+                            <span className="calendar-day-label">
+                              {day.note === '補假' ? '補假' : day.note}
+                            </span>
+                          )}
+                        </button>
                       </td>
                     ) : (
                       <td className="calendar-day calendar-day--empty" key={`empty-${dayIndex}`} />
