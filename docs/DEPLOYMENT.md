@@ -2,6 +2,29 @@
 
 目標：[https://www.ctrls.com.tw/invoice/](https://www.ctrls.com.tw/invoice/)。使用既有公司 SSH 設定與 Nginx 靜態檔案服務。
 
+## 2026-10-09 搜尋需求第一、二週
+
+- 發布時間：**15:37:15 Asia/Taipei**（07:37:15 UTC）。使用者本次明確要求「部署」。
+- [PR #14](https://github.com/jacki1860/invoice-helper/pull/14) 已合併至 `codex/admin-tools-foundation`；已測 head `eb0197ebbe5c4b59f9b4864d11352b12af34442e`，部署來源 `5e75cfcbfe7b380171194a1eebeba989443f1089`，兩者 tree 同為 `9628fd52b1dd30dd38e31ab24ec29ac479ae2251`。沿用同份已測公司建置，未重新建置產物。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/5e75cfcbfe7b380171194a1eebeba989443f1089`。
+- 前版保留：`/var/www/invoice-helper/releases/758501cefe88511e437cb73e37509cdd5f51e4e8`。
+- 受保護發布紀錄：`/var/backups/invoice-helper/manual-5e75cfcbfe7b380171194a1eebeba989443f1089`，包含固定 `release.py` 與新 artifact；舊 artifact 仍保留於 `manual-758501cefe88511e437cb73e37509cdd5f51e4e8/new`。
+- Manifest：`/var/www/invoice-helper/manifests/5e75cfcbfe7b380171194a1eebeba989443f1089.json`；SHA-256 `7a3b5d4674fa265c3e794fcb73ac408d64d4302194f2bf14808ddd76e462f9cc`。封存 SHA-256 `7add055f520ae489574e29afc16314df5be4d65f5a234c40ececdec8b83cc3b0`。
+
+本批仍為 **25 工具、36 HTML、42 個公開檔案**。收據增加訂金、尾款與服務費範本選擇及明確載入確認，保留通用範例及同份文件輸出；年曆可選單日、跨月、跨年區間帶入工作天工具，接收端確認後套用日期並保留政府／自訂工作週規則；稅額與工作天補公式、取整及交期例子、靜態搜尋內容，新增未稅 1,000 元試算範例。未更動稅額核心、官方日曆資料、依賴或資料保存規則，未納入其他未合併 PR。
+
+本機 Node 24.21.0 的 **310/310 tests、64/64 Chromium browser tests**、lint、格式、TypeScript、一般／公司建置及各 **36 頁 SEO** 檢查通過；桌面 1440px 與手機 320px 包含收據八欄取消／覆寫保護、日期區間帶入與保留工作規則，8 份收據 PNG、8 份 PDF 讀回及年／月 ICS 下載。獨立 source／發布預檢未找到具體阻擋。這些是本機與 CI 功能證據，未併稱為正式站互動驗收；詳細限定範圍見[驗證紀錄](VERIFICATION.md)。[PR CI](https://github.com/jacki1860/invoice-helper/actions/runs/37889804967) 與[合併 CI](https://github.com/jacki1860/invoice-helper/actions/runs/37899756655) 均確認 SUCCESS，對應各自來源 SHA。
+
+正式機前版 42 檔、JSON manifest 與固定腳本均核對；腳本 hash `35510efcbf16a1f7906350c03bae52ff06eec76b82e77aff562648f99ec9e9fc` 相對前版未改，使用從已核准受保護紀錄複製的 root-owned 0555 版本。新 artifact 在本機及伺服器均通過 manifest／tar 校驗。正式機隔離 `/tmp` 目錄完成前版啟用→新版啟用→回復前版，正式 live 先 dry-run，再以 `expected-current`、共同 `flock` 與原子 symlink 替換啟用；**未在真實 live 演練回復**。
+
+正式 HTTPS 使用正常 TLS，**42 檔均 HTTP 200、大小及 SHA-256 與 manifest 完全一致**，含 36 HTML。未知及兩個舊路徑仍為 404；公司首頁 bytes 與 **34 份 Nginx 檔案 hash** 相對本次部署前完全相同，Nginx active。新 release／manifest 與 live 再次讀回一致。
+
+正式站瀏覽器驗收受到**已儲存的網站封鎖權限**拒絕；未改權限，未改用其他瀏覽器、raw CDP 或 CLI browser 繞過。部署成功宣告限於伺服器與公開 HTTPS 檔案證據，收據／日期區間在正式站的互動、搜尋重新抓取／排名／CTR、Safari／Firefox、實體裝置及印表機仍未驗證。
+
+需要回復時，使用本節固定 `release.py rollback --to 758501cefe88511e437cb73e37509cdd5f51e4e8 --expected-current 5e75cfcbfe7b380171194a1eebeba989443f1089` 先 dry-run，核對後加 `--apply`，再驗證 HTTPS 與關鍵功能。若別人已部署另一版，腳本會拒絕覆蓋。
+
+Jev 結案摘要的來源、部署、證據範圍三項均為 supported，無 attention；不替代上述實測。完整發布證據位於 `.wrangler/release-20261009-gsc/`。本次人工發布持有共用工作鎖並保留今日已完成的每日 PR #13 紀錄；未啟用自動合併／部署，未改 main、預設分支、分支保護、排程、Nginx 或網站權限。後續文件提交只記錄結果，不改已發布產物。
+
 ## 2026-10-07 雙清單比對與批次檔名規劃器
 
 - 發布時間：**18:50:09 Asia/Taipei**（10:50:09 UTC）。

@@ -4,7 +4,7 @@
 
 ## 2026-10-09 搜尋需求第一、二週：本地驗證完成
 
-來源基準 `7d8f56fc3aab45f5e742f49307c64d2d77f5ed40`，開發分支 `codex/gsc-week-one-two`。新增收據通用／訂金／尾款／服務費範本選擇、年曆區間帶入工作天，以及稅額／工作天搜尋說明與範例。維持 25 工具、36 個靜態 HTML；未合併或部署正式站。
+來源基準 `7d8f56fc3aab45f5e742f49307c64d2d77f5ed40`，開發分支 `codex/gsc-week-one-two`。新增收據通用／訂金／尾款／服務費範本選擇、年曆區間帶入工作天，以及稅額／工作天搜尋說明與範例。維持 25 工具、36 個靜態 HTML；本段為發布前驗證，後續合併及部署版本見[部署紀錄](DEPLOYMENT.md)。
 
 驗收條件與結果：
 
@@ -24,7 +24,7 @@
 
 證據保留於本機 `/private/tmp/invoice-week12-browser-final/`、`/private/tmp/invoice-week12-browser-final.log`、`/private/tmp/invoice-week12-tests.log`。檔案為本次驗收用的示範資料，不提交到 repository。
 
-未驗證範圍：正式站互動、搜尋引擎重新抓取／排名／CTR 改善、Safari／Firefox、實體手機及印表機。未更動稅額計算核心、官方日曆快照、持久化方式或依賴；既有大型 bundle 提示與開發依賴 audit 警示保留，未在本次功能範圍修補。
+未驗證範圍：正式站互動、搜尋引擎重新抓取／排名／CTR 改善、Safari／Firefox、實體手機及印表機。後續正式站的伺服器／HTTPS 檔案核對已完成，瀏覽器工具因已儲存的網站封鎖權限拒絕操作，未以其他瀏覽器或 CLI browser 繞過；詳見部署紀錄。未更動稅額計算核心、官方日曆快照、持久化方式或依賴；既有大型 bundle 提示與開發依賴 audit 警示保留，未在本次功能範圍修補。
 
 ## Search Console：已設定
 
