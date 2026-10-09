@@ -11,6 +11,8 @@ import {
 } from '../../domain/workdays';
 import { calendarSnapshots } from '../../data/calendar';
 import { getTaiwanDate } from '../../utils/dateUtils';
+import type { ToolHandoff } from '../../features/tools/handoff';
+import { calendarRangeError, type CalendarRangeSeed } from '../../features/tools/calendarHandoff';
 import { CopyAction } from './CopyAction';
 import { SessionNote, SourceNote, ToolPage } from './ToolPage';
 import './workdays.css';
@@ -18,7 +20,7 @@ import './workdays.css';
 const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 const PAGE_SIZE = 31;
 
-export function WorkdayCalculator() {
+export function WorkdayCalculator({ incoming }: { incoming?: ToolHandoff<CalendarRangeSeed> }) {
   const [mode, setMode] = useState<'interval' | 'shift'>('interval');
   const [start, setStart] = useState(getTaiwanDate);
   const [end, setEnd] = useState(getTaiwanDate);
@@ -29,6 +31,13 @@ export function WorkdayCalculator() {
   const [page, setPage] = useState(0);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState('');
+  const [resolvedHandoff, setResolvedHandoff] = useState('');
+  const [handoffStatus, setHandoffStatus] = useState('');
+  const incomingError = incoming ? calendarRangeError(incoming.data) : '';
+  const ruleDescription =
+    options.calendar === 'government'
+      ? '政府辦公日曆（包含政府補假）'
+      : `自訂工作週，休息日：${options.restWeekdays.map((day) => `週${weekdays[day]}`).join('、') || '無'}；排除政府節日原日期：${options.excludeHolidays ? '是' : '否'}；排除政府補假：${options.excludeSubstitutes ? '是' : '否'}`;
   const result =
     mode === 'interval'
       ? countWorkdays(start, end, includeStart, options)
@@ -43,6 +52,7 @@ export function WorkdayCalculator() {
   const resetResultFeedback = () => {
     setPage(0);
     setDownloadStatus('');
+    setHandoffStatus('');
   };
   const patchOptions = (patch: Partial<WorkdayOptions>) => {
     setOptions((current) => ({ ...current, ...patch }));
@@ -73,6 +83,58 @@ export function WorkdayCalculator() {
       title="工作天與交期"
       description="選好你的工作日，把一段時間算清楚，或推算下一個交件日期。"
     >
+      {incoming && incoming.id !== resolvedHandoff && (
+        <section className="workdays-handoff" aria-label="待套用的年曆日期區間">
+          <h2>年曆選取的日期區間</h2>
+          <p>
+            {incoming.data.start} 至 {incoming.data.end}
+          </p>
+          <p className="workdays-hint">
+            套用後切換為區間計算，包含開始日與結束日。保留目前規則：{ruleDescription}。
+          </p>
+          {incomingError && (
+            <p className="field-error" role="alert">
+              {incomingError}
+            </p>
+          )}
+          <div className="workdays-handoff-actions">
+            <button
+              className="button button-primary"
+              type="button"
+              disabled={Boolean(incomingError)}
+              onClick={() => {
+                if (calendarRangeError(incoming.data)) return;
+                setMode('interval');
+                setStart(incoming.data.start);
+                setEnd(incoming.data.end);
+                setIncludeStart(true);
+                resetResultFeedback();
+                setResolvedHandoff(incoming.id);
+                setHandoffStatus(
+                  `已套用 ${incoming.data.start} 至 ${incoming.data.end}，包含起訖兩日；沿用 ${ruleDescription}。`,
+                );
+              }}
+            >
+              套用日期區間
+            </button>
+            <button
+              className="text-button"
+              type="button"
+              onClick={() => {
+                setResolvedHandoff(incoming.id);
+                setHandoffStatus('已取消帶入，原有計算方式、日期與工作日設定保留。');
+              }}
+            >
+              暫不套用
+            </button>
+          </div>
+        </section>
+      )}
+      {handoffStatus && (!incoming || incoming.id === resolvedHandoff) && (
+        <p className="workdays-hint" role="status">
+          {handoffStatus}
+        </p>
+      )}
       <div className="tool-columns workdays-layout">
         <div className="tool-form">
           <h2 className="numbered-title">

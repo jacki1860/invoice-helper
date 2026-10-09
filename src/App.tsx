@@ -34,6 +34,7 @@ import type {
 import { Receivables } from './components/tools/Receivables';
 import { WorkdayCalculator } from './components/tools/WorkdayCalculator';
 import type { ReceiptSeed, ReceivableSeed, ToolHandoff } from './features/tools/handoff';
+import type { CalendarRangeSeed } from './features/tools/calendarHandoff';
 import InsuranceLookup from './components/tools/InsuranceLookup';
 import { LawLookup } from './components/tools/LawLookup';
 import { CalendarTool } from './components/tools/CalendarTool';
@@ -68,6 +69,7 @@ export default function App() {
   const [quoteHandoff, setQuoteHandoff] = useState<ToolHandoff<QuoteSeed>>();
   const [purchaseHandoff, setPurchaseHandoff] = useState<ToolHandoff<PurchaseSeed>>();
   const [costHandoff, setCostHandoff] = useState<ToolHandoff<CostSeed>>();
+  const [workdayHandoff, setWorkdayHandoff] = useState<ToolHandoff<CalendarRangeSeed>>();
   const activeTool = tools.find((entry) => entry.id === tool);
   const { favorites, toggleFavorite, notice: favoritesNotice } = useToolFavorites();
 
@@ -159,6 +161,10 @@ export default function App() {
   const createCosts = (data: CostSeed) => {
     setCostHandoff({ id: crypto.randomUUID(), data });
     navigate('profit');
+  };
+  const calculateCalendarWorkdays = (data: CalendarRangeSeed) => {
+    setWorkdayHandoff({ id: crypto.randomUUID(), data });
+    navigate('workdays');
   };
 
   return (
@@ -285,7 +291,7 @@ export default function App() {
           <Receivables incoming={receivableHandoff} onCreateReceipt={createReceipt} />
         </section>
         <section hidden={tool !== 'workdays'} aria-label="工作天與交期">
-          <WorkdayCalculator />
+          <WorkdayCalculator incoming={workdayHandoff} />
         </section>
         <section hidden={tool !== 'split'} aria-label="款項分攤">
           <PaymentSplit />
@@ -318,7 +324,7 @@ export default function App() {
           <LawLookup />
         </section>
         <section hidden={tool !== 'calendar'} aria-label="假日行事曆">
-          <CalendarTool />
+          <CalendarTool onCalculateWorkdays={calculateCalendarWorkdays} />
         </section>
         <div dangerouslySetInnerHTML={{ __html: renderPageGuide(tool, base) }} />
       </main>

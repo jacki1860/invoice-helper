@@ -29,6 +29,11 @@ import {
   hasDeliveryNoteContent,
 } from '../../features/tools/tradeDocuments';
 import { getTaiwanDate } from '../../utils/dateUtils';
+import {
+  createReceiptSample,
+  receiptSamples,
+  type ReceiptSampleId,
+} from '../../features/tools/receiptSamples';
 import { downloadInvoice } from '../../utils/exportInvoice';
 import { formatChineseAmountText } from '../../utils/numberUtils';
 import { PricingControls, taxLabels } from '../workspace/PricingControls';
@@ -219,6 +224,8 @@ function emptyReceipt(): ReceiptDraft {
 
 export function ReceiptTool({ incoming }: { incoming?: ToolHandoff<ReceiptSeed> }) {
   const [draft, setDraft] = useState(emptyReceipt);
+  const [sampleId, setSampleId] = useState<ReceiptSampleId>('general');
+  const selectedSample = receiptSamples.find((item) => item.id === sampleId)!;
   const [initialDate] = useState(draft.date);
   const [resolvedHandoff, setResolvedHandoff] = useState('');
   const [notice, setNotice] = useState('');
@@ -231,17 +238,8 @@ export function ReceiptTool({ incoming }: { incoming?: ToolHandoff<ReceiptSeed> 
   };
   const sample = () => {
     if (hasContent && !window.confirm('載入範例會取代目前收據內容。確定取代？')) return;
-    setDraft({
-      ...emptyReceipt(),
-      payer: '範例商行',
-      payee: '小事務工作室',
-      amount: '12600',
-      purpose: '展場道具製作尾款',
-      reference: 'RC-001',
-      method: '銀行轉帳',
-      notes: '此為示範內容，請依實際收款情形修改。',
-    });
-    setNotice('已載入範例。');
+    setDraft(createReceiptSample(sampleId, getTaiwanDate()));
+    setNotice(`已載入${selectedSample.label}示範資料，請核對實際收款情形。`);
   };
   return (
     <ToolPage title="收據產生器" description="把實際收到的款項記下來，留一份清楚的收款紀錄。">
@@ -274,7 +272,34 @@ export function ReceiptTool({ incoming }: { incoming?: ToolHandoff<ReceiptSeed> 
               </div>
             </section>
           )}
-          <SampleButton onClick={sample} />
+          <fieldset className="receipt-samples">
+            <legend>從收款情境開始</legend>
+            <div className="receipt-sample-controls">
+              <label className="tool-field" htmlFor="receipt-sample">
+                <span>收據範本</span>
+                <select
+                  id="receipt-sample"
+                  value={sampleId}
+                  aria-describedby="receipt-sample-hint"
+                  onChange={(event) => setSampleId(event.target.value as ReceiptSampleId)}
+                >
+                  {receiptSamples.map(({ id, label }) => (
+                    <option key={id} value={id}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button className="button button-secondary" type="button" onClick={sample}>
+                <RotateCcw size={16} aria-hidden="true" />
+                載入文件範例
+              </button>
+            </div>
+            <p id="receipt-sample-hint">
+              {selectedSample.description}
+              範本內皆為示範資料；選擇範本不會改動表單，點選「載入文件範例」後才會套用。
+            </p>
+          </fieldset>
           <h2 className="numbered-title">
             <span>01</span>收款資料
           </h2>
