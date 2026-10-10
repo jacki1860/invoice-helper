@@ -944,6 +944,16 @@ input[type='date']::-webkit-calendar-picker-indicator {
 .calculator-example {
   margin-top: 22px;
 }
+.calculator-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 22px;
+}
+.calculator-examples .calculator-example {
+  margin-top: 0;
+  text-align: left;
+}
 .calculation-paper,
 .lookup-paper {
   padding: 45px 36px;

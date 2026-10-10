@@ -15,6 +15,8 @@ for (const scope of ['year', 'month'] as const) {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('國定假日行事曆');
     await page.getByLabel('選擇年份').selectOption('2027');
     await page.getByLabel('選擇月份').selectOption('12');
+    await page.getByLabel('區間開始日期', { exact: true }).fill('2026-12-31');
+    await page.getByLabel('區間結束日期', { exact: true }).fill('2027-01-04');
     const button = page.getByRole('button', {
       name: scope === 'year' ? '下載 2027 全年 ICS' : '下載 2027 年 12 月 ICS',
       exact: true,
@@ -39,6 +41,8 @@ for (const scope of ['year', 'month'] as const) {
     await button.click();
     await expect(status).toHaveText(`無法產生 ${range} ICS，請重試下載。`);
     await expect(notes.filter({ hasText: '已產生' })).toHaveCount(0);
+    await expect(page.getByLabel('區間開始日期', { exact: true })).toHaveValue('2026-12-31');
+    await expect(page.getByLabel('區間結束日期', { exact: true })).toHaveValue('2027-01-04');
     expect(await page.locator('a[download][href^="blob:"]').count()).toBe(0);
     await page.screenshot({ path: info.outputPath('calendar-download-error.png'), fullPage: true });
 
@@ -70,6 +74,16 @@ for (const scope of ['year', 'month'] as const) {
 
     await page.getByLabel('選擇年份').selectOption('2026');
     await expect(notes.filter({ hasText: '已產生' })).toHaveCount(0);
+    await page.getByRole('button', { name: '帶入工作天計算', exact: true }).click();
+    await expect(page.getByRole('region', { name: '待套用的年曆日期區間' })).toContainText(
+      '2026-12-31 至 2027-01-04',
+    );
+    await page.getByRole('button', { name: '套用日期區間', exact: true }).click();
+    await expect(page.getByLabel('起始日期', { exact: true })).toHaveValue('2026-12-31');
+    await expect(page.getByLabel('結束日期', { exact: true })).toHaveValue('2027-01-04');
+    await expect(
+      page.getByRole('region', { name: '工作天計算結果' }).locator('.result-number'),
+    ).toHaveText('2個工作天');
     expect(errors).toEqual([]);
   });
 }

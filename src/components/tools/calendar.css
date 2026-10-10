@@ -79,6 +79,45 @@
   align-items: start;
   gap: 32px;
 }
+.calendar-range {
+  padding: 22px;
+  margin-bottom: 30px;
+  border: 1px solid var(--rule);
+  background: #fffdfa;
+  min-width: 0;
+}
+.calendar-range h2 {
+  font-family: var(--serif);
+  font-size: 21px;
+}
+.calendar-range-note {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.calendar-range-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.calendar-range-fields .tool-field,
+.calendar-range-fields input {
+  min-width: 0;
+  max-width: 100%;
+}
+.calendar-range-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.calendar-range-actions .button {
+  max-width: 100%;
+  white-space: normal;
+}
 .calendar-panel,
 .calendar-agenda {
   min-width: 0;
@@ -147,9 +186,39 @@
 }
 .calendar-day {
   height: 87px;
-  padding: 9px 7px 7px;
+  padding: 0;
   border: 1px solid #ddd8cf;
   vertical-align: top;
+}
+.calendar-day-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 87px;
+  padding: 9px 7px 7px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.calendar-day-button:hover {
+  background: #e9e5dc;
+}
+.calendar-day-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -3px;
+}
+.calendar-day--selected .calendar-day-button {
+  box-shadow: inset 0 0 0 2px var(--ink);
+  background: #ebe8d9;
+}
+.calendar-range-marker {
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 600;
 }
 .calendar-day time {
   display: inline-flex;
@@ -308,6 +377,13 @@
   }
 }
 @media (max-width: 600px) {
+  .calendar-range {
+    padding: 16px;
+  }
+  .calendar-range-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
   .calendar-toolbar {
     flex-direction: column;
     gap: 18px;
@@ -350,6 +426,9 @@
   }
   .calendar-day {
     height: 78px;
+  }
+  .calendar-day-button {
+    min-height: 78px;
     padding: 7px 3px 5px;
   }
   .calendar-day time {

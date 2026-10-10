@@ -91,20 +91,34 @@ export function TaxCalculator() {
             </div>
           </label>
           <p id="calculator-hint" className={error ? 'field-error' : 'field-hint'}>
-            {error || '支援兩位小數，結果取整元。切換模式會依輸入值重新計算。'}
+            {error || '支援兩位小數，先將輸入取整元再計算。切換模式保留輸入數字，不會自動換算。'}
           </p>
-          <button
-            className="text-button calculator-example"
-            onClick={() => {
-              setAmount('1050');
-              setPriceMode('total');
-              setTaxType('regular');
-              updateNotice('已帶入 1,050 元範例。');
-            }}
-          >
-            <RotateCcw size={15} />
-            試算 1,050 元範例
-          </button>
+          <div className="calculator-examples" role="group" aria-label="稅額試算範例">
+            <button
+              className="text-button calculator-example"
+              onClick={() => {
+                setAmount('1050');
+                setPriceMode('total');
+                setTaxType('regular');
+                updateNotice('已帶入 1,050 元範例。');
+              }}
+            >
+              <RotateCcw size={15} />
+              試算 1,050 元範例
+            </button>
+            <button
+              className="text-button calculator-example"
+              onClick={() => {
+                setAmount('1000');
+                setPriceMode('subtotal');
+                setTaxType('regular');
+                updateNotice('已帶入未稅 1,000 元範例。');
+              }}
+            >
+              <RotateCcw size={15} />
+              試算未稅 1,000 元範例
+            </button>
+          </div>
         </section>
         <Totals {...result} invalid={!result.valid} />
         <button className="button button-primary" disabled={!result.valid} onClick={copy}>
@@ -160,6 +174,7 @@ export function TaxCalculator() {
                   : '稅額＝未稅銷售額 × 5%，最後四捨五入。'}
             </p>
             <p>銷售額 ＋ 稅額 ＝ 總計</p>
+            <p>先將輸入金額四捨五入至整元，再計算稅額並取整元；反向試算可能有取整差異。</p>
           </div>
         </div>
       </aside>
