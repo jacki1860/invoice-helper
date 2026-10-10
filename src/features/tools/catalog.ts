@@ -23,6 +23,7 @@ export type ToolId =
   | 'filename-plan'
   | 'meeting-agenda'
   | 'random-groups'
+  | 'countdown'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -81,7 +82,7 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議、隨機分組、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
+    description: '換算日期、安排工作天與會議、隨機分組、工作倒數、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
@@ -92,6 +93,7 @@ export const taskCollections: {
       'meeting-agenda',
       'random-groups',
       'attendance-sheet',
+      'countdown',
       'company',
       'insurance',
       'laws',
@@ -268,6 +270,13 @@ export const tools: Tool[] = [
     label: '隨機分組器',
     description: '貼上參與者名單，指定組數，排出人數均衡的隨機分組。',
     keywords: '隨機 分組 參與者 活動 工作坊 組數 平均 均衡 TXT',
+  },
+  {
+    id: 'countdown',
+    category: 'conversions',
+    label: '工作與會議倒數',
+    description: '設定一段時間，開始、暫停與繼續倒數，清楚掌握時間到。',
+    keywords: '倒數 計時器 工作 會議 專注 休息 秒 分鐘 暫停',
   },
   {
     id: 'company',

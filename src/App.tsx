@@ -16,6 +16,7 @@ import { FilenamePlanTool } from './components/tools/FilenamePlanTool';
 import { RandomGroupsTool } from './components/tools/RandomGroupsTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
 import { AttendanceSheetTool } from './components/tools/AttendanceSheetTool';
+import { CountdownTool } from './components/tools/CountdownTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import {
   ReceiptTool,
@@ -315,6 +316,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'filename-plan'} aria-label="批次檔名規劃器">
           <FilenamePlanTool />
+        </section>
+        <section hidden={tool !== 'countdown'} aria-label="工作與會議倒數">
+          <CountdownTool />
         </section>
         <section hidden={tool !== 'meeting-agenda'} aria-label="會議議程時間表">
           <MeetingAgendaTool />

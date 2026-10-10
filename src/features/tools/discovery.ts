@@ -22,6 +22,7 @@ const searchAliases: Partial<Record<ToolId, string[]>> = {
   'list-compare': ['名單核對', '缺漏清單', '集合比對', '清單交集', '清單差集', '預定與實際'],
   'text-diff': ['文字比對', '版本比較', '差異檢查', '修訂核對', 'diff'],
   'filename-plan': ['批次改名', '檔名編號', '檔案命名', '檔名對照', '重新命名', 'rename'],
+  countdown: ['倒數計時', '倒數器', '休息計時', '專注計時', 'timer', 'countdown'],
   'meeting-agenda': ['會議安排', '議程表', '開會流程', '討論時程', '會議時間'],
   'random-groups': ['隨機分隊', '分組器', '活動分組', '工作坊分組', '抽籤分組', 'random groups'],
   company: ['統一編號', '公司名稱', '公司地址', '公司登記'],

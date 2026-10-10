@@ -47,9 +47,9 @@ test('quotes, incomplete forms and zero totals cannot become payment handoffs', 
   }
 });
 
-test('twenty-six tools have unique routes and the legacy invoice entry still works', () => {
-  assert.equal(tools.length, 26);
-  assert.equal(new Set(tools.map((tool) => tool.id)).size, 26);
+test('twenty-eight tools have unique routes and the legacy invoice entry still works', () => {
+  assert.equal(tools.length, 28);
+  assert.equal(new Set(tools.map((tool) => tool.id)).size, 28);
   for (const id of [
     'receipt',
     'purchase',
@@ -64,6 +64,7 @@ test('twenty-six tools have unique routes and the legacy invoice entry still wor
     'list-cleanup',
     'list-compare',
     'meeting-agenda',
+    'countdown',
     'text-diff',
     'filename-plan',
     'random-groups',

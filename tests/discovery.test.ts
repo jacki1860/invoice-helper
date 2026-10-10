@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 31);
+  assert.equal(legacyPages.length, 33);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -258,5 +258,14 @@ test('random grouping has its own route, reference task and practical discovery 
     'ＲＡＮＤＯＭ　ＧＲＯＵＰＳ',
   ]) {
     assert.deepEqual(ids(searchTools(query)), ['random-groups']);
+  }
+});
+
+test('countdown has an independent route, task entry and search vocabulary', () => {
+  assert.equal(pagePath('countdown', '/invoice/'), '/invoice/countdown/');
+  assert.equal(categoryForPage('countdown'), 'conversions');
+  assert.ok(taskForPage('task-reference')?.toolIds.includes('countdown'));
+  for (const query of ['倒數計時', '休息計時', '專注計時', 'ＴＩＭＥＲ', 'countdown']) {
+    assert.deepEqual(ids(searchTools(query)), ['countdown']);
   }
 });
