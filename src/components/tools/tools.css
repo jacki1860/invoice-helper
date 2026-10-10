@@ -1,3 +1,61 @@
+.external-tool-label {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.starshare-promo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  max-width: 1508px;
+  margin: 0 auto 40px;
+  padding: 32px 46px;
+  border-block: 1px solid var(--rule);
+  background: #fbf9f5;
+}
+.starshare-promo-copy {
+  max-width: 720px;
+}
+.starshare-promo h2 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3vw, 32px);
+  margin-bottom: 12px;
+}
+.starshare-promo p {
+  line-height: 1.8;
+}
+.starshare-promo-note {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 12px;
+}
+.starshare-promo-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+.starshare-details {
+  margin-top: 16px;
+  font-size: 14px;
+  text-underline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .starshare-promo {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 20px;
+    gap: 24px;
+  }
+}
+@media print {
+  .starshare-promo {
+    display: none !important;
+  }
+}
+
 .page-guide {
   max-width: 1200px;
   margin: 0 auto;

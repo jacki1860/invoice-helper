@@ -24,6 +24,7 @@ export type ToolId =
   | 'meeting-agenda'
   | 'random-groups'
   | 'countdown'
+  | 'starshare'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -48,13 +49,22 @@ export const taskCollections: {
     id: 'quoting',
     label: '報價與接案',
     description: '估算成本與工時，整理報價、稅額及交期。',
-    toolIds: ['quote', 'profit', 'hourly', 'tax', 'workdays', 'company', 'meeting-agenda'],
+    toolIds: [
+      'quote',
+      'profit',
+      'hourly',
+      'tax',
+      'workdays',
+      'company',
+      'meeting-agenda',
+      'starshare',
+    ],
   },
   {
     id: 'payments',
     label: '請款與收款',
     description: '整理請款文件、訂金尾款與實際收款紀錄。',
-    toolIds: ['quote', 'invoice', 'receivables', 'receipt', 'split', 'acceptance'],
+    toolIds: ['quote', 'invoice', 'receivables', 'receipt', 'split', 'acceptance', 'starshare'],
   },
   {
     id: 'purchasing',
@@ -71,6 +81,7 @@ export const taskCollections: {
       'list-compare',
       'text-diff',
       'filename-plan',
+      'starshare',
     ],
   },
   {
@@ -108,7 +119,10 @@ export interface Tool {
   label: string;
   description: string;
   keywords: string;
+  externalUrl?: string;
 }
+
+export const starShareUrl = 'https://starshare.jacki1860.com/';
 
 export const tools: Tool[] = [
   {
@@ -278,6 +292,14 @@ export const tools: Tool[] = [
     label: '工作與會議倒數',
     description: '設定一段時間，開始、暫停與繼續倒數，清楚掌握時間到。',
     keywords: '倒數 計時器 工作 會議 專注 休息 秒 分鐘 暫停',
+  },
+  {
+    id: 'starshare',
+    category: 'conversions',
+    label: 'StarShare 跨裝置傳檔',
+    description: '手機與電腦互傳檔案、文字與連結，免安裝、免登入。',
+    keywords: '檔案 傳檔 傳輸 分享 手機 電腦 照片 文件 iPhone Android Windows Mac QR Code',
+    externalUrl: starShareUrl,
   },
   {
     id: 'company',

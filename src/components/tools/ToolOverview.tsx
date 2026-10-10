@@ -36,10 +36,16 @@ export function ToolOverview({ page, favorites, toggleFavorite }: Props) {
 
   const renderEntry = (entry: (typeof tools)[number]) => (
     <div className="directory-item" key={entry.id}>
-      <a className="directory-tool" href={pagePath(entry.id, base)}>
+      <a
+        className="directory-tool"
+        href={entry.externalUrl || pagePath(entry.id, base)}
+        target={entry.externalUrl ? '_blank' : undefined}
+        rel={entry.externalUrl ? 'noopener noreferrer' : undefined}
+      >
         <div>
           <h3>{entry.label}</h3>
           <p>{entry.description}</p>
+          {entry.externalUrl && <span className="external-tool-label">外連工具・另開分頁</span>}
         </div>
         <ArrowUpRight size={19} strokeWidth={1.5} aria-hidden="true" />
       </a>
