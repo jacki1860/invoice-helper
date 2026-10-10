@@ -15,6 +15,7 @@ import { TextDiffTool } from './components/tools/TextDiffTool';
 import { FilenamePlanTool } from './components/tools/FilenamePlanTool';
 import { RandomGroupsTool } from './components/tools/RandomGroupsTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
+import { AttendanceSheetTool } from './components/tools/AttendanceSheetTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import {
   ReceiptTool,
@@ -320,6 +321,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'random-groups'} aria-label="隨機分組器">
           <RandomGroupsTool />
+        </section>
+        <section hidden={tool !== 'attendance-sheet'} aria-label="活動簽到表">
+          <AttendanceSheetTool />
         </section>
         <section hidden={tool !== 'insurance'} aria-label="勞健保級距">
           <InsuranceLookup />

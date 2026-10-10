@@ -155,6 +155,37 @@ test('meeting agenda is discoverable by practical meeting preparation terms', ()
   }
 });
 
+test('attendance sheet supports direct and legacy routes, document discovery and event preparation terms', () => {
+  assert.equal(categoryForPage('attendance-sheet'), 'documents');
+  for (const base of ['/', '/invoice/']) {
+    const path = `${base}attendance-sheet/`;
+    assert.equal(pagePath('attendance-sheet', base), path);
+    assert.equal(pageFromPath(path, base), 'attendance-sheet');
+    assert.equal(
+      resolveLocation({ pathname: base, hash: '#attendance-sheet', search: '' }, base),
+      'attendance-sheet',
+    );
+    assert.equal(
+      resolveLocation({ pathname: path, hash: '', search: '?date=2026-10-09' }, base),
+      'attendance-sheet',
+    );
+  }
+  for (const page of ['tools', 'directory', 'category-documents', 'task-reference'] as const) {
+    assert.ok(ids(toolsForPage(page)).includes('attendance-sheet'));
+  }
+  for (const query of [
+    '簽到表',
+    '出席名冊',
+    '報到表',
+    '會議簽到',
+    '課程簽到',
+    '活動安排',
+    '簽到 ＰＤＦ',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['attendance-sheet']);
+  }
+});
+
 test('text diff has an independent route, category, task entries and practical search aliases', () => {
   assert.equal(pagePath('text-diff', '/invoice/'), '/invoice/text-diff/');
   assert.equal(categoryForPage('text-diff'), 'conversions');

@@ -67,6 +67,7 @@ test('twenty-six tools have unique routes and the legacy invoice entry still wor
     'text-diff',
     'filename-plan',
     'random-groups',
+    'attendance-sheet',
   ])
     assert.equal(resolvePage(`#${id}`), id);
   assert.equal(resolvePage('', '?uniformNumber=22099131'), 'invoice');

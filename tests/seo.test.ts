@@ -128,6 +128,32 @@ test('sitemap has only the 37 canonical URLs, no private prefill or pretend modi
   for (const url of urls) assert.doesNotMatch(url, /\?|#/);
 });
 
+test('attendance sheet public copy explains paper use, complete exports and memory-only drafts', () => {
+  const page = 'attendance-sheet';
+  const meta = metadataForPage(page);
+  assert.equal(meta.canonical, 'https://www.ctrls.com.tw/invoice/attendance-sheet/');
+  assert.match(meta.title, /活動簽到表.*紙本/);
+  assert.match(meta.description, /序號、姓名、單位、簽名與備註/);
+  const guide = renderPageGuide(page, '/invoice/');
+  assert.match(guide, /預設 20 列.*1–100 列/);
+  assert.match(guide, /每頁以 20 列分頁，最多 5 頁/);
+  assert.match(guide, /姓名筆數不能超過總列數/);
+  assert.match(guide, /略過空白行、去除每行首尾空白，保留原始順序與同名/);
+  assert.match(guide, /列印或另存 PDF 包含全部頁面/);
+  assert.match(guide, /PNG 每次下載所選的一頁/);
+  assert.match(guide, /複製文字則包含完整簽到表/);
+  assert.match(guide, /不提供線上報到、QR Code、電子簽名或出席統計/);
+  assert.match(guide, /不會自動保存或上傳/);
+  assert.match(guide, /站內切換工具後可繼續編輯.*重新整理或關閉頁面後清空/);
+  assert.match(guide, /沒有儲存檔或匯入功能/);
+  for (const collection of ['category-documents', 'task-reference'] as const) {
+    assert.match(
+      renderPageGuide(collection, '/invoice/'),
+      /href="\/invoice\/attendance-sheet\/">活動簽到表<\/a>/,
+    );
+  }
+});
+
 function guideLinks(page: PageId) {
   return [...renderPageGuide(page, '/invoice/').matchAll(/<a href="([^"]+)">([^<]+)<\/a>/g)].map(
     (match) => ({ url: new URL(match[1], 'https://www.ctrls.com.tw').href, name: match[2] }),

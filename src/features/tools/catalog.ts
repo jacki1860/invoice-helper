@@ -7,6 +7,7 @@ export type ToolId =
   | 'acceptance'
   | 'compare'
   | 'equipment'
+  | 'attendance-sheet'
   | 'receipt'
   | 'purchase'
   | 'delivery'
@@ -80,7 +81,7 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議、隨機分組、整理清單與比對文字，查公司及公開資料。',
+    description: '換算日期、安排工作天與會議、隨機分組、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
@@ -90,6 +91,7 @@ export const taskCollections: {
       'text-diff',
       'meeting-agenda',
       'random-groups',
+      'attendance-sheet',
       'company',
       'insurance',
       'laws',
@@ -161,6 +163,13 @@ export const tools: Tool[] = [
     label: '器材借還單',
     description: '記下借出的器材、配件與狀況，核對歸還進度。',
     keywords: '器材 借用 借還 設備 歸還 逾期 配件 PDF PNG 備份',
+  },
+  {
+    id: 'attendance-sheet',
+    category: 'documents',
+    label: '活動簽到表',
+    description: '填寫活動資訊與名單，產生可列印的紙本簽到表。',
+    keywords: '活動 會議 課程 研習 簽到 簽名 名單 紙本 列印 PDF PNG',
   },
   {
     id: 'profit',
