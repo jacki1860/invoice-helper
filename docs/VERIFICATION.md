@@ -1,6 +1,34 @@
 # 小事務驗證紀錄
 
-更新：2026-10-09（Asia/Taipei）。本文依版本保留已完成驗證，各段證據限定於所列來源及環境。最新發布狀態見[部署紀錄](DEPLOYMENT.md)。
+更新：2026-10-10（Asia/Taipei）。本文依版本保留已完成驗證，各段證據限定於所列來源及環境。最新發布狀態見[部署紀錄](DEPLOYMENT.md)。
+
+## 2026-10-10 隨機分組、活動簽到表與工作倒數整合驗收
+
+驗收來源 `d3d6a40e431f71551e25c29a3f846bf9f4cffa63`，發布合併提交 `7829b98044039f3e38ff7f5cfcebb94908ba55ee`，tree 皆為 `31211b1ba0a6b75251685da33c893d7cbf0bed2d`。28 個工具、39 HTML；此段區分本機、CI、補充檢查與正式站證據，發布和回復位置見[部署紀錄](DEPLOYMENT.md)。
+
+本機完整檢查：**345/345 Node tests、124/124 Playwright tests**，1440×1000／320×800，0 retry；npm ci、lint、格式、TypeScript、一般及 `/invoice/` 公司建置、各 39 頁 SEO 檢查通過。涵蓋新增三工具、共用 PNG 清理、報價／請款過期通知，以及原有收據情境、年曆日期區間與各文件輸出；受控錯誤及 async mock 案例和真實 TXT／PNG／PDF／ICS 輸出各依測試內容解讀，不將整套一律稱為無 mock。整合 PR CI 已成功；合併提交 CI 亦確認 SUCCESS，對應上述部署 SHA，日誌確認 345 Node／124 browser 全數通過。
+
+獨立程式審查未找到可重現阻擋，核對原始提交祖先、25 個專屬檔的 blob 相同、9 個共享檔的完整整合，以及 PR #14 相關 13 檔原樣保留。另以 Node 26.9.0 跑 11/11 最小狀態／通知檢查，涵蓋保留 7249 ms 的暫停續計、精確到期、舊 callback 忽略、4 種 PNG notice、ICS 失敗清理與跨年區間；該項使用 mock，不算入主測試或正式瀏覽器通過數。
+
+獨立補充本機驗收使用 Node 24.21.0、Chromium 153.0.8010.12，1440×1000／320×1000；**14 個計畫案例中 12 個完整通過，2 個報價提示案例未完成**。已完成的六組雙尺寸案例包括：
+
+- 七位 Unicode／大小寫不同姓名的均衡分組，真實 clipboard 與 TXT bytes 相同；每人恰好一次。
+- 21 列簽到表保留同名與順序，完整 clipboard、第 2 頁 PNG（1520×2150）及 2 頁 PDF 內容核對；編輯主辦單位清除舊提示。
+- 三工具站內切換保留草稿／結果；倒數離頁至少 1.6 秒後返回剩 28 秒，暫停後換頁仍不扣時間，真實 2 秒完成及完整摘要 clipboard 通過；合成草稿未寫入 localStorage／sessionStorage。
+- PR #14 訂金收據的 6,000／陸仟元整、事由、編號、真實 clipboard、PNG（1360×1852）及 1 頁 PDF；年曆 2026-09-30 至 2026-10-02 須明確套用後得到 3 個工作天。
+- 補充流程各輪 runtime error、console warning、failed request 皆為 0，未發送公司查詢 API；20 次截圖無整頁水平溢出。簽到固定紙寬使用內部橫向捲動，沒有另外驗到最右欄，不將局部預覽截圖當成 PNG 裁切。
+
+兩個未完成案例在報價 PNG 已成功下載並顯示成功訊息後，因 `備註（選填）` locator 找不到欄位而逾時，後續編輯／clipboard／清理 assertions 未執行。主套件既有報價 notice 和 PNG cleanup 測試已通過，但不據此把獨立補充腳本改報為 14/14；主流程隨後在正式 Chrome 的 1440／320px 補驗複製後編輯備註，舊提示均清除；這不改寫原補充腳本的 12/14 結果。原始失敗、selector 限制及首輪 harness 假設修正均保留，未改產品、略過檢查或放寬 timeout。
+
+輸出讀回另以 `pdfinfo`、`pdftotext -layout` 與 PDF 轉圖核對桌面簽到 2 頁／收據 1 頁；目視簽到第 2 頁 PNG、收據 PNG 及三張 PDF 頁面，metadata、序號、表頭、金額、簽章欄、頁碼完整，未見裁切或跨頁切列。這只代表已列產物，不是實體列印或所有輸入長度的美術驗收。
+
+正式站正常 TLS 的 45 個公開檔全部 bytes／SHA-256 匹配固定 manifest。正式 Chrome 在 1440×1000 完成 7 人／3 組 TXT 實際下載與讀回、真實 2 秒倒數及時間到摘要、21 人簽到表第 2 頁 PNG 下載（1520×2150）與目視；320×800 完成 5 人／2 組及真實複製、30 秒倒數開始／暫停於 21 秒及摘要讀回、21 人兩頁簽到完整文字讀回。報價文件在兩尺寸均實際複製後編輯備註，確認舊提示消失；三工具及報價的窄版 document scrollWidth 均為 320。應用程式 error log 為空，另有 Chrome 擴充套件警告。下載事件蒐集曾逾時，但磁碟上的 TXT／PNG 已驗證完整，未當作下載失敗。正式站未跑完整 124 項套件，也未重新產出 PDF。
+
+Jev 結案摘要的來源、驗證、部署、界線四項均選 supported，信心分別為 0.49／0.64／0.72／0.85；前三項觸發未校準的 attention。主流程再核對 merge／premerge JSON、獨立來源審查、最終 CI 日誌與公開逐檔 manifest，未找到具體矛盾；保留提醒，Jev 不替代上述實测。
+
+證據保存於 `.wrangler/release-20261010/`：主套件 log／輸出在根目錄與 `browser/`，獨立程式審查在 `review/`，補充本機案例與原始失敗在 `qa/`，輸出目視在 `qa/readback/`，正式站已保存的下載與摘要在 `production-browser/`，公開雜湊在 `public-check/report.json`，伺服器讀回在 `release-review/postdeploy/`，合併 CI 與 dirty 工作區核對在 `release-review/final-gates.json`。
+
+剩餘風險：fresh audit 4 high／0 critical 均在開發工具鏈，production audit 0；bundle >500 kB 提示保留。未測 Safari／Firefox、實體手機／印表機、OS 列印對話框與所有自訂列印設定、24 小時實等、搜尋收錄或成效。倒數系統調時與背景更新限制已在工具說明列明。
 
 ## 2026-10-09 搜尋需求第一、二週：本地驗證完成
 

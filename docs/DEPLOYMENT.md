@@ -2,6 +2,36 @@
 
 目標：[https://www.ctrls.com.tw/invoice/](https://www.ctrls.com.tw/invoice/)。使用既有公司 SSH 設定與 Nginx 靜態檔案服務。
 
+## 2026-10-10 三工具整合發布
+
+- 發布時間：**12:15:26 Asia/Taipei**（04:15:26 UTC）。使用者明確要求「驗收然後合併、部署」。
+- [PR #12](https://github.com/jacki1860/invoice-helper/pull/12)、[PR #13](https://github.com/jacki1860/invoice-helper/pull/13)、[PR #15](https://github.com/jacki1860/invoice-helper/pull/15) 經[整合 PR #16](https://github.com/jacki1860/invoice-helper/pull/16) 保留原始提交合併至 `codex/admin-tools-foundation`，四個 PR 均已確認 MERGED。
+- 已測整合 head：`d3d6a40e431f71551e25c29a3f846bf9f4cffa63`；部署來源：`7829b98044039f3e38ff7f5cfcebb94908ba55ee`；兩者 tree 同為 `31211b1ba0a6b75251685da33c893d7cbf0bed2d`。部署使用保留的已測公司建置；45 個公開檔案與該建置逐檔雜湊相同，`.assetsignore` 為不公開的建置中繼資料。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/7829b98044039f3e38ff7f5cfcebb94908ba55ee`。
+- 前版保留：`/var/www/invoice-helper/releases/5e75cfcbfe7b380171194a1eebeba989443f1089`。
+- 受保護發布紀錄：`/var/backups/invoice-helper/manual-7829b98044039f3e38ff7f5cfcebb94908ba55ee`，新 artifact 位於其 `new/`；前版 artifact 保留於 `manual-5e75cfcbfe7b380171194a1eebeba989443f1089/new/`。
+- Manifest：`/var/www/invoice-helper/manifests/7829b98044039f3e38ff7f5cfcebb94908ba55ee.json`；SHA-256 `b4eb0e16e6b873fc9890f1c05df9323e1b722973c5d6382453c96ba2f98c4035`。封存 SHA-256 `9370f4073285e7ccf1a9a315e424951ad89c6d6856e8884bffdfc771e3ec9fb6`。
+
+本版為 **28 工具、39 HTML、45 個公開檔案**，新增隨機分組器、活動簽到表、工作與會議倒數；另包含年曆 ICS／共用 PNG 下載恢復、文件過期匯出提示及 Cloudflare 開發工具鏈的部分修補。PR #14 的收據情境、日期區間帶入工作天及搜尋說明保留；金額核心、生產依賴與既有資料保存規則未改。
+
+已測整合版本的 **345/345 Node tests、124/124 本機 Playwright 回歸**全部通過，瀏覽器尺寸為 1440×1000／320×800，無重試；npm ci、lint、格式、TypeScript、一般／公司建置及各 **39 頁 SEO** 檢查均通過。[整合 PR CI](https://github.com/jacki1860/invoice-helper/actions/runs/38022893813) 成功，對應已測 head；CI 的合併檢查 checkout `335c521341061b0bb6ee37dfc00424b05fc8b655` tree 亦相同。[合併提交 CI](https://github.com/jacki1860/invoice-helper/actions/runs/38023384387) 已確認 SUCCESS，head 為上述部署合併 SHA；日誌確認 345 Node tests／0 failures、124 browser tests passed。
+
+獨立程式審查確認三原始 head 均保留 ancestry，25 個單一 PR 修改檔與原始 blob 相同、9 個共用檔保留三方內容，未找到具體阻擋。額外 11 項倒數／匯出通知／下載清理檢查使用 Node 26.9.0 及最小 mock；與主流程完整測試、真實瀏覽器輸出分開記錄。獨立本機補充驗收完成 12/14 案例，另外 2 個報價 notice 案例受 selector 阻擋而未完成；不是 14/14，也沒有以修改產品或放寬 timeout 迎合測試。詳見驗證紀錄。
+
+正式機新舊 release、manifest、artifact 與固定 `release.py` 均核對；腳本 SHA-256 為 `35510efcbf16a1f7906350c03bae52ff06eec76b82e77aff562648f99ec9e9fc`。隔離 `/tmp` 目錄已完成前版啟用→新版啟用→回復前版，正式 live 先 dry-run，再於預期前版檢查與共同部署鎖下原子切換；**未在真實 live 演練回復**。發布後獨立讀回確認新舊保留產物均符合各自 manifest，路徑為 root-owned 且群組／其他使用者不可寫。
+
+正式公開 HTTPS 使用正常 TLS，**45 檔均 HTTP 200、大小與 SHA-256 完全符合 manifest**，包含 39 HTML。公司首頁 bytes 與 **34 份 Nginx 檔案 hash** 相對部署前未變，Nginx active。
+
+正式 Chrome 在 1440×1000 完成 7 人／3 組 TXT 實際下載與讀回、真實 2 秒倒數及時間到摘要、21 人簽到表第 2 頁 PNG 下載（1520×2150）與目視；320×800 完成 5 人／2 組及真實複製、30 秒倒數開始／暫停於 21 秒及摘要讀回、21 人兩頁簽到完整文字讀回。報價文件在兩尺寸均實際複製後編輯備註，確認舊提示消失；三工具及報價的窄版 document scrollWidth 均為 320。應用程式 error log 為空，另有 Chrome 擴充套件警告。下載事件蒐集曾逾時，但磁碟上的 TXT／PNG 已驗證完整，未當作下載失敗。完整 124 項回歸與 PDF 驗證在本機／CI 執行，正式站只做上述重點互動。
+
+Jev 結案摘要的來源、驗證、部署、界線四項均選 supported，信心分別為 0.49／0.64／0.72／0.85；前三項觸發未校準的 attention。主流程再核對 merge／premerge JSON、獨立來源審查、最終 CI 日誌與公開逐檔 manifest，未找到具體矛盾；保留提醒，Jev 不替代上述實测。
+
+需要回復時，使用本節受保護紀錄中的固定 `release.py rollback --to 5e75cfcbfe7b380171194a1eebeba989443f1089 --expected-current 7829b98044039f3e38ff7f5cfcebb94908ba55ee` 先 dry-run，核對後加 `--apply`，再驗 HTTPS 與關鍵操作；腳本會拒絕覆蓋他人已發布的新版本。
+
+Fresh audit 為 **4 high、0 critical**，`--omit=dev` 全為 0；剩餘 sharp 與其 Cloudflare 開發工具鏈父節點風險保留，不代表整站安全認證。保留超過 500 kB 的 bundle 提示。未驗 Safari／Firefox、實體手機、實體印表機、搜尋重新抓取或搜尋成效；倒數未實等 24 小時，背景／休眠及系統調時仍依已說明限制。
+
+此次為單次人工合併／發布；每日 PR 開發紀錄保留當時歷史狀態，不改每日自動發布門檻。發布前後核對主工作目錄 14 個既有 dirty 檔案 bytes 未變，未將無關工作納入產物。本機證據保存於 `.wrangler/release-20261010/`，並有 SHA-256 清單核對複本。後續純文件提交不改變已發布產物。
+
 ## 2026-10-09 搜尋需求第一、二週
 
 - 發布時間：**15:37:15 Asia/Taipei**（07:37:15 UTC）。使用者本次明確要求「部署」。

@@ -2,6 +2,14 @@
 
 更新：2026-10-10（Asia/Taipei）。需求價值來自產品工作情境推論；目前沒有可取得的使用者回饋，GitHub Issues 未啟用。每日最低交付依使用者最新要求是獨立新工具；既有功能擴充及維護另列。發布狀態以 [部署紀錄](DEPLOYMENT.md)及各 PR 為準。
 
+## 2026-10-10 人工整合發布
+
+[PR #12：隨機分組器與下載恢復](https://github.com/jacki1860/invoice-helper/pull/12)、[PR #13：活動簽到表與 PNG 清理](https://github.com/jacki1860/invoice-helper/pull/13)、[PR #15：工作與會議倒數、文件匯出提示](https://github.com/jacki1860/invoice-helper/pull/15) 經重新整合驗收，透過 [PR #16](https://github.com/jacki1860/invoice-helper/pull/16) 保留原始提交合併，四個 PR 均為 MERGED。已於 2026-10-10 **12:15:26（Asia/Taipei）** 人工發布 `7829b98`；目前 **28 工具、39 HTML**。伺服器與公開 45 檔驗證已完成，正式站重點互動亦已完成，證據界線見[部署紀錄](DEPLOYMENT.md)及[驗證紀錄](VERIFICATION.md)。
+
+三項新工具及各自獨立改善已納入正式產物，不重建相同需求。保留 PR #14 收據情境、年曆帶入工作天與搜尋說明；後續仍需追蹤 Cloudflare／sharp 開發工具鏈 4 high 與外部字型穩定性。`npm audit --omit=dev` 為 0，不代表整站安全認證。
+
+此次使用者另行授權「驗收然後合併、部署」，為單次人工發布；每日自動化仍依[工程迴圈](ENGINEERING_LOOP.md)交付已驗證 PR，不因此開啟 auto-merge 或自動部署。每日開發紀錄保留交付當時尚未合併／上線的歷史狀態。
+
 ## 10/10 新工具：工作與會議倒數
 
 - 情境／價值：會議討論、短暫休息或專注工作執行時，設定一段時間、暫停／繼續，得到清楚的剩餘時間、時間到狀態及可複製摘要。
@@ -19,7 +27,7 @@
 
 ## 10/10 既有 PR 延續
 
-PR #12 隨機分組器在 PR #14 合併後出現行事曆下載衝突，本輪在原分支合併新共同基準，保留日期區間帶入及下載錯誤恢復，重新驗收後更新原 PR；不計為今日新工具。[PR #13 簽到表](https://github.com/jacki1860/invoice-helper/pull/13) 維持待核准，不重複建立或堆疊其變更。
+PR #12 在 PR #14 合併後完成行事曆下載衝突調整，保留日期區間帶入與錯誤恢復；PR #12、#13 與新 PR #15 後續均由 PR #16 整合，已於 2026-10-10 人工發布。衝突調整不計為另一項新工具；最終版本與驗收界線見本頁最新發布段落。
 
 ## 10/08 新工具：隨機分組器
 
@@ -92,15 +100,15 @@ PR #12 隨機分組器在 PR #14 合併後出現行事曆下載衝突，本輪�
 
 ## 已完成／待核准狀態
 
-- [PR #12：隨機分組器、行事曆下載恢復與部分開發依賴修補](https://github.com/jacki1860/invoice-helper/pull/12) 於2026-10-08完成實作、實際驗收、獨立審查與CI；2026-10-09查驗仍OPEN，無新審查意見，未合併／上線。本輪不重複新增此工具或催促相同核准；基準尚未包含它的行事曆與依賴修補。
+- PR #12、#13、#15 已經 PR #16 合併並於2026-10-10 12:15:26人工發布 `7829b98`，28工具、39 HTML；原始 head 與 PR #14 功能保留，詳見最新部署／驗證紀錄。
 
 - 器材待還提醒已包含在PR #4及2026-10-04發布中，不再列為新待辦。
 - PR #1–#7 已合併；2026-10-04 人工發布 `41af902`，包含工程基礎與當時功能。單次人工發布不等同啟用自動發布。
 - [PR #8：文字版本差異](https://github.com/jacki1860/invoice-helper/pull/8) 已合併並於2026-10-05人工發布 `5b48e5e`；該版為23工具、34 HTML。
-- [PR #9：雙清單比對與工時錯誤提示](https://github.com/jacki1860/invoice-helper/pull/9)、[PR #10：批次檔名規劃器與依賴修補](https://github.com/jacki1860/invoice-helper/pull/10) 經重新驗收後，透過 [PR #11](https://github.com/jacki1860/invoice-helper/pull/11) 保留原始提交合併，於2026-10-07 18:50:09（Asia/Taipei）人工發布 `758501c`；目前25工具、36 HTML。
+- [PR #9：雙清單比對與工時錯誤提示](https://github.com/jacki1860/invoice-helper/pull/9)、[PR #10：批次檔名規劃器與依賴修補](https://github.com/jacki1860/invoice-helper/pull/10) 經重新驗收後，透過 [PR #11](https://github.com/jacki1860/invoice-helper/pull/11) 保留原始提交合併，於2026-10-07 18:50:09（Asia/Taipei）人工發布 `758501c`；該版為25工具、36 HTML。
 - 自動合併及發布必要條件仍未就緒，每日自動化依 [工程迴圈](ENGINEERING_LOOP.md) 保持僅交付已驗證 PR。不得把獨立AI審查當成不同GitHub身分的正式approval。
 
-- [PR #14](https://github.com/jacki1860/invoice-helper/pull/14) 已合併並於2026-10-09人工發布 `5e75cfcb`，改善收據情境與年曆帶入工作天，仍為25工具、36 HTML；文件來源的檔案／服務核對與瀏覽器互動驗證界線見部署紀錄。本輪以其後文件提交 `d90bdc0` 為共同基準。
-- 行事曆下載失敗提示與Cloudflare開發工具鏈部分修補已於 [PR #12](https://github.com/jacki1860/invoice-helper/pull/12) 驗證，仍待核准；該分支audit為4 high，本輪倒數分支沿用共同基準的5 high，均為開發依賴且production audit為0，不能混用兩分支結果。
+- [PR #14](https://github.com/jacki1860/invoice-helper/pull/14) 已合併並於2026-10-09人工發布 `5e75cfcb`，改善收據情境與年曆帶入工作天，該版為25工具、36 HTML；文件來源的檔案／服務核對與瀏覽器互動驗證界線見部署紀錄。本輪以其後文件提交 `d90bdc0` 為共同基準。
+- 行事曆下載恢復、共用 PNG 清理、文件過期提示與部分 Cloudflare 開發依賴修補均已隨本版發布。重新掃描整合版本為4 high／0 critical，`--omit=dev`為0；不沿用舊倒數分支5 high作為本版結果，剩餘風險留在待辦。
 
 本次維護者另行授權「驗收然後合併、部署」，上述人工發布結果與證據見部署紀錄；每日開發紀錄保留當時 PR 尚未發布的歷史狀態。此為單次人工授權，不改變每日自動發布門檻。

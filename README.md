@@ -2,11 +2,21 @@
 
 公開免登入的行政工具，服務自由工作者與小公司。以暖白紙張、墨黑文字與橘色操作組成工作桌，打開即可製作文件、試算或查詢。
 
-「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。[公司網站](https://www.ctrls.com.tw/invoice/)提供二十五個公開工具及共用聯絡頁尾。最新發布狀態與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)，各版本的測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)。
+「小事務」是暫定產品名，倉庫沿用 `invoice-helper`。[公司網站](https://www.ctrls.com.tw/invoice/)提供二十八個公開工具及共用聯絡頁尾。最新發布狀態與回復資訊見[部署紀錄](docs/DEPLOYMENT.md)，各版本的測試、瀏覽器與輸出證據見[驗證紀錄](docs/VERIFICATION.md)。
 
 頁首右上角的 [Buy me a coffee](https://www.buymeacoffee.com/jacki1860) 支持連結使用網站橘色與白字，手機版與品牌同列。
 
 總覽、四類頁面與各工具的共用頁尾提供「聯絡開發者」及「許願新功能」，以 `mailto:` 連至 `jacki1860@gmail.com`，分別預填不同主旨與內容提示。本站不直接寄出郵件；實際寄送由使用者在郵件應用程式確認。頁尾不列入文件列印。
+
+## 2026-10-10 隨機分組、活動簽到表與工作倒數
+
+新增三個獨立工具，已於 2026-10-10 12:15:26（Asia/Taipei）由 `7829b98` 發布；目前提供 **28 個工具、39 個靜態 HTML 頁面**。
+
+- [隨機分組器](https://www.ctrls.com.tw/invoice/random-groups/)：貼上 2–500 人名單，指定 2–100 組，產生每人恰好一次、人數差最多一人的分組，可複製全文或下載 TXT。同名須加識別；無效或超限整份停止，過量貼上保留原名單並清除舊結果。
+- [活動簽到表](https://www.ctrls.com.tw/invoice/attendance-sheet/)：填寫活動資料與名單，保留同名及原始順序，設定 1–100 列、每 20 列分頁；支援整份列印／另存 PDF、逐頁 PNG 與完整文字。單位、簽名及備註留白供現場手寫。
+- [工作與會議倒數](https://www.ctrls.com.tw/invoice/countdown/)：設定 1 秒至 24 小時，可開始、暫停、繼續與重設，並複製當次摘要。時間到更新頁面；背景或休眠後依裝置時間核對，不提供音效、通知或背景叫醒。
+
+同時改善年曆 ICS 下載失敗提示與資源清理、共用 PNG 下載失敗清理，以及報價／請款編輯後的過期匯出訊息。三工具內容只留在本次瀏覽器頁面，站內切換保留、重新整理清空。既有收據情境與年曆帶入工作天流程保留；金額核心及生產依賴未改。發布、驗證範圍與剩餘開發依賴風險見[部署紀錄](docs/DEPLOYMENT.md)及[驗證紀錄](docs/VERIFICATION.md)。
 
 ## 2026-10-09 搜尋需求第一、二週開發
 
@@ -125,7 +135,7 @@ npx oxfmt src/data/insurance.ts src/data/laws.ts src/data/calendar.ts
 
 ## SEO／AEO
 
-正式站的首頁、完整目錄、五個任務入口、四分類與二十五工具會建置為 36 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
+正式站的首頁、完整目錄、五個任務入口、四分類與二十八工具會建置為 39 個可直接讀取的 HTML 頁面，提供獨立網址、標題、描述、canonical、分享資訊、結構化資料與 sitemap。用途、操作步驟及常見問題在不執行 JavaScript 時仍可閱讀；總覽說明可展開。工具間切換保留既有資料，舊 hash 連結仍可用。
 
 任務導覽、全站搜尋與常用收藏已於 2026-10-01 00:05:31（Asia/Taipei）由 `09a3150` 發布，173 項測試通過；見[工具探索說明](docs/TOOL_DISCOVERY.md)。Search Console 已完成擁有權驗證，sitemap 成功讀取 31 個網址；首頁與報價頁已申請索引，實際收錄仍待 Google 處理，詳見 [Search Console 紀錄](docs/SEARCH_CONSOLE.md)。建置檢查、發布注意事項與 Search Console 後續步驟見 [SEO／AI 搜尋說明](docs/SEO.md)。
 
