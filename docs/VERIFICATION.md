@@ -2,6 +2,23 @@
 
 更新：2026-10-10（Asia/Taipei）。本文依版本保留已完成驗證，各段證據限定於所列來源及環境。最新發布狀態見[部署紀錄](DEPLOYMENT.md)。
 
+## 2026-10-10 StarShare：最新三工具整合與正式站驗證
+
+本輪以最新 `d0ebdec` 整合 StarShare，已測 head `9217eefa052e818a6b8db8611d5a57d42373b85a`，部署提交 `161edd81205224d6160bc4471dbd8b2479385fb6`，tree 同為 `52ae4515fe315bd82cd869e37dc2411c4ff09923`。29 工具、40 HTML；下方初次本機驗證保留為舊基準證據。
+
+- Node 24.21.0：npm ci、lint、格式、TypeScript、345/345 Node tests、一般及公司建置、兩種 base 各 40 頁 SEO 檢查通過。124/124 Playwright tests 通過，1440×1000／320×800、0 retry、3.5 分鐘；涵蓋今日三工具及既有 PNG／PDF／TXT／ICS 輸出與錯誤恢復。16 份實際測試 PDF 經 `pdftotext` 讀回，均不含 StarShare 推廣文字。
+- [PR #17 CI](https://github.com/jacki1860/invoice-helper/actions/runs/38032348938) SUCCESS，345 Node／124 browser tests；實際 checkout `6019a8ac6bbecb84cd7ae05c018c0e7f9948a798` 與已測 head／部署提交 tree 相同。[合併提交 CI](https://github.com/jacki1860/invoice-helper/actions/runs/38032823788) 亦 SUCCESS，head 為上述部署 SHA，日誌確認 345 Node／124 browser tests 通過。
+- 獨立 source review 沒有可重現阻擋；全部 28 個原工具定義與原任務成員保留。StarShare 7 種搜尋詞、收藏解析、3 個任務、9 個文件工具推薦、兩種 base 與結構化資料通過補充程式檢查。
+- 正式 HTTPS 的 46 檔均 HTTP 200，大小／SHA-256 符合固定 manifest；伺服器新舊 release 讀回一致、Nginx active，公司首頁 bytes 與 Nginx 設定 hashes 未變。
+- 正式 Chrome 1440×1000：搜尋 STARSHARE、加入常用後重整保留、收藏卡片另開正式 StarShare；還原測試收藏。目錄顯示 29 個工具，包含隨機分組、活動簽到表、倒數。報價頁填入兩個合成測試欄位，點推薦連結後另開正確網址、原頁與欄位保留。
+- 正式 Chrome 320×800：報價與 StarShare 介紹頁 `scrollWidth === innerWidth === 320`；介紹頁目視未見截斷。應用程式 error log 為空，額外 StarShare 分頁關閉、尺寸還原、測試草稿重整清空。成果介紹頁保留供檢視。
+
+Jev 四項均為 supported（0.88／0.79／0.98／0.92）；來源追溯項觸發未校準 attention。主流程再查 PR CI 實際 checkout tree、固定建置、合併提交與公開 manifest，未發現矛盾；不將 Jev 當成執行驗證。
+
+證據：`.wrangler/starshare-release-20261010/`，包含完整 logs、`tested-build.json`、`artifact-provenance.json`、`ci-tree-check.json`、`pdf-promotion-check.json`、`production-browser.json`、正式桌面／手機截圖及 `public-check/report.json`。補充 harness 首次引用不存在的未使用 export、以及錯誤訊息比對文字不符，均依實際 API／訊息修正後執行；產品與主測試未為此改動。
+
+本次驗證的是小事務站內整合與發布；未重新驗收 StarShare 實體跨裝置傳輸，正式站未跑完整 124 項套件，未測 Safari／Firefox、實體手機／印表機或搜尋成效。既有 4 high 開發依賴警示及 >500 kB bundle 提示保留；production audit 為 0。
+
 ## 2026-10-10 StarShare 外連工具與站內推廣：初次本機驗證
 
 基準 `d90bdc0e29de8cff8248c06885d6675551727c41`，工作分支 `codex/admin-tools-foundation`；本段記錄整合最新三工具之前、尚未提交部署的初次本機改動；後續整合驗證另外記錄。新增第 26 個工具入口與 `/invoice/starshare/` 介紹頁，總共 37 個靜態 HTML 頁面。沿用 StarShare 正式網站，不重做傳檔，也未修改 StarShare 專案。

@@ -2,6 +2,27 @@
 
 目標：[https://www.ctrls.com.tw/invoice/](https://www.ctrls.com.tw/invoice/)。使用既有公司 SSH 設定與 Nginx 靜態檔案服務。
 
+## 2026-10-10 StarShare 外連與推廣發布
+
+- 發布時間：**14:59:59 Asia/Taipei**（06:59:59 UTC）。使用者要求「部署， 看一下最新的進度小心不要衝突。」
+- [PR #17](https://github.com/jacki1860/invoice-helper/pull/17) 已合併至 `codex/admin-tools-foundation`。在 `d0ebdec` 上整合，保留今天中午已發布的三工具及共用修正；29 工具、40 HTML、46 個公開檔案。
+- 已測 head `9217eefa052e818a6b8db8611d5a57d42373b85a`，部署來源 `161edd81205224d6160bc4471dbd8b2479385fb6`；tree 同為 `52ae4515fe315bd82cd869e37dc2411c4ff09923`。保留同份已測公司建置，合併後未重新建置；`.assetsignore` 不公開。
+- Live：`/var/www/html/invoice` → `/var/www/invoice-helper/releases/161edd81205224d6160bc4471dbd8b2479385fb6`；前版 `7829b98044039f3e38ff7f5cfcebb94908ba55ee` 仍保留。
+- 受保護發布紀錄：`/var/backups/invoice-helper/manual-161edd81205224d6160bc4471dbd8b2479385fb6`，含 root-owned 0555 固定 `release.py` 及 `new/` artifact。腳本 SHA-256 `35510efcbf16a1f7906350c03bae52ff06eec76b82e77aff562648f99ec9e9fc`，相對既有核准副本未改。
+- Manifest：`/var/www/invoice-helper/manifests/161edd81205224d6160bc4471dbd8b2479385fb6.json`；SHA-256 `e0bcd48c9c233d105dd6b70c24d9af8677699da501ed460db5c147d765c3697d`。封存 SHA-256 `025e4ee75ca1ffcbedd6ebb27a49d6f720387a175d16ee64efc09d2c9121d3ad`。
+
+345/345 Node、124/124 本機 Playwright、lint、格式、TypeScript、兩種建置及各 40 頁 SEO 檢查均通過；PR CI 與[合併提交 CI](https://github.com/jacki1860/invoice-helper/actions/runs/38032823788) 均 SUCCESS（各 345 Node／124 browser tests），實際 PR CI checkout、reviewed head 與部署 tree 相同。獨立審查確認原 28 工具定義與任務成員保留。完整證據及 Jev 第二意見見[驗證紀錄](VERIFICATION.md)。
+
+先核對既有 protected script／artifact／manifest／權限、正式 live 及最新 remote，再於伺服器隔離 `/tmp` 完成前版啟用→新版啟用→回復前版；正式 live dry-run 通過後，以 `expected-current 7829b98044039f3e38ff7f5cfcebb94908ba55ee`、共同 `flock` 及原子 symlink 切換。隔離目錄補驗錯誤 expected-current 被拒絕且 live 不變；**未在真實 live 演練回復**。
+
+正式 HTTPS 正常 TLS：**46 檔全數 HTTP 200，大小與 SHA-256 符合 manifest**；40 HTML、三個未知／舊路徑仍為 404。新舊 release 與受保護 artifact 讀回一致，Nginx active，公司首頁 bytes 與全部 Nginx 設定 hashes 未變。
+
+正式 Chrome 驗證 StarShare 搜尋、收藏重新整理保存、卡片與文件推薦另開正確外連、報價草稿保留、三個最新工具入口及 320px 版面。測試收藏與草稿已還原；正式站只做重點互動，完整回歸及 16 份不含推廣文字的 PDF 讀回在本機完成。未重新驗收跨裝置傳輸、實體設備或搜尋成效；既有開發依賴及 bundle 提示見驗證紀錄。
+
+需要回復時，使用本節固定 `release.py rollback --to 7829b98044039f3e38ff7f5cfcebb94908ba55ee --expected-current 161edd81205224d6160bc4471dbd8b2479385fb6` 先 dry-run，核對後加 `--apply`，再驗證公開網站；若已有其他新版則拒絕覆蓋。
+
+每日功能紀錄已 completed，本次 acquire 回傳 already-completed、未持有本機每日工作鎖；該紀錄保持原樣。本次由獨立 worktree、原工作檔逐檔備份及雜湊、最新 remote／live 核對與伺服器部署鎖避免混入或覆蓋其他工作。本機證據在 `.wrangler/starshare-release-20261010/`；後續純文件提交不改已發布產物。
+
 ## 2026-10-10 三工具整合發布
 
 - 發布時間：**12:15:26 Asia/Taipei**（04:15:26 UTC）。使用者明確要求「驗收然後合併、部署」。
