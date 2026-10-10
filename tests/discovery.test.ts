@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 30);
+  assert.equal(legacyPages.length, 31);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -211,5 +211,21 @@ test('filename planner has its own route, conversion category, purchasing entry 
     '副檔名 TXT',
   ]) {
     assert.deepEqual(ids(searchTools(query)), ['filename-plan']);
+  }
+});
+
+test('random grouping has its own route, reference task and practical discovery aliases', () => {
+  assert.equal(pagePath('random-groups', '/invoice/'), '/invoice/random-groups/');
+  assert.equal(categoryForPage('random-groups'), 'conversions');
+  assert.ok(ids(toolsForPage('task-reference')).includes('random-groups'));
+  for (const query of [
+    '隨機分隊',
+    '分組器',
+    '活動分組',
+    '工作坊分組',
+    '抽籤分組',
+    'ＲＡＮＤＯＭ　ＧＲＯＵＰＳ',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['random-groups']);
   }
 });

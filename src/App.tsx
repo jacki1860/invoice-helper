@@ -13,6 +13,7 @@ import { ListCleanupTool } from './components/tools/ListCleanupTool';
 import { ListCompareTool } from './components/tools/ListCompareTool';
 import { TextDiffTool } from './components/tools/TextDiffTool';
 import { FilenamePlanTool } from './components/tools/FilenamePlanTool';
+import { RandomGroupsTool } from './components/tools/RandomGroupsTool';
 import { MeetingAgendaTool } from './components/tools/MeetingAgendaTool';
 import { DocumentBuilder } from './components/tools/DocumentBuilder';
 import {
@@ -316,6 +317,9 @@ export default function App() {
         </section>
         <section hidden={tool !== 'meeting-agenda'} aria-label="會議議程時間表">
           <MeetingAgendaTool />
+        </section>
+        <section hidden={tool !== 'random-groups'} aria-label="隨機分組器">
+          <RandomGroupsTool />
         </section>
         <section hidden={tool !== 'insurance'} aria-label="勞健保級距">
           <InsuranceLookup />
