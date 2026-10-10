@@ -82,7 +82,8 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議、隨機分組、工作倒數、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
+    description:
+      '換算日期、安排工作天與會議、隨機分組、工作倒數、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
