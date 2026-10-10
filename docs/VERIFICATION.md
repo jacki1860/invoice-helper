@@ -2,6 +2,27 @@
 
 更新：2026-10-10（Asia/Taipei）。本文依版本保留已完成驗證，各段證據限定於所列來源及環境。最新發布狀態見[部署紀錄](DEPLOYMENT.md)。
 
+## 2026-10-10 StarShare 外連工具與站內推廣：初次本機驗證
+
+基準 `d90bdc0e29de8cff8248c06885d6675551727c41`，工作分支 `codex/admin-tools-foundation`；本段記錄整合最新三工具之前、尚未提交部署的初次本機改動；後續整合驗證另外記錄。新增第 26 個工具入口與 `/invoice/starshare/` 介紹頁，總共 37 個靜態 HTML 頁面。沿用 StarShare 正式網站，不重做傳檔，也未修改 StarShare 專案。
+
+驗收條件與結果：
+
+- **可找到並直接外連**：目錄、搜尋、常用收藏及報價／請款／採購任務納入 StarShare。七種品牌／用途搜尋詞、收藏解析、三個任務與外連網址通過程式檢查；Chrome 實際搜尋「傳檔」「STARSHARE」均只找到此工具，加入收藏後重新整理仍保留。
+- **推廣與使用情境清楚**：首頁、八個文件工具及介紹頁提供正式服務外連；兩種部署 base 的十個靜態頁面均讀回連結及 `target="_blank" rel="noopener noreferrer"`。介紹頁有獨立 canonical、分享摘要、sitemap；WebApplication URL 指向 StarShare 正式服務。文案已讀回 [StarShare 首頁](https://starshare.jacki1860.com/)及[使用說明](https://starshare.jacki1860.com/about/)，不承諾無限容量或任何網路均可連線。
+- **保留原工作內容**：Chrome 分別點擊收藏卡片與文件推薦按鈕，都另開 StarShare 正式首頁；原頁網址與測試草稿維持。外連是固定網址，不夾帶表單或預填參數。桌面與手機測試實際產生的報價 PDF 經 `pdftotext` 讀回，包含報價內容且沒有 StarShare 推廣文字。
+
+執行環境與證據：
+
+- macOS、Node **26.9.0**；**310／310 Node tests**、lint、格式檢查、TypeScript、一般及 `/invoice/` 建置與 SEO 檢查通過。建置仍有主 bundle 大於 500 kB 的提示。
+- 既有 Playwright 回歸 **64／64 通過（1.7 分鐘）**，包含桌面及 320px 手機版的互動、PNG／PDF／TXT／ICS 輸出。初次執行缺少本機 Playwright 套件，以既有 lockfile 執行 `npm ci` 後重跑成功；套件清單及 lockfile 無變更。
+- 在既有 Chrome 新開分頁實測 StarShare 搜尋、收藏、外連目的地與文件草稿保留。320px 的首頁、目錄、介紹頁及報價頁 `scrollWidth === innerWidth`；介紹頁與目錄目視未見內容截斷。瀏覽器尺寸及測試收藏／草稿已還原，測試用 StarShare 分頁已關閉。
+- 預覽截圖：[StarShare 介紹與推廣](design/starshare-preview.jpg)。既有瀏覽器測試輸出位於系統暫存的 `invoice-helper-browser-results/`；本輪測試摘要位於 `/tmp/invoice-starshare-browser.log`。
+
+Jev 結案證據比對：整合、推廣、驗證範圍均為 `supported`（信心 0.95／0.86／0.97），無 attention 項目；僅作第二意見，不代替上述實測。
+
+本次證據限於站內整合與外連；未部署、未宣稱搜尋收錄或流量成效，也未重新驗收實體裝置間傳輸。
+
 ## 2026-10-10 隨機分組、活動簽到表與工作倒數整合驗收
 
 驗收來源 `d3d6a40e431f71551e25c29a3f846bf9f4cffa63`，發布合併提交 `7829b98044039f3e38ff7f5cfcebb94908ba55ee`，tree 皆為 `31211b1ba0a6b75251685da33c893d7cbf0bed2d`。28 個工具、39 HTML；此段區分本機、CI、補充檢查與正式站證據，發布和回復位置見[部署紀錄](DEPLOYMENT.md)。

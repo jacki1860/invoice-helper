@@ -29,6 +29,16 @@ const searchAliases: Partial<Record<ToolId, string[]>> = {
   insurance: ['投保級距', '投保金額', '勞工保險', '全民健康保險'],
   laws: ['法條', '法律條文', '法規資料庫'],
   calendar: ['放假', '休假日', '月曆', '日曆', 'ics'],
+  starshare: [
+    'star share',
+    '檔案分享',
+    '檔案傳送',
+    '傳文件',
+    '傳照片',
+    '跨平台',
+    '跨系統',
+    '傳連結',
+  ],
 };
 
 function normalizeSearch(value: string): string {

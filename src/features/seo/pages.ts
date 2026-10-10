@@ -7,6 +7,7 @@ import {
   isOverviewPage,
   toolsForPage,
   pagePath,
+  starShareUrl,
   type PageId,
 } from '../tools/catalog.ts';
 import { homeContent, toolContent, type PageContent } from './content.ts';
@@ -25,7 +26,7 @@ export function contentForPage(page: PageId): PageContent {
   if (page === 'directory')
     return {
       heading: `全部行政工具：${tools.length} 個線上工具總覽`,
-      description: `查看小事務全部 ${tools.length} 個免登入行政工具，包含發票、報價與請款、收據、採購、費用報支、金額試算、日期轉換及公開資料查詢。可搜尋工具名稱或用途，選擇需要的工具，或主動收藏方便下次開啟。`,
+      description: `查看小事務全部 ${tools.length} 個免登入工具，包含文件製作、金額試算、日期轉換、公開資料查詢，以及 StarShare 跨裝置傳檔外連工具。可搜尋名稱或用途，選擇需要的工具，或主動收藏方便下次開啟。`,
       steps: [
         '從完整工具清單找到需要的工作，或輸入名稱與用途搜尋全站工具。',
         '開啟工具後核對功能、資料保存方式及適用範圍，再填寫或查詢。',
@@ -163,7 +164,7 @@ export function structuredDataForPage(page: PageId) {
     graph.push({
       '@type': 'WebApplication',
       '@id': `${url}#application`,
-      url,
+      url: tool.externalUrl || url,
       name: tool.label,
       description: content.description,
       applicationCategory: 'BusinessApplication',
@@ -244,6 +245,25 @@ export function renderPageGuide(page: PageId, base: string): string {
   </section>`;
 }
 
+/** Shared by the interactive app and static pages; never includes user data. */
+export function renderStarSharePromotion(page: PageId, base: string): string {
+  const documentTool = tools.some((tool) => tool.id === page && tool.category === 'documents');
+  if (page !== 'tools' && page !== 'starshare' && !documentTool) return '';
+  return `<aside class="starshare-promo" aria-labelledby="starshare-promo-title">
+    <div class="starshare-promo-copy">
+      <p class="overview-eyebrow">小事務推薦 · StarShare</p>
+      <h2 id="starshare-promo-title">文件做好了，接著傳出去。</h2>
+      <p>手機裡的照片、電腦上的文件，都能用 StarShare 互傳。免安裝、免登入，也能分享文字與連結。</p>
+      <p class="starshare-promo-note">先下載文件，再到 StarShare 選檔傳送；這裡的表單不會自動帶出。</p>
+    </div>
+    <div class="starshare-promo-actions">
+      <a class="button button-primary" href="${starShareUrl}" target="_blank" rel="noopener noreferrer">開啟 StarShare <span aria-hidden="true">↗</span><span class="sr-only">（另開分頁）</span></a>
+      <span class="external-tool-label">外連工具・另開分頁</span>
+      <a class="starshare-details" href="${page === 'starshare' ? `${starShareUrl}about/` : pagePath('starshare', base)}"${page === 'starshare' ? ' target="_blank" rel="noopener noreferrer"' : ''}>${page === 'starshare' ? 'StarShare 使用說明（另開分頁）' : '認識 StarShare'}</a>
+    </div>
+  </aside>`;
+}
+
 export function renderStaticPage(page: PageId, base: string): string {
   const { heading } = contentForPage(page);
   const trail = breadcrumbLinks(page);
@@ -255,6 +275,7 @@ export function renderStaticPage(page: PageId, base: string): string {
     ${trail.length > 1 ? `<nav class="tool-breadcrumb" aria-label="麵包屑">${trail.map((entry, index) => (index === trail.length - 1 ? `<span aria-current="page">${escapeHtml(entry.label)}</span>` : `<a href="${pagePath(entry.id, base)}">${escapeHtml(entry.label)}</a>`)).join('<span>/</span>')}</nav>` : ''}
     <div class="public-tool-page"><header class="public-tool-heading"><h1>${escapeHtml(heading)}</h1></header>
     <noscript><p>搜尋、收藏、互動表單與計算需要啟用 JavaScript。${isOverviewPage(page) ? '請展開下方「使用說明與常見問題」，閱讀介紹與開啟工具連結。' : '你仍可閱讀以下說明與瀏覽工具。'}</p></noscript></div>
+    ${renderStarSharePromotion(page, base)}
     ${renderPageGuide(page, base)}
   </main>`;
 }

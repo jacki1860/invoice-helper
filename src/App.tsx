@@ -54,7 +54,7 @@ import {
 } from './features/tools/catalog';
 import { createInitialDraft, type InvoiceDraft } from './features/invoice/draft';
 import type { CompanyRecord } from './utils/companyUtils';
-import { renderPageGuide } from './features/seo/pages';
+import { renderPageGuide, renderStarSharePromotion, contentForPage } from './features/seo/pages';
 import { updatePageMetadata } from './features/seo/browser';
 import './components/tools/tools.css';
 
@@ -338,6 +338,15 @@ export default function App() {
         <section hidden={tool !== 'calendar'} aria-label="假日行事曆">
           <CalendarTool onCalculateWorkdays={calculateCalendarWorkdays} />
         </section>
+        {tool === 'starshare' && (
+          <div className="public-tool-page">
+            <header className="public-tool-heading">
+              <h1>{contentForPage('starshare').heading}</h1>
+              <p>從一份報價單到一張照片，在不同裝置之間輕鬆分享。</p>
+            </header>
+          </div>
+        )}
+        <div dangerouslySetInnerHTML={{ __html: renderStarSharePromotion(tool, base) }} />
         <div dangerouslySetInnerHTML={{ __html: renderPageGuide(tool, base) }} />
       </main>
       <SiteFooter />
