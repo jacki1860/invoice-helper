@@ -26,6 +26,8 @@ export async function downloadInvoice(element: HTMLElement, filename: string): P
   snapshot.setAttribute('aria-hidden', 'true');
   snapshot.append(element.cloneNode(true));
   document.body.append(snapshot);
+  let url: string | undefined;
+  let link: HTMLAnchorElement | undefined;
   try {
     await document.fonts.ready;
     await Promise.all(Array.from(snapshot.querySelectorAll('img'), (image) => image.decode()));
@@ -48,15 +50,18 @@ export async function downloadInvoice(element: HTMLElement, filename: string): P
         'image/png',
       ),
     );
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    url = URL.createObjectURL(blob);
+    link = document.createElement('a');
     link.download = filename;
     link.href = url;
     document.body.append(link);
     link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   } finally {
+    link?.remove();
+    if (url) {
+      const downloadUrl = url;
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    }
     snapshot.remove();
   }
 }

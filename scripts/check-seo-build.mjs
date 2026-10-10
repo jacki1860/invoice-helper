@@ -9,8 +9,8 @@ const sitemap = readFileSync(resolve(directory, 'sitemap.xml'), 'utf8');
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 assert.equal(
   urls.length,
-  36,
-  'Sitemap must include the home, directory, five tasks, four categories and twenty-five tools',
+  39,
+  'Sitemap must include the home, directory, five tasks, four categories and twenty-eight tools',
 );
 assert.equal(new Set(urls).size, urls.length, 'Duplicate sitemap URLs');
 const titles = new Set();

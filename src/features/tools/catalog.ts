@@ -7,6 +7,7 @@ export type ToolId =
   | 'acceptance'
   | 'compare'
   | 'equipment'
+  | 'attendance-sheet'
   | 'receipt'
   | 'purchase'
   | 'delivery'
@@ -21,6 +22,8 @@ export type ToolId =
   | 'text-diff'
   | 'filename-plan'
   | 'meeting-agenda'
+  | 'random-groups'
+  | 'countdown'
   | 'company'
   | 'insurance'
   | 'laws'
@@ -79,7 +82,8 @@ export const taskCollections: {
   {
     id: 'reference',
     label: '日期與資料查詢',
-    description: '換算日期、安排工作天與會議時間、整理清單與比對文字，查公司及公開資料。',
+    description:
+      '換算日期、安排工作天與會議、隨機分組、工作倒數、準備活動簽到表、整理清單與比對文字，查公司及公開資料。',
     toolIds: [
       'workdays',
       'calendar',
@@ -88,6 +92,9 @@ export const taskCollections: {
       'list-compare',
       'text-diff',
       'meeting-agenda',
+      'random-groups',
+      'attendance-sheet',
+      'countdown',
       'company',
       'insurance',
       'laws',
@@ -159,6 +166,13 @@ export const tools: Tool[] = [
     label: '器材借還單',
     description: '記下借出的器材、配件與狀況，核對歸還進度。',
     keywords: '器材 借用 借還 設備 歸還 逾期 配件 PDF PNG 備份',
+  },
+  {
+    id: 'attendance-sheet',
+    category: 'documents',
+    label: '活動簽到表',
+    description: '填寫活動資訊與名單，產生可列印的紙本簽到表。',
+    keywords: '活動 會議 課程 研習 簽到 簽名 名單 紙本 列印 PDF PNG',
   },
   {
     id: 'profit',
@@ -250,6 +264,20 @@ export const tools: Tool[] = [
     label: '會議議程時間表',
     description: '填入開始時間與議題分鐘數，排出每項起訖時間及完整議程。',
     keywords: '會議 議程 時間表 開會 分鐘 排程 討論 TXT',
+  },
+  {
+    id: 'random-groups',
+    category: 'conversions',
+    label: '隨機分組器',
+    description: '貼上參與者名單，指定組數，排出人數均衡的隨機分組。',
+    keywords: '隨機 分組 參與者 活動 工作坊 組數 平均 均衡 TXT',
+  },
+  {
+    id: 'countdown',
+    category: 'conversions',
+    label: '工作與會議倒數',
+    description: '設定一段時間，開始、暫停與繼續倒數，清楚掌握時間到。',
+    keywords: '倒數 計時器 工作 會議 專注 休息 秒 分鐘 暫停',
   },
   {
     id: 'company',

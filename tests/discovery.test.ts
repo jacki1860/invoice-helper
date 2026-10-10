@@ -53,7 +53,7 @@ test('task collections cover every tool, have unique members, and support useful
 });
 
 test('all existing and new paths round-trip at root and company bases', () => {
-  assert.equal(legacyPages.length, 30);
+  assert.equal(legacyPages.length, 33);
   for (const base of ['/', '/invoice/']) {
     for (const page of [...legacyPages, ...newPages]) {
       const path = pagePath(page, base);
@@ -155,6 +155,37 @@ test('meeting agenda is discoverable by practical meeting preparation terms', ()
   }
 });
 
+test('attendance sheet supports direct and legacy routes, document discovery and event preparation terms', () => {
+  assert.equal(categoryForPage('attendance-sheet'), 'documents');
+  for (const base of ['/', '/invoice/']) {
+    const path = `${base}attendance-sheet/`;
+    assert.equal(pagePath('attendance-sheet', base), path);
+    assert.equal(pageFromPath(path, base), 'attendance-sheet');
+    assert.equal(
+      resolveLocation({ pathname: base, hash: '#attendance-sheet', search: '' }, base),
+      'attendance-sheet',
+    );
+    assert.equal(
+      resolveLocation({ pathname: path, hash: '', search: '?date=2026-10-09' }, base),
+      'attendance-sheet',
+    );
+  }
+  for (const page of ['tools', 'directory', 'category-documents', 'task-reference'] as const) {
+    assert.ok(ids(toolsForPage(page)).includes('attendance-sheet'));
+  }
+  for (const query of [
+    '簽到表',
+    '出席名冊',
+    '報到表',
+    '會議簽到',
+    '課程簽到',
+    '活動安排',
+    '簽到 ＰＤＦ',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['attendance-sheet']);
+  }
+});
+
 test('text diff has an independent route, category, task entries and practical search aliases', () => {
   assert.equal(pagePath('text-diff', '/invoice/'), '/invoice/text-diff/');
   assert.equal(categoryForPage('text-diff'), 'conversions');
@@ -211,5 +242,30 @@ test('filename planner has its own route, conversion category, purchasing entry 
     '副檔名 TXT',
   ]) {
     assert.deepEqual(ids(searchTools(query)), ['filename-plan']);
+  }
+});
+
+test('random grouping has its own route, reference task and practical discovery aliases', () => {
+  assert.equal(pagePath('random-groups', '/invoice/'), '/invoice/random-groups/');
+  assert.equal(categoryForPage('random-groups'), 'conversions');
+  assert.ok(ids(toolsForPage('task-reference')).includes('random-groups'));
+  for (const query of [
+    '隨機分隊',
+    '分組器',
+    '活動分組',
+    '工作坊分組',
+    '抽籤分組',
+    'ＲＡＮＤＯＭ　ＧＲＯＵＰＳ',
+  ]) {
+    assert.deepEqual(ids(searchTools(query)), ['random-groups']);
+  }
+});
+
+test('countdown has an independent route, task entry and search vocabulary', () => {
+  assert.equal(pagePath('countdown', '/invoice/'), '/invoice/countdown/');
+  assert.equal(categoryForPage('countdown'), 'conversions');
+  assert.ok(taskForPage('task-reference')?.toolIds.includes('countdown'));
+  for (const query of ['倒數計時', '休息計時', '專注計時', 'ＴＩＭＥＲ', 'countdown']) {
+    assert.deepEqual(ids(searchTools(query)), ['countdown']);
   }
 });
