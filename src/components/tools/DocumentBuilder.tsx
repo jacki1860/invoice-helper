@@ -73,6 +73,7 @@ export function DocumentBuilder({
   const [logoLoading, setLogoLoading] = useState(false);
   const [logoError, setLogoError] = useState('');
   const [readyLogo, setReadyLogo] = useState<string | null>(null);
+  const documentRevision = useRef(0);
   const logoRequest = useRef(0);
   const logoInput = useRef<HTMLInputElement>(null);
   const [deleted, setDeleted] = useState<{
@@ -84,10 +85,12 @@ export function DocumentBuilder({
   const title = draft.kind === 'quote' ? '報價單' : '請款單';
   const logoPending = logoLoading || (draft.logo !== null && readyLogo !== draft.logo.dataUrl);
   const patch = (update: Partial<BusinessDocumentDraft>) => {
+    documentRevision.current += 1;
     setDraft((current) => ({ ...current, ...update }));
     setStatus('');
   };
   const chooseLogo = async (file: File) => {
+    documentRevision.current += 1;
     const request = ++logoRequest.current;
     setLogoLoading(true);
     setLogoError('');
@@ -116,6 +119,7 @@ export function DocumentBuilder({
       !window.confirm('載入範例會取代目前文件內容。確定取代？')
     )
       return;
+    documentRevision.current += 1;
     logoRequest.current += 1;
     setLogoLoading(false);
     setLogoError('');
@@ -140,13 +144,15 @@ export function DocumentBuilder({
   const exportPng = async () => {
     setAttempted(true);
     if (!valid || !paper.current || busy || logoPending) return;
+    const revision = documentRevision.current;
     setBusy(true);
     setStatus('正在製作圖片…');
     try {
       await downloadInvoice(paper.current, `${title}_${draft.date}.png`);
-      setStatus('PNG 已產生，請查看瀏覽器下載項目。');
+      if (revision === documentRevision.current) setStatus('PNG 已產生，請查看瀏覽器下載項目。');
     } catch {
-      setStatus('圖片製作失敗，請稍後重試，或使用列印／另存 PDF。');
+      if (revision === documentRevision.current)
+        setStatus('圖片製作失敗，請稍後重試，或使用列印／另存 PDF。');
     } finally {
       setBusy(false);
     }
@@ -169,6 +175,7 @@ export function DocumentBuilder({
                   !window.confirm('套用會取代目前文件內容，確定繼續？')
                 )
                   return;
+                documentRevision.current += 1;
                 logoRequest.current += 1;
                 setLogoLoading(false);
                 setLogoError('');
